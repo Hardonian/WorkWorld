@@ -4,6 +4,9 @@ export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 60_000,
   retries: 0,
+  // Serial workers: tests share one dev server; serial run eliminates the
+  // cross-test timing race observed once (recorded in docs/BUILD_LOG.md M7).
+  workers: 1,
   use: {
     baseURL: "http://localhost:3100",
     trace: "retain-on-failure",
