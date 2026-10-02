@@ -24,5 +24,6 @@ Gate evidence lives in `evidence/<milestone>/` and `docs/BUILD_LOG.md`.
 - Human-study governance is **pending**; no human participant data exists.
 - Live-model results (if any) come only from actually configured providers within
   budget; fixture runs validate the harness, not model capability.
-- Hosted mode is **unverified against a real hosted project** and blocked for hosted
-  release until exercised; the credentials-free local release is unaffected.
+- Hosted mode is **verified against a real hosted Supabase project** since
+  2026-10-02 (dedicated project, 12/12 RLS via the `hosted-rls` release gate;
+  see docs/BLOCKERS.md B1). No production operating history is claimed.

@@ -161,7 +161,7 @@
         }
       ],
       "manualJudgment": "Gate met for the stated scope: access boundaries verified on local Postgres with Supabase-compatible roles/claims for two organizations and three roles. Hosted release stays BLOCKED (B1) — not verified against a hosted Supabase project. Grader never impersonates a reviewer (separate uncalibrated suggestions field).",
-      "blockers": ["B1"],
+      "blockers": [],
       "nextAction": "M7: full release-gate checks, adversarial inputs, dependency audit, UI inspection at final revision."
     },
     { "id": "M7", "title": "Whole-product verification and hardening", "status": "pending", "prerequisites": ["M3", "M4", "M5", "M6"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Full check suite + adversarial inputs + UI inspection." },
@@ -184,7 +184,7 @@
         }
       ],
       "manualJudgment": "Gate met for the LOCAL release candidate: clean-install, browser smoke, deployment artifacts, archive with checksums, backup/restore documented and store-tested, accurate local/hosted readiness split. Not tagged GA — hosted release remains blocked_external. No production operating history is claimed.",
-      "blockers": ["B1"],
+      "blockers": [],
       "nextAction": "Final reconciliation (M10)."
     },
     {
@@ -206,7 +206,7 @@
         }
       ],
       "manualJudgment": "Gate met: internally consistent materials; numeric claims tied to runs; external validation plainly pending (practitioner review, human study governance, buyer interviews, pilot); no draft discloses private content or participant identities (none exist); no novelty or traction claims. GDPval industry-expert route explicitly deferred until task expertise and evidence are credible.",
-      "blockers": ["B1", "B2", "human_governance"],
+      "blockers": ["B2", "human_governance"],
       "nextAction": "M10: final reconciliation, final release gate on final revision, m10 evidence export, handoff."
     },
     {
@@ -226,17 +226,17 @@
         }
       ],
       "manualJudgment": "No remaining authorized locally actionable release failures. Claims match supported behavior (harness-validation maturity). Resume state accurate (RESUME.md). Exact next action per external dependency recorded. Delivered as a LOCAL release candidate - deliberately not tagged as a generally available product because hosted verification and external validation are absent.",
-      "blockers": ["B1", "B2", "human_governance"],
-      "nextAction": "External: practitioner review (2 reviewers), governance approval for human study, hosted Supabase project for B1, authorized budget/key for B2."
+      "blockers": ["B2", "human_governance"],
+      "nextAction": "External: practitioner review (2 reviewers), governance approval for human study, authorized budget/key for B2."
     }
   ],
   "externalBlockers": [
     {
       "id": "B1",
       "kind": "hosted_config",
-      "summary": "No hosted Supabase project configured; hosted release blocked. RLS tested on Dockerized Postgres meanwhile.",
+      "summary": "CLOSED 2026-10-02: hosted project gsssdavzyorvhtdolvaj.supabase.co provisioned (dedicated, not shared with other apps); migrations applied via scripts/apply-migrations.mjs (session-mode connection); 12/12 RLS tests verified against the hosted project; release gate hosted-rls gate PASS (evidence/release-gate/latest.json).",
       "openedAt": "2026-10-01T21:00:00.000Z",
-      "status": "open"
+      "status": "closed"
     },
     {
       "id": "B2",

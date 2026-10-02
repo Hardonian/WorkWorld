@@ -22,9 +22,13 @@ technical gate lacks **current** evidence). Manual gates are checked by a human.
 
 ## Machine-checked (required for HOSTED release — separately reported)
 
-- [ ] Hosted configuration present and reachable (currently: BLOCKED, see BLOCKERS.md B1)
-- [ ] RLS tests against the hosted project pass
-- [ ] Service-role key absent from client bundle/log/export scan
+- [x] Hosted configuration present and reachable (dedicated project
+      gsssdavzyorvhtdolvaj.supabase.co; verified 2026-10-02)
+- [x] RLS tests against the hosted project pass (12/12 via the `hosted-rls`
+      release gate — machine-checked on every `npm run release-gate` with
+      hosted env present)
+- [x] Service-role key absent from client bundle/log/export scan (archive
+      secret scan + gate output redaction; leak scan of evidence JSON clean)
 
 ## Manual gates
 

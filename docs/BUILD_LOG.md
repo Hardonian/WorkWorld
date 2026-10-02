@@ -246,3 +246,31 @@ Machine-generated observations are marked `[machine]`; written judgments are `[j
   playwright 8/8 green.
 - [machine] Records pinned: RESUME.md and TASK_STATE.json codeRevision now
   reference the gated revision 2e2cd1a5.
+
+## 2026-10-02 — B1 CLOSED: hosted Supabase verification
+
+- [machine] Operator supplied a Supabase personal access token (stored in the
+  operator secrets file only; never in chat, repos, or exports). Management API
+  verified (HTTP 200).
+- [machine] Provisioned dedicated hosted project `workworld`
+  (ref gsssdavzyorvhtdolvaj, us-west-2, ACTIVE_HEALTHY) — deliberately NOT
+  sharing the existing Settler project's database. Project DB password and
+  anon/service-role keys generated/stored server-side; `.env.local` gitignored.
+- [machine] `scripts/apply-migrations.mjs` added (idempotent; refuses
+  transaction-pooler :6543 URLs because `set role`/`set_config` session state
+  is required). Applied 0001_init.sql to hosted (299ms).
+- [machine] `npm run db:test` against the hosted project: 12/12 RLS tests PASS
+  (two orgs, participant/assessor/admin roles, forbidden mutations) — the
+  exact B1 unblock condition.
+- [machine] release-gate hardened: new machine-checked `hosted-rls` gate runs
+  the RLS suite against the real project whenever hosted env is present;
+  hosted readiness now reports VERIFIED only after that gate passes (config
+  presence alone never upgrades the claim). Gate output redacts the service
+  role key and DB password from all evidence.
+- [machine] Final gate with hosted env: 9/9 PASS — "hosted: VERIFIED against
+  the hosted project (RLS suite green; gsssdavzyorvhtdolvaj.supabase.co)".
+  Evidence leak scan: no JWTs or connection strings in evidence JSON.
+- [judgment] B1 closed with real evidence. Remaining externals unchanged: B2
+  (paid providers), human governance, practitioner review. Hosted has no
+  production operating history and hosted backup/restore remains managed
+  tooling (not exercised) — claims scoped accordingly.

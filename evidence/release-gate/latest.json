@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-02T14:58:21.502Z",
+  "generatedAt": "2026-10-02T16:46:27.600Z",
   "localReadiness": "local technical candidate: PASS",
-  "hostedReadiness": "hosted: blocked_external (no hosted configuration; B1)",
+  "hostedReadiness": "hosted: VERIFIED against the hosted project (RLS suite green via WW_TEST_PG_URL; gsssdavzyorvhtdolvaj.supabase.co)",
   "researchReadiness": "harness validation only — no live-model or human-study evidence",
   "commercialReadiness": "none — protocols only",
   "gates": [
@@ -12,7 +12,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T14:58:11.249Z",
+      "started": "2026-10-02T16:46:00.133Z",
       "tail": "  8:10  warning  'existsSync' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars |  | ✖ 2 problems (0 errors, 2 warnings)"
     },
     {
@@ -22,7 +22,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T14:58:14.224Z",
+      "started": "2026-10-02T16:46:03.040Z",
       "tail": "> workworld@0.1.0 typecheck | > tsc --noEmit"
     },
     {
@@ -32,8 +32,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T14:58:16.733Z",
-      "tail": "      Tests  90 passed (90) |    Start at  10:58:17 |    Duration  510ms (transform 55%, import 30%, tests 13%, worker 2%)"
+      "started": "2026-10-02T16:46:05.700Z",
+      "tail": "      Tests  90 passed (90) |    Start at  12:46:06 |    Duration  8.95s (tests 76%, transform 16%, import 8%)"
     },
     {
       "id": "baseline",
@@ -42,7 +42,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T14:58:15.174Z",
+      "started": "2026-10-02T16:46:15.108Z",
       "tail": "C2 PASS T1 9/9 |  | baseline: 6/6 episodes pass (fixture actor, not a model)"
     },
     {
@@ -52,7 +52,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T14:58:15.625Z",
+      "started": "2026-10-02T16:46:15.543Z",
       "tail": "N6 OK  expected=[help_policy] actual=[help_policy] — indiscriminate requests for human help |  | negative controls: 6/6 detected for the right reasons"
     },
     {
@@ -62,7 +62,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T14:58:16.260Z",
+      "started": "2026-10-02T16:46:15.885Z",
       "tail": " | ○  (Static)   prerendered as static content | ƒ  (Dynamic)  server-rendered on demand"
     },
     {
@@ -72,7 +72,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T14:58:20.867Z",
+      "started": "2026-10-02T16:46:20.327Z",
       "tail": "> tsx scripts/validate-task-state.ts |  | TASK_STATE.json OK: 11 milestones, 2 external blockers; docs/TASK_STATE.schema.json refreshed"
     },
     {
@@ -82,8 +82,18 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T14:58:21.105Z",
+      "started": "2026-10-02T16:46:20.587Z",
       "tail": ""
+    },
+    {
+      "id": "hosted-rls",
+      "description": "RLS suite against the real hosted project",
+      "cmd": "npx vitest run tests/db",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "started": "2026-10-02T16:46:21.046Z",
+      "tail": "      Tests  12 passed (12) |    Start at  12:46:21 |    Duration  8.63s (tests 99%)"
     }
   ]
 }

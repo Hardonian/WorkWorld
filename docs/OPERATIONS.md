@@ -28,7 +28,11 @@ process serves `/health` only after boot completes.
   snapshots with an explicit recovery path (checkpoint / replay / restart).
 - Hosted: use the managed project's backup tooling. Migrations are versioned in
   `db/migrations/` and apply to a **fresh** database:
-  `bash scripts/db-up.sh` (test stack) or your migration runner (hosted).
+  `bash scripts/db-up.sh` (test stack) or `node scripts/apply-migrations.mjs`
+  (hosted — requires `WW_TEST_PG_URL`/`DATABASE_URL` in session mode, :5432;
+  the script refuses transaction-pooler URLs because session GUCs are required
+  by RLS). Hosted verification: `npm run db:test` with `WW_TEST_PG_URL` set,
+  or `npm run release-gate` with hosted env (runs the `hosted-rls` gate).
 - **Rollback (hosted schema):** `drop schema workworld cascade;` restores the
   prior database state; application code is rolled back by redeploying the prior
   git revision. Migrations are forward-only and additive in 0001.
