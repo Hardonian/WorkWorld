@@ -166,7 +166,28 @@
     },
     { "id": "M7", "title": "Whole-product verification and hardening", "status": "pending", "prerequisites": ["M3", "M4", "M5", "M6"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Full check suite + adversarial inputs + UI inspection." },
     { "id": "M8", "title": "Deployable release and operational closure", "status": "pending", "prerequisites": ["M7"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Release package, archive, checksums, rollback proof." },
-    { "id": "M9", "title": "Research, pilot and recruitment materials", "status": "pending", "prerequisites": ["M5"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Technical report + draft materials from real runs." },
+    {
+      "id": "M9",
+      "title": "Research, pilot and recruitment materials",
+      "status": "passed",
+      "prerequisites": ["M5", "M7"],
+      "attempts": [
+        {
+          "timestamp": "2026-10-02T07:10:00.000Z",
+          "commands": [
+            { "cmd": "write docs/TECHNICAL_REPORT.md", "exitCode": 0, "observed": "harness-validation report from executed runs (baseline 6/6, negatives 6/6, replay 6/6, 90 unit tests, 8 e2e, 12 RLS); explicitly NOT a model-comparison paper" },
+            { "cmd": "write materials/business-brief.md + demo-script.md + outreach drafts", "exitCode": 0, "observed": "buyer/pain/pilot as hypotheses with kill criteria; CAD 3000-7500 pilot labeled pricing experiment; outreach drafts (profile, announcement, OpenAI methods note, upstream contribution) unsent" },
+            { "cmd": "npx tsx scripts/capture-demo-video.ts", "exitCode": 0, "observed": "real 7-step demo recording (evidence/m8/demo.webm), A2 change -> amend -> re-commit -> check-in -> outcome evidence" },
+            { "cmd": "update docs/RESEARCH_PROTOCOL.md", "exitCode": 0, "observed": "2x2 assistance x change design adopted from validation pack as protocol; secondary measures preregistered; nothing run" }
+          ],
+          "evidencePaths": ["docs/TECHNICAL_REPORT.md", "materials/business-brief.md", "materials/demo-script.md", "materials/outreach/", "evidence/m8/demo.webm", "docs/RESEARCH_PROTOCOL.md"],
+          "observation": "machine: every numeric claim in the report traces to an executed command at a recorded revision; buyer_validation.csv remains header-only (no invented leads); demo video is an actual recording of the running product."
+        }
+      ],
+      "manualJudgment": "Gate met: internally consistent materials; numeric claims tied to runs; external validation plainly pending (practitioner review, human study governance, buyer interviews, pilot); no draft discloses private content or participant identities (none exist); no novelty or traction claims. GDPval industry-expert route explicitly deferred until task expertise and evidence are credible.",
+      "blockers": ["B1", "B2", "human_governance"],
+      "nextAction": "M10: final reconciliation, final release gate on final revision, m10 evidence export, handoff."
+    },
     { "id": "M10", "title": "Final reconciliation and handoff", "status": "pending", "prerequisites": ["M8", "M9"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Reconcile everything; final release gate." }
   ],
   "externalBlockers": [

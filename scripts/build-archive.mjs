@@ -49,7 +49,8 @@ for (const f of files) {
   if (f.startsWith(".env") && f !== ".env.example") problems.push(`env file included: ${f}`);
   if (f.includes("node_modules") || f.startsWith(".next/")) problems.push(`build/dependency artifact: ${f}`);
 }
-const secretScan = /gho_|sk-[A-Za-z0-9]{20,}|BEGIN (RSA|OPENSSH|PRIVATE)/;
+// Patterns are built by concatenation so this file cannot match its own scanner.
+const secretScan = new RegExp(["gho", "_"].join("") + "|" + ["sk", "-[A-Za-z0-9]{20,}"].join("") + "|" + ["BEGIN (RS", "A|OPENSSH|PRIVATE)"].join(""));
 for (const f of files) {
   const content = readFileSync(join(verifyDir, name, f), "utf8").slice(0, 200_000);
   if (secretScan.test(content)) problems.push(`possible secret in ${f}`);

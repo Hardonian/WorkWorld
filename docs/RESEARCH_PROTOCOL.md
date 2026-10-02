@@ -17,11 +17,45 @@ Everything here is planned methodology, not results.
 
 ## Conditions (documented, not perfectly equivalent)
 
-| Condition | Actor | Timing | Interface |
-|-----------|-------|--------|-----------|
+Adopted design (from docs/validation-pack/03_Measurement_Protocol.md — protocol
+only; nothing has run): a **2 × 2 experiment** with participant-level
+randomization to one cell, one episode per family in randomized order:
+
+| Cell | Assistance | Requirement change |
+|------|------------|--------------------|
+| H0 | human-only | no consequential change |
+| H1 | human-only | prespecified consequential change |
+| A0 | human with the configured assistant (suggestions the human approves) | no consequential change |
+| A1 | human with the configured assistant | prespecified consequential change |
+
+Primary outcome (preregistered): successful terminal operational state with all
+critical invariants intact within a declared work budget; incomplete work and
+committed fatal errors reported separately. Primary estimand: whether assistance
+changes correct completion specifically under the consequential-change condition;
+secondary: difference in assistance effects between changed/unchanged conditions.
+Feasibility target 40 participants (10/cell, ≤3 episodes each) — a planning
+suggestion, not a power calculation; episodes within a person are correlated.
+
+Agent-only evaluation is a separate track (same observable facts, actions,
+budgets, terminal criteria; pinned adapter/model/versions; stochastic reruns are
+repeated observations, never independent tasks). Fixture agents, human runs and
+live-model runs are never combined into one performance rate.
+
+| Track | Actor | Timing | Interface |
+|-------|-------|--------|-----------|
 | human-only | human | logical clock advances only via explicit actions; wall-clock recorded separately | browser UI |
-| agent-only | agent | logical clock advanced per episode timing policy; step budget bounds | programmatic API |
+| agent-only | agent | logical clock per episode timing policy; step budget bounds | programmatic API |
 | human-assisted | human + agent | human timing; suggestions logged separately from executed actions | browser UI + suggestion panel |
+
+Secondary measures (preregistered): committed critical errors and prevented
+harmful actions (separately), recovery within a fixed post-change budget,
+oversight effort (active review/correction time + attributable handoffs),
+assessment effort (assessor active minutes), artifact quality (blinded rubric,
+separate from correctness), pre-submission confidence vs actual correctness,
+inference cost (unknown costs stay unknown). Persuasive-output gap: rate
+de-identified artifacts without final state, then cross-tabulate declared
+communication category against actual operational success (threshold
+pre-declared).
 
 Interface and timing differences are documented in ARCHITECTURE.md and each run
 manifest. We do **not** claim the conditions are perfectly equivalent.

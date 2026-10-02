@@ -186,3 +186,20 @@ Machine-generated observations are marked `[machine]`; written judgments are `[j
 - [machine] Evidence export evidence-exports/m7/ + .zip.
 - [judgment] One e2e timing flake observed once in an earlier run (passed on
   rerun and in every subsequent run) — recorded, not silenced.
+
+## 2026-10-02 — M9 Research, pilot and recruitment materials
+
+- [machine] docs/TECHNICAL_REPORT.md: harness-validation report grounded in
+  executed runs (every table row has its command + N); explicitly not a
+  model-comparison paper; failure-category section lists root-caused defects.
+- [machine] materials/: business brief (buyer/pain/pilot as hypotheses, CAD
+  3000-7500 pilot labeled a pricing experiment, kill criteria, no TAM/customers/
+  revenue invented), demo script, real demo video capture (evidence/m8/demo.webm),
+  outreach drafts (profile update, technical announcement, OpenAI methods note,
+  upstream contribution proposal) — all DRAFTS, nothing sent or published.
+- [machine] docs/RESEARCH_PROTOCOL.md updated: 2x2 (assistance x requirement
+  change) design adopted from the validation pack as a protocol with
+  preregistered estimand and secondary measures; feasibility target labeled a
+  planning suggestion. Nothing has run.
+- [judgment] buyer_validation.csv remains header-only per the pack's own
+  contract. All external evidence (reviews, studies, pilots) plainly pending.
