@@ -136,6 +136,7 @@ function handleAction(
         approvals: [],
         amendments: [],
         budgetCommittedMinor: 0,
+        authorizeAttempts: 0,
       };
       state.purchaseOrders[action.poId] = po;
       effects.push(`drafted ${action.poId} (${total} minor)`);
@@ -205,6 +206,7 @@ function handleAction(
         errors.push(err("POLICY_REF_MISSING", `unknown PO ${action.poId}`));
         break;
       }
+      po.authorizeAttempts = (po.authorizeAttempts ?? 0) + 1;
       if (!["submitted", "pending_approval"].includes(po.status)) {
         errors.push(err("POLICY_TRANSITION_INVALID", `PO is ${po.status}, cannot authorize`));
         break;
@@ -219,6 +221,7 @@ function handleAction(
         );
         break;
       }
+      // Single-order authority.
       if (total > state.policy.approvalThresholdMinor && !po.managerApproved) {
         errors.push(
           err(
@@ -227,6 +230,31 @@ function handleAction(
           ),
         );
         break;
+      }
+      // Aggregate authority: split orders covering the same requirements must not
+      // bypass the approval threshold (checked at the mutation boundary).
+      const requirementItems = new Set(state.requirements.map((r) => r.itemId));
+      if (po.lines.some((l) => requirementItems.has(l.itemId))) {
+        const group = [
+          ...Object.values(state.purchaseOrders).filter(
+            (p2) =>
+              p2.id !== po.id &&
+              p2.supplierId === po.supplierId &&
+              ["authorized", "partially_received", "received"].includes(p2.status) &&
+              p2.lines.some((l) => requirementItems.has(l.itemId)),
+          ),
+          po,
+        ];
+        const aggregate = group.reduce((s, p2) => s + poTotalMinor(p2.lines), 0);
+        if (aggregate > state.policy.approvalThresholdMinor && !group.some((p2) => p2.managerApproved)) {
+          errors.push(
+            err(
+              "POLICY_AUTH_REQUIRED",
+              `orders from ${po.supplierId} aggregate ${aggregate} minor across ${group.length} POs and require recorded manager approval before commit`,
+            ),
+          );
+          break;
+        }
       }
       po.status = "authorized";
       po.budgetCommittedMinor = total;
@@ -500,11 +528,22 @@ function handleAction(
         errors.push(err("PAYLOAD_INVALID", "approved amount must be a positive integer"));
         break;
       }
-      if (approvedAmount > accrual) {
+      // A receipt can be paid only once in total: cumulative approvals across all
+      // invoices matched to the same delivery must stay within delivered value.
+      // (A duplicate invoice under a new display id must not create a second payable.)
+      const priorApproved = Object.values(state.invoices)
+        .filter(
+          (i) =>
+            i.id !== invoice.id &&
+            i.deliveryId === delivery.id &&
+            ["approved", "scheduled", "paid"].includes(i.status),
+        )
+        .reduce((s, i) => s + (i.adjustedAmountMinor ?? i.amountMinor), 0);
+      if (approvedAmount > accrual || priorApproved + approvedAmount > accrual) {
         errors.push(
           err(
             "OVER_ACCRUAL",
-            `approved amount ${approvedAmount} exceeds delivered value ${accrual} (undelivered goods may not be settled)`,
+            `approved amount ${approvedAmount} (with ${priorApproved} already approved against ${delivery.id}) exceeds delivered value ${accrual} (undelivered or already-payable goods may not be settled twice)`,
           ),
         );
         break;
@@ -548,6 +587,7 @@ function handleAction(
         errors.push(err("PAYLOAD_INVALID", "invoiceIds must not be empty"));
         break;
       }
+      const simulatedByDelivery = new Map<string, number>();
       for (const id of targets) {
         const invoice = state.invoices[id];
         if (!invoice) {
@@ -565,6 +605,29 @@ function handleAction(
         if (invoice.dueDay > action.payDay) {
           errors.push(err("POLICY_TEMPORAL_INVALID", `invoice ${id} is not due until day ${invoice.dueDay}`));
           break;
+        }
+        // Pre-check: cumulative settlement per receipt must stay within delivered
+        // value (duplicate payables must not double-spend one delivery).
+        if (invoice.deliveryId) {
+          const amount = invoice.adjustedAmountMinor ?? invoice.amountMinor;
+          const already = state.ledger.txns
+            .filter((t) => t.sourceType === "settlement")
+            .filter((t) => state.invoices[t.sourceId]?.deliveryId === invoice.deliveryId)
+            .reduce((s, t) => s + t.entries.reduce((x, e) => x + e.creditMinor, 0), 0);
+          const simulated = (simulatedByDelivery.get(invoice.deliveryId) ?? 0) + amount;
+          simulatedByDelivery.set(invoice.deliveryId, simulated);
+          const po = state.purchaseOrders[invoice.poId!];
+          const delivery = state.deliveries[invoice.deliveryId];
+          const accrual = po && delivery ? deliveryAccrualMinor(po, delivery) : 0;
+          if (already + simulated > accrual) {
+            errors.push(
+              err(
+                "POLICY_DUPLICATE_SETTLEMENT",
+                `settling ${invoice.id} would exceed delivered value for ${invoice.deliveryId} (settled ${already}, this run ${simulated}, delivered ${accrual})`,
+              ),
+            );
+            break;
+          }
         }
       }
       if (errors.length) break;
@@ -801,6 +864,13 @@ function applyScheduledEvent(state: EpisodeState, ev: ScheduledEvent): string[] 
       if (newThreshold !== undefined) {
         state.policy.approvalThresholdMinor = newThreshold;
         effects.push(`approval threshold updated to ${newThreshold} minor`);
+      }
+      // Or an approval revocation: approvals are re-checked at commit time.
+      const revokeFor = ev.payload.revokeApprovalFor as string | undefined;
+      if (revokeFor && state.purchaseOrders[revokeFor]) {
+        state.purchaseOrders[revokeFor]!.managerApproved = false;
+        state.purchaseOrders[revokeFor]!.note += `\n[approval revoked at minute ${ev.fireAtMinute}: ${String(ev.payload.revokeApprovalReason ?? "no reason given")}]`;
+        effects.push(`approval revoked for ${revokeFor}`);
       }
       effects.push(`message received from ${String(ev.payload.from ?? "unknown")}`);
       break;

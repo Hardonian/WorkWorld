@@ -75,6 +75,8 @@ export interface PurchaseOrder {
   approvals: { atMinute: number; approvedBy: string }[];
   amendments: PoAmendment[];
   budgetCommittedMinor: Minor;
+  /** authorize attempts rejected by policy (evidence of proposed-but-blocked commits) */
+  authorizeAttempts: number;
 }
 
 export interface DeliveryLine {

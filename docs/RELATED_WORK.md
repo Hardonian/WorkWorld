@@ -17,6 +17,9 @@ source was consulted, it is marked (2°).
 | **Enterprise-Bench** (DevRev + Laude Institute, 2026-07-09; globenewswire; L1–L2 released) | Enterprise agent work under fragmented data/permission boundaries; precision/efficiency/safety axes; traces must be submitted | Independent LLM judge vs published criteria + trace audit | Harbor harness, synthetic enterprise data | Permission-boundary and audit-trace emphasis aligns with WorkWorld's authorization checks; WorkWorld adds financial invariants + human assessment records |
 | **EnterpriseClawBench** (arXiv:2606.23654, 2026-06-22) | 852 tasks derived from real workplace agent sessions (2°: alphaxiv); multidimensional reporting (harness×model, artifacts, cost) | Semantic rubrics + hard rules | Recovered fixtures from session archive | Its finding — report harness×model, artifact quality, cost, not one score — is exactly WorkWorld's separation of state checks / rubric / cost accounting |
 | **GBA-Bench** (Automation Anywhere, proprietary; 2°: vendor blog 2026) | Enterprise workflows from SOPs across 7 domains; dual metrics: task success + trajectory accuracy | Task success + trajectory accuracy | Proprietary enterprise fixtures | Proprietary; WorkWorld ships a public, reproducible harness with withheld policy variants |
+| **EnterpriseOps-Gym** (ServiceNow; github.com/ServiceNow/EnterpriseOps-Gym; register S05, checked 2026-10-02) | Resettable enterprise environment for stateful multi-step planning and tool use | Environment-defined outcome checks (per repo docs) | Resettable enterprise simulation | Correct operational state + resettable enterprise sims are established directions; WorkWorld's addition to test is the assistance/oversight axis with human conditions and assessor-effort measurement |
+| **OccuBench** (arXiv:2604.10866; register S09, checked 2026-10-02) | Professional scenarios with language environment simulation and controlled environmental faults | Paper-defined robustness measures | Simulated professional environments with fault injection | Fault injection alone is not a novelty claim; WorkWorld compares typed deterministic state, real human conditions and assessment validity |
+| **τ²-bench dual-control paper** (arXiv:2506.07982; register S04, checked 2026-10-02) | Users and agents acting in a shared dynamic environment; coordination and communication | Database end-state + policy adherence | Dual-control Dec-POMDP (telecom) | Shared human-agent control is NOT presented as newly invented here; simulated users ≠ human studies — WorkWorld's human conditions are real participants (pending) |
 
 ## Contribution hypothesis (testable, not claimed as fact)
 
@@ -32,7 +35,13 @@ source was consulted, it is marked (2°).
 
 What we do **not** claim: being first or best; contamination resistance beyond
 documented withholding; equivalence of human/agent conditions; any capability
-result (none has run — BLOCKERS.md B2 / M5 fixtures only).
+result (none has run — BLOCKERS.md B2 / M5 fixtures only). A workplace
+simulation, shared human-agent control, fault injection, or an auditable rubric
+is **not by itself a novelty claim** here — the central proposition under test is
+whether AI assistance improves correct business-state completion and recovery
+after a requirement change, with measurable oversight and assessor effort.
+We also do not infer a competitor's missing capability from a website omission:
+where a source is silent, the comparison cell says "not stated", not "absent".
 
 ## Sources (retrieval 2026-10-01)
 

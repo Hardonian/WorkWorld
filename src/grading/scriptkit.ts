@@ -12,12 +12,19 @@ export class ScriptRunner {
   readonly log: { action: Action; actor: Actor }[] = [];
   private n = 0;
 
-  constructor(scenario: ScenarioDefinition, label: string, condition: "human" | "agent" | "assisted" = "agent") {
-    this.engine = EpisodeEngine.reset(scenario, {
-      runId: `run-${scenario.id}-${label}`,
-      seed: 42,
-      condition,
-    });
+  constructor(
+    scenario: ScenarioDefinition,
+    label: string,
+    condition: "human" | "agent" | "assisted" = "agent",
+    engine?: EpisodeEngine,
+  ) {
+    this.engine =
+      engine ??
+      EpisodeEngine.reset(scenario, {
+        runId: `run-${scenario.id}-${label}`,
+        seed: 42,
+        condition,
+      });
     this.actor = { id: label, kind: "agent", role: "participant" };
   }
 

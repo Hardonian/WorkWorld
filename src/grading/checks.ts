@@ -53,7 +53,10 @@ export const authorizationCorrect: CheckFn = ({ state }) => {
   const bySupplier = new Map<string, typeof state.purchaseOrders[string][]>();
   const requirementItems = new Set(state.requirements.map((r) => r.itemId));
   for (const po of Object.values(state.purchaseOrders)) {
-    if (!["authorized", "partially_received", "received", "closed"].includes(po.status)) continue;
+    const committed = ["authorized", "partially_received", "received", "closed"].includes(po.status);
+    // Attempted-but-blocked splits still evidence structuring intent.
+    const attempted = (po.authorizeAttempts ?? 0) > 0;
+    if (!committed && !attempted) continue;
     if (!po.lines.some((l) => requirementItems.has(l.itemId))) continue;
     const list = bySupplier.get(po.supplierId) ?? [];
     list.push(po);
