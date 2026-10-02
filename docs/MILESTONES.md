@@ -14,9 +14,9 @@ Gate evidence lives in `evidence/<milestone>/` and `docs/BUILD_LOG.md`.
 | M5 | Evaluation runner and reproducible evidence | passed | pinned manifests reproduce tables; baseline + negatives run; denominators stated; withheld material excluded from fixtures |
 | M6 | Assessor workflow and hosted pilot boundaries | passed | assessor flow works; real DB/RLS tests prove isolation for 2 orgs + roles; hosted unconfigured => safe unavailable |
 | M7 | Whole-product verification and hardening | passed | lint/typecheck/build/domain/db/e2e/a11y/deps pass on RC revision; adversarial inputs verified; UI inspected with real screenshots |
-| M8 | Deployable release and operational closure | in_progress | clean-install + archive + checksums + backup/restore + rollback + local/hosted readiness separated |
+| M8 | Deployable release and operational closure | passed | clean-install + archive + checksums + backup/restore + rollback + local/hosted readiness separated |
 | M9 | Research, pilot and recruitment materials | passed | technical report from real runs; review/pilot/business drafts complete and labeled pending |
-| M10 | Final reconciliation and handoff | pending | final gate green on final revision; claims match behavior; resumable state |
+| M10 | Final reconciliation and handoff | passed | final gate green on final revision; claims match behavior; resumable state |
 
 ## Notes on maturity
 

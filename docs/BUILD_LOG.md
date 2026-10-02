@@ -203,3 +203,30 @@ Machine-generated observations are marked `[machine]`; written judgments are `[j
   planning suggestion. Nothing has run.
 - [judgment] buyer_validation.csv remains header-only per the pack's own
   contract. All external evidence (reviews, studies, pilots) plainly pending.
+
+## 2026-10-02 — M8 + M10 Deployable release, final reconciliation
+
+- [machine] Source archive: git-archive of tracked files at 311f07dc (227 files,
+  withheld material export-ignored, secret scan, SHA256SUMS manifest, clean-dir
+  extraction verification). Two self-inflicted verifier catches fixed at root:
+  uncommitted .gitattributes; scanner regex matching its own literal.
+- [machine] Clean-install proof: extract -> npm ci -> build -> start -> /health
+  -> GET / 200 -> episode-start API (scripts/verify-clean-install.sh PASS).
+  Root-caused: `next start -p 3100` hardcoded port ignored the smoke port
+  (WW_PORT now configurable).
+- [machine] Final release gate on final revision (evidence/release-gate/latest.json):
+  lint, typecheck, tests (90), baseline (6/6), negatives (6/6), build,
+  task-state, archive — 8/8 PASS. Local technical candidate: PASS.
+  Hosted: blocked_external (B1). Research: harness validation only.
+  Commercial: none.
+- [machine] Deployment artifacts: Dockerfile + healthcheck, .env.example (no
+  secrets), docs/OPERATIONS.md (backup/restore + rollback + limits + log
+  redaction). Backup/restore scope: demo FileStore (append-only actions +
+  digest-verified state + corruption recovery path — store tests); hosted uses
+  managed tooling (not exercised — B1).
+- [machine] Real demo video: evidence/m8/demo.webm (actual recording).
+  Final evidence export: evidence-exports/m10-final/.
+- [judgment] Dead code/obsolete docs reviewed; no known release-blocking defect
+  hidden behind a flag. Remaining external dependencies with exact next actions
+  listed in docs/BLOCKERS.md and RESUME.md. Not tagged as GA: a local release
+  candidate only, accurately scoped.

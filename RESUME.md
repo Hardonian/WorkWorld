@@ -1,18 +1,30 @@
 # WorkWorld — Resume Handoff
 
-Last updated: 2026-10-01T21:00:00Z (M0 complete).
+Last updated: 2026-10-02T08:05Z (M10 complete — local release candidate).
 
-- Repo: `/home/scott/repos/workworld`, branch `main` (first commit = M0 bootstrap).
-- Current milestone: **M1** (task specification and related work) — next:
-  author the 6 episode specifications, grader contract, split policy, and the
-  related-work table with source dates (M1 gate in docs/MILESTONES.md).
-- Latest evidence: `evidence/m0/` (environment inventory, route probe); `npm install`
-  + `tsc --noEmit` + `GET /` + `GET /health` all verified (TASK_STATE.json M0).
-- Active processes: Next.js dev server on **http://localhost:3100** (background
-  process from this session; restart with `npm run dev` if gone).
-- External blockers: B1 hosted Supabase config missing; B2 no paid provider key/budget
-  (see docs/BLOCKERS.md). Codex CLI unauthenticated — implementation is done directly.
-- Durable records: `TASK_STATE.json` (authoritative, schema-validated via
-  `npm run validate:task-state`), `docs/BUILD_LOG.md`, `docs/DECISIONS.md`.
-- Resume rule: after any restart/compaction, reread this file + TASK_STATE.json +
-  git status, then continue from the first unmet gate. Do not re-scaffold.
+- Repo: `https://github.com/Hardonian/WorkWorld` (PRIVATE), branch `main`.
+  Candidate revision: `311f07dc`; the final checkpoint commit follows this update.
+- State: **M0–M10 all passed** for the LOCAL technical candidate. Final release
+  gate 8/8 (evidence/release-gate/latest.json). Archive:
+  `dist/workworld-source-311f07dc.tar.gz` + SHA256SUMS. Evidence exports:
+  `evidence-exports/{m2-retroactive,m5,m7,m10-final}/` + zips.
+- Verification commands: `npm run release-gate` (full gate),
+  `npm test` (90 tests incl. real Postgres RLS via `npm run db:up`),
+  `npx playwright test` (8 e2e), `npm run baseline` / `npm run negatives`,
+  `npm run eval -- --adapter baseline` + `--verify-manifest`,
+  `bash scripts/verify-clean-install.sh`.
+- Local URL: `http://localhost:3100` (dev server from this session; restart with
+  `npm run dev`). No hosted preview exists.
+- External blockers with exact next actions:
+  - **B1 hosted**: provide Supabase project URL + keys; run `npm run db:test`
+    against it; then the hosted release gate. Hosted release blocked until then.
+  - **B2 paid providers**: provide an authorized key + explicit spend cap; the
+    runner budget-checks before every paid dispatch.
+  - **human governance**: ethics/consent approval before any participant work
+    (materials/ drafts); practitioner reviewers invited by the user only.
+- Durable records: `TASK_STATE.json` (authoritative; `npm run validate:task-state`),
+  `docs/BUILD_LOG.md`, `docs/BLOCKERS.md`, `docs/TECHNICAL_REPORT.md`.
+- Resume rule: reread this file + TASK_STATE.json + git status; validate evidence
+  against the recorded revision; continue from the first unmet gate. Do not
+  re-scaffold. Never claim hosted readiness, study results, or traction that do
+  not exist.

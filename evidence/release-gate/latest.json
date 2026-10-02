@@ -1,0 +1,89 @@
+{
+  "generatedAt": "2026-10-02T03:11:31.191Z",
+  "localReadiness": "local technical candidate: PASS",
+  "hostedReadiness": "hosted: blocked_external (no hosted configuration; B1)",
+  "researchReadiness": "harness validation only — no live-model or human-study evidence",
+  "commercialReadiness": "none — protocols only",
+  "gates": [
+    {
+      "id": "lint",
+      "description": "eslint clean",
+      "cmd": "npm run lint",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "started": "2026-10-02T03:11:18.229Z",
+      "tail": "  8:10  warning  'existsSync' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars |  | ✖ 2 problems (0 errors, 2 warnings)"
+    },
+    {
+      "id": "typecheck",
+      "description": "tsc --noEmit",
+      "cmd": "npm run typecheck",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "started": "2026-10-02T03:11:21.572Z",
+      "tail": "> workworld@0.1.0 typecheck | > tsc --noEmit"
+    },
+    {
+      "id": "tests",
+      "description": "unit/integration/db tests",
+      "cmd": "npx vitest run",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "started": "2026-10-02T03:11:23.150Z",
+      "tail": "      Tests  90 passed (90) |    Start at  23:11:23 |    Duration  603ms (transform 55%, import 30%, tests 13%, worker 2%)"
+    },
+    {
+      "id": "baseline",
+      "description": "competent control passes all episodes",
+      "cmd": "npm run baseline",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "started": "2026-10-02T03:11:24.283Z",
+      "tail": "C2 PASS T1 9/9 |  | baseline: 6/6 episodes pass (fixture actor, not a model)"
+    },
+    {
+      "id": "negatives",
+      "description": "negative controls fail for the right reasons",
+      "cmd": "npm run negatives",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "started": "2026-10-02T03:11:24.651Z",
+      "tail": "N6 OK  expected=[help_policy] actual=[help_policy] — indiscriminate requests for human help |  | negative controls: 6/6 detected for the right reasons"
+    },
+    {
+      "id": "build",
+      "description": "production build",
+      "cmd": "npm run build",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "started": "2026-10-02T03:11:24.971Z",
+      "tail": " | ○  (Static)   prerendered as static content | ƒ  (Dynamic)  server-rendered on demand"
+    },
+    {
+      "id": "task-state",
+      "description": "TASK_STATE.json validates against schema",
+      "cmd": "npm run validate:task-state",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "started": "2026-10-02T03:11:30.573Z",
+      "tail": "> tsx scripts/validate-task-state.ts |  | TASK_STATE.json OK: 11 milestones, 2 external blockers; docs/TASK_STATE.schema.json refreshed"
+    },
+    {
+      "id": "archive",
+      "description": "source archive builds with checksums",
+      "cmd": "node scripts/build-archive.mjs --quiet",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "started": "2026-10-02T03:11:30.840Z",
+      "tail": ""
+    }
+  ]
+}

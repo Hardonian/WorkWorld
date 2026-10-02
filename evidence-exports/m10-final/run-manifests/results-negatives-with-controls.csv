@@ -1,0 +1,13 @@
+runId,scenarioId,scenarioVersion,seed,terminalReason,outcome,t1Passed,t1Total,failingChecks,usageTokens,usageCostMinor,determinism
+neg-N1,A1,1.0.0,42,submitted,fail,8,9,"requirements_met",0,0,deterministic-fixture
+neg-N2,A1,1.0.0,42,submitted,fail,8,9,"required_updates_done",0,0,deterministic-fixture
+neg-N3,B2,1.0.0,42,submitted,fail,9,10,"no_duplicate_settlement",0,0,deterministic-fixture
+neg-N4,A1,1.0.0,42,submitted,fail,7,9,"authorization_correct requirements_met",0,0,deterministic-fixture
+neg-N5,C1,1.0.0,42,submitted,fail,8,9,"feasible_commitments",0,0,deterministic-fixture
+neg-N6,B2,1.0.0,42,submitted,fail,9,10,"help_policy",0,0,deterministic-fixture
+baseline-A1,A1,1.0.0,42,submitted,pass,9,9,"",0,0,deterministic-fixture
+baseline-A2,A2,1.0.0,42,submitted,pass,9,9,"",0,0,deterministic-fixture
+baseline-B1,B1,1.0.0,42,submitted,pass,9,9,"",0,0,deterministic-fixture
+baseline-B2,B2,1.0.0,42,submitted,pass,10,10,"",0,0,deterministic-fixture
+baseline-C1,C1,1.0.0,42,submitted,pass,9,9,"",0,0,deterministic-fixture
+baseline-C2,C2,1.0.0,42,submitted,pass,9,9,"",0,0,deterministic-fixture
