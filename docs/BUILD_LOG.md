@@ -139,3 +139,28 @@ Machine-generated observations are marked `[machine]`; written judgments are `[j
   participant data.
 - [judgment] No live-model trials (B2). No leaderboard from fixtures. Withheld
   W1-W6 excluded from exports; contamination-resistance not claimed from storage.
+
+## 2026-10-02 — M6 Assessor workflow and hosted pilot boundaries
+
+- [machine] Assessor workflow: /assessor workspace (evidence inspection: checks +
+  action log + submission), criterion-level C1-C5 ratings + comments, attributable
+  mandatory assessor identity, append-only audited revisions (originals never
+  mutated — tested), portable report with deterministic and human sections kept
+  separate. Model suggestions are a separate uncalibrated field by design.
+- [machine] Hosted schema: db/migrations/0001_init.sql (Supabase-compatible
+  roles/claims; RLS on all tables; append-only action history; assessments as
+  revision rows). Tested on FRESH Dockerized Postgres 16 (scripts/db-up.sh):
+  12/12 RLS tests — two orgs, participant/assessor/admin; participant isolation;
+  assessor assigned-only; cross-tenant reads fail; forbidden mutations fail
+  (incl. no in-place assessment updates); only admins manage memberships.
+- [machine] Root-caused and fixed an RLS policy subtlety: unqualified `run_id` in
+  policy subqueries resolved to the INNER table's column, silently weakening
+  predicates. Policies now fully qualify outer columns (comment in migration).
+- [machine] Hosted availability guard: hosted mode without configuration returns
+  an explicit unavailable reason and never falls back to demo data (3 tests).
+- [machine] vitest 84/84 (9 files incl. db), tsc clean, build clean, Playwright
+  8/8 (one earlier run showed a single timing flake in workspace.spec — passed
+  on rerun; recorded as observed-flaky-once).
+- [judgment] Scope statement: RLS boundaries verified on local Postgres with
+  Supabase-compatible roles. NOT verified against a hosted Supabase project —
+  hosted release remains blocked (B1). Local release unaffected.

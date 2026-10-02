@@ -17,6 +17,7 @@ export interface RubricRecord {
   assessor: string;
   ratedAt: string;
   ratings: RubricRating[];
+  comment: string;
   /** model-based judge output — secondary, uncalibrated */
   suggestions?: { criterion: string; rating: number; label: "uncalibrated" }[];
   revisions?: { at: string; by: string; change: string }[];

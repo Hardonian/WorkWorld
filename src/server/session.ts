@@ -45,10 +45,32 @@ export async function getSessionId(): Promise<string | null> {
   return id && isValidSessionId(id) ? id : null;
 }
 
+/**
+ * Hosted mode is explicit and refuses to run when configuration is missing —
+ * it never silently falls back to demo data (docs/ARCHITECTURE.md).
+ */
+export function hostedModeAvailable(): { available: boolean; reason: string } {
+  if ((process.env.WORKWORLD_MODE ?? "demo") !== "hosted") {
+    return { available: false, reason: "hosted mode not selected (WORKWORLD_MODE=demo)" };
+  }
+  const missing = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"].filter((k) => !process.env[k]);
+  if (missing.length > 0) {
+    return {
+      available: false,
+      reason: `hosted configuration incomplete (missing: ${missing.join(", ")}); hosted paths disabled — no fallback to demo data`,
+    };
+  }
+  return { available: true, reason: "hosted configuration present (verification against a hosted project still pending)" };
+}
+
 export async function startSession(
   scenarioId: string,
   condition: "human" | "agent" | "assisted",
 ): Promise<{ observation: Observation; runId: string }> {
+  if ((process.env.WORKWORLD_MODE ?? "demo") === "hosted") {
+    const hosted = hostedModeAvailable();
+    if (!hosted.available) throw new Error(hosted.reason);
+  }
   const scenario = getScenario(scenarioId);
   const runId = randomUUID();
   const meta: SessionInfo = {
