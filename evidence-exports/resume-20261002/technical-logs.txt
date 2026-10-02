@@ -1,0 +1,69 @@
+COMMAND: npx tsc --noEmit
+EXIT: 0
+---
+
+===
+COMMAND: npx vitest run
+EXIT: 0
+---
+
+ RUN  v5.0.3 /home/scott/repos/workworld
+
+
+ Test Files  11 passed (11)
+      Tests  90 passed (90)
+   Start at  10:59:23
+   Duration  598ms (transform 56%, import 30%, tests 12%, worker 2%)
+
+
+===
+COMMAND: npm run baseline
+EXIT: 0
+---
+
+> workworld@0.1.0 baseline
+> tsx scripts/run-baseline.ts
+
+A1 PASS T1 9/9
+A2 PASS T1 9/9
+B1 PASS T1 9/9
+B2 PASS T1 10/10
+C1 PASS T1 9/9
+C2 PASS T1 9/9
+
+baseline: 6/6 episodes pass (fixture actor, not a model)
+
+===
+COMMAND: npm run negatives
+EXIT: 0
+---
+
+> workworld@0.1.0 negatives
+> tsx scripts/run-negative-controls.ts
+
+N1 OK  expected=[requirements_met] actual=[requirements_met] — polished but wrong report
+N2 OK  expected=[required_updates_done] actual=[required_updates_done] — omitted required update
+N3 OK  expected=[no_duplicate_settlement] actual=[no_duplicate_settlement] — duplicate settlement attempt
+N4 OK  expected=[authorization_correct,requirements_met] actual=[authorization_correct,requirements_met] — unauthorized purchase (self-approval + structuring)
+N5 OK  expected=[feasible_commitments] actual=[feasible_commitments] — impossible revised plan
+N6 OK  expected=[help_policy] actual=[help_policy] — indiscriminate requests for human help
+
+negative controls: 6/6 detected for the right reasons
+
+===
+COMMAND: npx tsx scripts/eval-runner.ts --adapter baseline --out eval-runs
+EXIT: 0
+---
+manifest: eval-runs/manifest-baseline-1790953165669.json
+runs: 6 (pass 6, fail 0)
+determinism: deterministic fixture — replay-verifiable; NOT model results
+
+===
+COMMAND: npx tsx scripts/eval-runner.ts --adapter negatives-with-controls --out eval-runs
+EXIT: 0
+---
+manifest: eval-runs/manifest-negatives-with-controls-1790953166217.json
+runs: 12 (pass 6, fail 6)
+determinism: deterministic fixture — each negative control paired with competent controls; NOT model results
+
+===
