@@ -1,0 +1,9 @@
+node_modules
+.next
+var
+eval-runs
+evidence
+evidence-exports
+test-results
+.git
+.env*

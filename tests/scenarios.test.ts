@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { listScenarios, getScenario } from "../src/scenarios/catalog.ts";
-import { WITHHELD_SCENARIOS } from "../src/scenarios/withheld/index.ts";
 import { EpisodeEngine } from "../src/domain/engine.ts";
 import { gradeEpisode } from "../src/grading/report.ts";
 import { runBaseline } from "../src/grading/baseline.ts";
@@ -16,16 +15,8 @@ describe("scenario catalog", () => {
     expect(families.filter((f) => f === "customer_recovery")).toHaveLength(2);
   });
 
-  it("keeps withheld variants out of the public catalog", () => {
-    const publicIds = listScenarios().map((s) => s.id);
-    for (const id of Object.keys(WITHHELD_SCENARIOS)) {
-      expect(publicIds).not.toContain(id);
-    }
-    expect(Object.keys(WITHHELD_SCENARIOS)).toHaveLength(6);
-  });
-
-  it("resets and observes every episode (including withheld) without leaking future events", () => {
-    for (const scenario of [...listScenarios(), ...Object.values(WITHHELD_SCENARIOS)]) {
+  it("resets and observes every public episode without leaking future events", () => {
+    for (const scenario of listScenarios()) {
       const e = EpisodeEngine.reset(scenario, { runId: `smoke-${scenario.id}`, seed: 7, condition: "agent" });
       const obs = e.observe();
       expect(obs.scenarioId).toBe(scenario.id);

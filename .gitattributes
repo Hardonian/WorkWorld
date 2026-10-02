@@ -1,0 +1,5 @@
+# The public/source archive excludes withheld evaluation material.
+# Contamination resistance is NOT claimed from this exclusion alone; a genuine
+# independent holdout must be authored and secured separately.
+src/scenarios/withheld/ export-ignore
+tests/withheld.test.ts export-ignore
