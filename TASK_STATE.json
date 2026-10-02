@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "project": "workworld",
-  "updatedAt": "2026-10-02T08:05:00.000Z",
+  "updatedAt": "2026-10-02T15:00:00.000Z",
   "codeRevision": {
     "branch": "main",
-    "commit": null,
-    "note": "pre-first-commit snapshot; updated at each milestone boundary"
+    "commit": "2e2cd1a537b4704440922cbb42ce5529363d7c48",
+    "note": "last fully gated revision; the final checkpoint commit follows this update"
   },
   "milestones": [
     {

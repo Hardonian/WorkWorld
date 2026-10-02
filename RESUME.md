@@ -1,13 +1,15 @@
 # WorkWorld — Resume Handoff
 
-Last updated: 2026-10-02T08:05Z (M10 complete — local release candidate).
+Last updated: 2026-10-02 (M10 complete — local release candidate; resume-day re-verification done).
 
-- Repo: `https://github.com/Hardonian/WorkWorld` (PRIVATE), branch `main`.
-  Candidate revision: `311f07dc`; the final checkpoint commit follows this update.
+- Repo: `https://github.com/Hardonian/workworld` (PRIVATE), branch `main`.
+  Candidate revision: `2e2cd1a5` (last fully gated revision before this update);
+  the final checkpoint commit follows this update.
 - State: **M0–M10 all passed** for the LOCAL technical candidate. Final release
   gate 8/8 (evidence/release-gate/latest.json). Archive:
-  `dist/workworld-source-311f07dc.tar.gz` + SHA256SUMS. Evidence exports:
+  `dist/workworld-source-2e2cd1a5.tar.gz` + SHA256SUMS. Evidence exports:
   `evidence-exports/{m2-retroactive,m5,m7,m10-final}/` + zips.
+  2026-10-02 re-verification: gate 8/8, 90 tests (12/12 RLS), e2e 8/8 — green.
 - Verification commands: `npm run release-gate` (full gate),
   `npm test` (90 tests incl. real Postgres RLS via `npm run db:up`),
   `npx playwright test` (8 e2e), `npm run baseline` / `npm run negatives`,

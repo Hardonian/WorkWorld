@@ -230,3 +230,19 @@ Machine-generated observations are marked `[machine]`; written judgments are `[j
   hidden behind a flag. Remaining external dependencies with exact next actions
   listed in docs/BLOCKERS.md and RESUME.md. Not tagged as GA: a local release
   candidate only, accurately scoped.
+
+## 2026-10-02 — Resume-day re-verification and gate self-healing
+
+- [machine] Post-reboot gate run showed FAIL tests: the Dockerized test Postgres
+  (workworld-pg-test, 127.0.0.1:54329) does not survive host reboot. Root cause
+  environmental, not a code regression. Restored with `npm run db:up`;
+  12/12 RLS tests pass again.
+- [machine] Root-cause hardening: release-gate now runs scripts/db-up.sh
+  (idempotent, isolated container) before the tests gate, so the gate reflects
+  code state rather than ambient container state. Docker absent => explicit WARN
+  and the connection failure stays visible; no check weakened, nothing skipped.
+- [machine] Re-verification at 2e2cd1a5: release gate 8/8 PASS (local technical
+  candidate PASS; hosted blocked_external B1), npm test 90 tests green,
+  playwright 8/8 green.
+- [machine] Records pinned: RESUME.md and TASK_STATE.json codeRevision now
+  reference the gated revision 2e2cd1a5.

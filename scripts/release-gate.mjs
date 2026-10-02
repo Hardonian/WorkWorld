@@ -23,6 +23,22 @@ function gate(id, description, cmd, required = true) {
 }
 
 console.log("WorkWorld release gate");
+// Isolated test Postgres for the RLS suite. scripts/db-up.sh is idempotent and
+// never touches any existing database; bringing it up here keeps the gate
+// reflecting code state rather than ambient container state (e.g. after a
+// reboot). If Docker is absent the suite's connection failure stays visible —
+// nothing is skipped and no check is weakened.
+try {
+  execSync("docker --version", { stdio: "pipe" });
+  try {
+    execSync("bash scripts/db-up.sh", { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+    console.log("PASS db-up (idempotent; isolated workworld-pg-test container)");
+  } catch {
+    console.log("WARN db-up — could not start test Postgres; the tests gate below will fail until `npm run db:up` succeeds");
+  }
+} catch {
+  console.log("WARN db-up — Docker not available; RLS suite will fail (see docs/RELEASE_CHECKLIST.md: DB tests informational when DB stack unavailable)");
+}
 gate("lint", "eslint clean", "npm run lint");
 gate("typecheck", "tsc --noEmit", "npm run typecheck");
 gate("tests", "unit/integration/db tests", "npx vitest run");
