@@ -1,0 +1,30 @@
+# dependencies / build
+node_modules/
+.next/
+out/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# env and secrets — never commit
+.env
+.env.*
+!.env.example
+
+# test / tool output
+coverage/
+playwright-report/
+test-results/
+eval-runs/
+*.log
+
+# local demo persistence and databases
+var/
+pgdata/
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# private evaluation material is tracked in a separate private bundle;
+# the public export excludes it via scripts/build-archive.mjs

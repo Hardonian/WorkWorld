@@ -1,0 +1,3 @@
+# M0 route probe
+GET / -> 200
+{"status":"ok","service":"workworld","mode":"demo","time":"2026-10-02T00:32:40.680Z"}

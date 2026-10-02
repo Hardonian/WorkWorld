@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "project": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "codeRevision": {
+      "type": "object",
+      "properties": {
+        "branch": {
+          "type": "string"
+        },
+        "commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "branch",
+        "commit"
+      ]
+    },
+    "milestones": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^M\\d{1,2}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "in_progress",
+              "passed",
+              "failed",
+              "blocked_external"
+            ]
+          },
+          "prerequisites": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "attempts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "timestamp": {
+                  "type": "string"
+                },
+                "commands": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "cmd": {
+                        "type": "string"
+                      },
+                      "exitCode": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      },
+                      "observed": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cmd",
+                      "exitCode"
+                    ]
+                  }
+                },
+                "evidencePaths": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "observation": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "timestamp",
+                "commands",
+                "evidencePaths",
+                "observation"
+              ]
+            }
+          },
+          "manualJudgment": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "blockers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "nextAction": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "prerequisites",
+          "attempts",
+          "manualJudgment",
+          "blockers",
+          "nextAction"
+        ]
+      }
+    },
+    "externalBlockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "hosted_config",
+              "paid_provider",
+              "human_governance",
+              "other"
+            ]
+          },
+          "summary": {
+            "type": "string"
+          },
+          "openedAt": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "closed"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "summary",
+          "openedAt",
+          "status"
+        ]
+      }
+    },
+    "pendingUncommitted": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "project",
+    "updatedAt",
+    "codeRevision",
+    "milestones",
+    "externalBlockers",
+    "pendingUncommitted"
+  ]
+}

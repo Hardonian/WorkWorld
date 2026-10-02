@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "project": "workworld",
+  "updatedAt": "2026-10-01T21:00:00.000Z",
+  "codeRevision": {
+    "branch": "main",
+    "commit": null,
+    "note": "pre-first-commit snapshot; updated at each milestone boundary"
+  },
+  "milestones": [
+    {
+      "id": "M0",
+      "title": "Discovery and bootstrap",
+      "status": "passed",
+      "prerequisites": [],
+      "attempts": [
+        {
+          "timestamp": "2026-10-01T21:00:00.000Z",
+          "commands": [
+            { "cmd": "npm install", "exitCode": 0 },
+            { "cmd": "tsc --noEmit", "exitCode": 0 },
+            { "cmd": "curl -s -o /dev/null -w '%{http_code}' http://localhost:3100/", "exitCode": 0, "observed": "200" },
+            { "cmd": "curl -s http://localhost:3100/health", "exitCode": 0, "observed": "{\"status\":\"ok\",\"service\":\"workworld\",\"mode\":\"demo\"}" }
+          ],
+          "evidencePaths": ["evidence/m0/environment.txt", "evidence/m0/route-probe.txt"],
+          "observation": "machine: repo created at /home/scott/repos/workworld on branch main; lockfile present (8476 lines); / and /health respond; gh authenticated as Hardonian; Hardonian/WorkWorld unused; codex CLI unauthenticated."
+        }
+      ],
+      "manualJudgment": "Bootstrap verified against real commands. Working-title name recorded with no trademark claim; provisional alternative OpsDojo.",
+      "blockers": [],
+      "nextAction": "M1: episode specifications, grader contract, split policy, related-work table."
+    },
+    {
+      "id": "M1",
+      "title": "Task specification and related work",
+      "status": "in_progress",
+      "prerequisites": ["M0"],
+      "attempts": [],
+      "manualJudgment": null,
+      "blockers": [],
+      "nextAction": "Author 6 episode specs + grader contract + related-work table with source dates."
+    },
+    { "id": "M2", "title": "State engine, persistence and adversarial grading", "status": "pending", "prerequisites": ["M1"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Implement domain core + episodes + baseline + negative controls." },
+    { "id": "M3", "title": "Complete human workspace", "status": "pending", "prerequisites": ["M2"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Build learner UI over the shared domain core." },
+    { "id": "M4", "title": "Agent and assisted modes", "status": "pending", "prerequisites": ["M2"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Provider-neutral loop + 2 real adapters + fixtures + assisted mode." },
+    { "id": "M5", "title": "Evaluation runner and reproducible evidence", "status": "pending", "prerequisites": ["M2"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Headless runner + run manifests + report generator." },
+    { "id": "M6", "title": "Assessor workflow and hosted pilot boundaries", "status": "pending", "prerequisites": ["M3"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Assessor UI + DB/RLS tests + hosted boundaries." },
+    { "id": "M7", "title": "Whole-product verification and hardening", "status": "pending", "prerequisites": ["M3", "M4", "M5", "M6"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Full check suite + adversarial inputs + UI inspection." },
+    { "id": "M8", "title": "Deployable release and operational closure", "status": "pending", "prerequisites": ["M7"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Release package, archive, checksums, rollback proof." },
+    { "id": "M9", "title": "Research, pilot and recruitment materials", "status": "pending", "prerequisites": ["M5"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Technical report + draft materials from real runs." },
+    { "id": "M10", "title": "Final reconciliation and handoff", "status": "pending", "prerequisites": ["M8", "M9"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Reconcile everything; final release gate." }
+  ],
+  "externalBlockers": [
+    {
+      "id": "B1",
+      "kind": "hosted_config",
+      "summary": "No hosted Supabase project configured; hosted release blocked. RLS tested on Dockerized Postgres meanwhile.",
+      "openedAt": "2026-10-01T21:00:00.000Z",
+      "status": "open"
+    },
+    {
+      "id": "B2",
+      "kind": "paid_provider",
+      "summary": "No OpenAI key and no authorized paid experiment budget; live paid runs blocked. Ollama local endpoint used for unpaid smoke runs.",
+      "openedAt": "2026-10-01T21:00:00.000Z",
+      "status": "open"
+    }
+  ],
+  "pendingUncommitted": []
+}
