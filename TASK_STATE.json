@@ -72,7 +72,29 @@
       "blockers": [],
       "nextAction": "M3: build the human workspace UI over the shared domain core."
     },
-    { "id": "M3", "title": "Complete human workspace", "status": "pending", "prerequisites": ["M2"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Build learner UI over the shared domain core." },
+    {
+      "id": "M3",
+      "title": "Complete human workspace",
+      "status": "passed",
+      "prerequisites": ["M2"],
+      "attempts": [
+        {
+          "timestamp": "2026-10-02T02:15:00.000Z",
+          "commands": [
+            { "cmd": "tsc --noEmit", "exitCode": 0 },
+            { "cmd": "npx vitest run", "exitCode": 0, "observed": "41 passed" },
+            { "cmd": "npx playwright test", "exitCode": 0, "observed": "8 passed — all 6 episodes completed through the UI + refresh/resume + rejection-preservation" },
+            { "cmd": "npm run build", "exitCode": 0, "observed": "production build clean (/, /workspace, /health, /api/*)" },
+            { "cmd": "npx tsx scripts/capture-screenshots.ts", "exitCode": 0, "observed": "6 real screenshots in evidence/m3/screenshots" }
+          ],
+          "evidencePaths": ["evidence/m3/e2e-log.txt", "evidence/m3/screenshots/"],
+          "observation": "machine: workspace UI (scenario picker, brief, inbox, suppliers, orders, deliveries, invoices, ledger, tickets, sheets, notes) drives the shared domain core via /api/actions; server-side per-session state (httpOnly opaque cookie + FileStore) preserves work across refresh; action rejections return actionable errors and preserve work; outcome evidence panel shows deterministic checks."
+        }
+      ],
+      "manualJudgment": "Gate met: every episode completable through the UI (e2e-verified), scheduled changes affect the workspace, actions invoke the shared core, refresh/resume works, artifacts and outcomes match actual state. Accessibility basics covered (labels, focus-visible, aria-live feedback, keyboard-reachable controls); fuller audit scheduled in M7.",
+      "blockers": [],
+      "nextAction": "M4: provider-neutral agent loop + adapters + assisted mode."
+    },
     { "id": "M4", "title": "Agent and assisted modes", "status": "pending", "prerequisites": ["M2"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Provider-neutral loop + 2 real adapters + fixtures + assisted mode." },
     { "id": "M5", "title": "Evaluation runner and reproducible evidence", "status": "pending", "prerequisites": ["M2"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Headless runner + run manifests + report generator." },
     { "id": "M6", "title": "Assessor workflow and hosted pilot boundaries", "status": "pending", "prerequisites": ["M3"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Assessor UI + DB/RLS tests + hosted boundaries." },

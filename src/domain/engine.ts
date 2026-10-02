@@ -41,6 +41,11 @@ export class EpisodeEngine {
     return new EpisodeEngine(scenario, buildInitialState(scenario, opts));
   }
 
+  /** Wrap a persisted state (validated by the store's digest check). */
+  static fromState(scenario: ScenarioDefinition, state: EpisodeState): EpisodeEngine {
+    return new EpisodeEngine(scenario, structuredClone(state));
+  }
+
   observe(): Observation {
     return buildObservation(this.state, this.scenario);
   }

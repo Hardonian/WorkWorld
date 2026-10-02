@@ -9,6 +9,7 @@ export interface Observation {
   runId: string;
   scenarioId: string;
   scenarioVersion: string;
+  episodeTitle: string;
   clockMinute: number;
   day: number;
   status: EpisodeState["status"];
@@ -45,6 +46,7 @@ export function buildObservation(state: EpisodeState, scenario: ScenarioDefiniti
     runId: state.runId,
     scenarioId: state.scenarioId,
     scenarioVersion: state.scenarioVersion,
+    episodeTitle: scenario.title,
     clockMinute: state.clockMinute,
     day: Math.floor(state.clockMinute / 1440),
     status: state.status,

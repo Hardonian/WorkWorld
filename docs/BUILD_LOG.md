@@ -71,3 +71,27 @@ Machine-generated observations are marked `[machine]`; written judgments are `[j
   individually required; event-minute boundary (>= vs >) on post-change evidence.
 - [judgment] Baseline/negative runs are authored fixtures, not model behavior.
   feasible_commitments is a documented lead-time lower bound, not a planning proof.
+
+## 2026-10-02 — M3 Complete human workspace
+
+- [machine] Workspace UI built over the shared domain core: scenario picker with
+  guided first episode, brief/checklist, inbox + compose (with commitment fields),
+  supplier catalogs, order drafting/submit/approve/authorize/amend/cancel, delivery
+  check-in, invoice match/approve/schedule/pay/dispute/flag-duplicate, ledger,
+  ticket board with references + promises, spreadsheet editor (safe formulas, CSV
+  export with injection defense, add-cell), work notes, help requests, submission
+  and outcome-evidence panel.
+- [machine] Session model: opaque httpOnly cookie + FileStore persistence;
+  refresh/resume verified in Playwright. Rejections return stable actionable
+  states (409 + reasons) and preserve work.
+- [machine] `npx playwright test` → 8/8 passed: every episode (A1/A2/B1/B2/C1/C2)
+  completed through the browser UI to PASS outcome evidence, plus no-session
+  degradation and rejected-action recovery. vitest 41/41; tsc clean; `npm run build` clean.
+- [machine] Real screenshots: evidence/m3/screenshots (home, brief, orders,
+  delivery check-in, outcome evidence, mobile width).
+- [judgment] Defects found by e2e at root cause: sheets couldn't add new cells
+  (UX gap, fixed with add-cell control), ambiguous labels/selectors surfaced
+  accessibility naming issues (aria-labels added to selects/inputs).
+- Environment note: Hardonian/WorkWorld on GitHub unexpectedly existed PUBLIC at
+  push time (created externally mid-session); per user decision it was switched
+  to PRIVATE to match the authorized scope. Verified private afterwards.
