@@ -5,7 +5,6 @@
  * completable and the grader accepts correct work.
  */
 import { EpisodeEngine } from "../domain/engine.ts";
-import type { ScenarioDefinition } from "../scenarios/schema.ts";
 import { getScenario } from "../scenarios/catalog.ts";
 import { ScriptRunner } from "./scriptkit.ts";
 

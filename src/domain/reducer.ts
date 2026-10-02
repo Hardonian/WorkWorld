@@ -12,7 +12,6 @@ import type {
   DeliveryLine,
   EpisodeState,
   Invoice,
-  LedgerTxn,
   Message,
   PoLine,
   PurchaseOrder,
@@ -306,7 +305,7 @@ function handleAction(
       if (errors.length) break;
 
       const priorLines = po.lines.map((l) => ({ ...l }));
-      let lines = po.lines.filter((l) => !action.removeLines.includes(l.itemId));
+      const lines = po.lines.filter((l) => !action.removeLines.includes(l.itemId));
       for (const change of action.qtyChanges) {
         const target = lines.find((l) => l.itemId === change.itemId);
         if (!target) {

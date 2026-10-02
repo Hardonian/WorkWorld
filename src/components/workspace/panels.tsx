@@ -11,7 +11,7 @@ interface PanelProps {
   act: Act;
 }
 
-const ITEM_IDS = (obs: Observation) => Object.keys(obs.items);
+
 
 export function SuppliersPanel({ obs }: PanelProps) {
   return (
@@ -767,12 +767,6 @@ export function SheetsPanel({ obs, act }: PanelProps) {
         <Button
           variant="secondary"
           onClick={() => {
-            const csv = refs
-              .map((ref) => {
-                const raw = draft[ref] ?? renderCell(wb.cells[ref]);
-                return csvCell(sanitize(raw));
-              })
-              .join(",");
             const blob = new Blob([refs.map((r) => `${r},${csvCell(sanitize(renderCell(wb.cells[r])))}`).join("\n")], {
               type: "text/csv",
             });
@@ -790,7 +784,7 @@ export function SheetsPanel({ obs, act }: PanelProps) {
     >
       <p className="mb-2 text-xs text-slate-500">
         Formulas: =SUM(A1:A5), =AVG(...), =MIN(...), =MAX(...), arithmetic and cell refs. Type
-        "=" to start a formula. {wb.edits.length} edits recorded (history preserved).
+        &quot;=&quot; to start a formula. {wb.edits.length} edits recorded (history preserved).
       </p>
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {refs.map((ref) => (

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { EpisodeEngine, digestState } from "../src/domain/engine.ts";
-import { getScenario, SCENARIOS } from "../src/scenarios/catalog.ts";
+import { getScenario } from "../src/scenarios/catalog.ts";
 import { ScriptRunner } from "../src/grading/scriptkit.ts";
 import type { Action, ActionInput, Actor } from "../src/domain/types.ts";
 

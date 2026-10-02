@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import type { Observation } from "../../domain/observation.ts";
 import { Button, Card, Tag, formatMinor } from "./ui.tsx";
 import {
@@ -99,9 +100,9 @@ export default function Workspace() {
           verification — prior evidence is preserved in the store).
         </p>
         <p className="mt-4">
-          <a href="/" className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">
+          <Link href="/" className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">
             Choose an episode
-          </a>
+          </Link>
         </p>
       </div>
     );

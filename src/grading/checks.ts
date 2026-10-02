@@ -2,7 +2,7 @@
  * Deterministic outcome checks (T1) + help policy (T1/T2 per episode config).
  * Checks read business state and the evidence log — never prose quality.
  */
-import type { EpisodeState, Minor, ActionRecord } from "../domain/types.ts";
+import type { EpisodeState, ActionRecord } from "../domain/types.ts";
 import { closingBalances, deliveryAccrualMinor, isBalanced } from "../domain/ledger.ts";
 import { numericValue } from "../domain/artifacts.ts";
 import type { ScenarioDefinition, RequirementPredicateT, RequiredUpdateT } from "../scenarios/schema.ts";

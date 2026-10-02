@@ -164,3 +164,25 @@ Machine-generated observations are marked `[machine]`; written judgments are `[j
 - [judgment] Scope statement: RLS boundaries verified on local Postgres with
   Supabase-compatible roles. NOT verified against a hosted Supabase project —
   hosted release remains blocked (B1). Local release unaffected.
+
+## 2026-10-02 — M7 Whole-product verification and hardening
+
+- [machine] Checks at RC revision: eslint 0 problems (eslint pinned 9.39.5 for
+  eslint-config-next's plugin tree compat — ESLint 10 crashes its react plugin),
+  tsc clean, next build clean, vitest 89/89 (10 files: domain, grading, artifacts,
+  store, agents, assessments, hosted-guard, sanitize, x-cases, db/RLS), Playwright
+  8/8, npm audit (prod) 0 vulnerabilities.
+- [machine] Adversarial coverage map: malformed/hostile input (tests/sanitize.test.ts
+  5), concurrency at mutation boundary (X08), duplicate requests (X09), refresh
+  during work + rejected-action recovery (e2e), stale state (X08), corrupt store
+  state with recovery path (store tests), provider outage + timeout (agents tests),
+  missing env/config (hosted-guard + provider-unavailable tests), withheld tasks
+  (leak tests), forbidden cross-tenant reads/mutations (RLS tests), model-proposed
+  unauthorized actions (loop tests + boundary rejection).
+- [machine] UI inspection via local Playwright browser (browser tool blocks
+  private addresses — recorded): 7 real screenshots incl. assessor workspace;
+  console errors across home/workspace/assessor + full interaction flow: 0
+  (WW_REQUIRE_CLEAN_CONSOLE=1 gate).
+- [machine] Evidence export evidence-exports/m7/ + .zip.
+- [judgment] One e2e timing flake observed once in an earlier run (passed on
+  rerun and in every subsequent run) — recorded, not silenced.

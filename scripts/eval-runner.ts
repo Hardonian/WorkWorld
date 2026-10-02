@@ -13,20 +13,19 @@
  * verifiable; live model runs are marked stochastic and never claimed to be.
  */
 import { execSync } from "node:child_process";
-import { mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
+import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { runAgentEpisode } from "../src/agents/loop.ts";
 import { BudgetLedger, loadBudgetConfig } from "../src/agents/budget.ts";
-import { fixtureAdapter, decisionJson } from "../src/agents/adapters/fixtures.ts";
+import { fixtureAdapter } from "../src/agents/adapters/fixtures.ts";
 import { makeOllamaAdapter, makeOpenAIAdapter } from "../src/agents/adapters/chat-completions.ts";
 import type { AgentAdapter } from "../src/agents/types.ts";
 import { getScenario, listScenarios } from "../src/scenarios/catalog.ts";
 import { runBaseline } from "../src/grading/baseline.ts";
 import { gradeEpisode } from "../src/grading/report.ts";
 import { runNegativeControls } from "../src/grading/negative-controls.ts";
-import { digestState, EpisodeEngine } from "../src/domain/engine.ts";
-import type { ScenarioDefinition } from "../src/scenarios/schema.ts";
+import { digestState } from "../src/domain/engine.ts";
 
 const MANIFEST_VERSION = 1;
 const GRADER_VERSION = "1.0.0";

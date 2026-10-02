@@ -4,7 +4,6 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { FileStore, MemoryStore, CorruptStateError, STORE_SCHEMA_VERSION } from "../src/server/store.ts";
 import { runBaseline } from "../src/grading/baseline.ts";
-import { getScenario } from "../src/scenarios/catalog.ts";
 
 const meta = {
   runId: "run-store-1",

@@ -12,6 +12,11 @@ async function main() {
   mkdirSync(OUT, { recursive: true });
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const consoleErrors: string[] = [];
+  page.on("console", (msg) => {
+    if (msg.type() === "error") consoleErrors.push(msg.text().slice(0, 200));
+  });
+  page.on("pageerror", (err) => consoleErrors.push(String(err).slice(0, 200)));
 
   // 1. Home / episode selection
   await page.goto(BASE);
@@ -54,12 +59,22 @@ async function main() {
   await page.waitForSelector("text=/Outcome evidence/i");
   await page.screenshot({ path: `${OUT}/05-outcome-evidence.png`, fullPage: true });
 
-  // 5. Mobile-width responsiveness check
+  // 5. Assessor workspace with evidence + rubric form
+  await page.goto(`${BASE}/assessor`);
+  await page.waitForSelector("text=Review completed work");
+  await page.screenshot({ path: `${OUT}/07-assessor.png`, fullPage: true });
+
+  // 6. Mobile-width responsiveness check
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: `${OUT}/06-mobile-workspace.png`, fullPage: true });
 
   await browser.close();
   console.log(`screenshots written to ${OUT}`);
+  console.log(`console errors: ${consoleErrors.length}`);
+  for (const e of consoleErrors) console.log("  ERR:", e);
+  if (process.env.WW_REQUIRE_CLEAN_CONSOLE === "1" && consoleErrors.length > 0) {
+    process.exit(2);
+  }
 }
 
 main().catch((e) => {

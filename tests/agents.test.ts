@@ -32,7 +32,8 @@ class PaidFixture implements AgentAdapter {
       notes: "test fixture standing in for a paid provider",
     };
   }
-  async decide(_req: ProviderRequest): Promise<ProviderResponse> {
+  async decide(req: ProviderRequest): Promise<ProviderResponse> {
+    void req;
     this.calls += 1;
     return {
       provider: "openai",

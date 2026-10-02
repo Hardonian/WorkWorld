@@ -212,7 +212,6 @@ export function workbookToCsv(wb: Workbook): string {
 
 /** Neutralize strings that spreadsheet apps would execute as formulas. */
 export function sanitizeCsvCell(value: string): string {
-  // eslint-disable-next-line no-control-regex
   const stripped = value.replace(/[\u0000-\u001f]/g, "");
   if (/^[=+\-@\t\r]/.test(stripped)) {
     return `'${stripped}`;

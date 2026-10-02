@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Button, Card, Tag } from "./ui.tsx";
-import type { Observation } from "../../domain/observation.ts";
 
 interface SuggestionView {
   proposedAction: Record<string, unknown> | null;

@@ -7,9 +7,9 @@
 import { cookies } from "next/headers";
 import { randomUUID } from "node:crypto";
 import { EpisodeEngine } from "../domain/engine.ts";
-import type { Action, ActionInput, EpisodeState, Transition } from "../domain/types.ts";
+import type { Action, EpisodeState, Transition } from "../domain/types.ts";
 import { getScenario } from "../scenarios/catalog.ts";
-import { buildObservation, type Observation } from "../domain/observation.ts";
+import type { Observation } from "../domain/observation.ts";
 import { makeStore, STORE_SCHEMA_VERSION, type EventStore } from "./store.ts";
 import { sanitizeActionInput } from "./actions.ts";
 

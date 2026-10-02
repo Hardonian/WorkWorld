@@ -141,7 +141,29 @@
       "blockers": [],
       "nextAction": "M6: assessor workflow + DB/RLS tenant isolation tests (Dockerized Postgres)."
     },
-    { "id": "M6", "title": "Assessor workflow and hosted pilot boundaries", "status": "pending", "prerequisites": ["M3"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Assessor UI + DB/RLS tests + hosted boundaries." },
+    {
+      "id": "M6",
+      "title": "Assessor workflow and hosted pilot boundaries",
+      "status": "passed",
+      "prerequisites": ["M3", "M5"],
+      "attempts": [
+        {
+          "timestamp": "2026-10-02T06:10:00.000Z",
+          "commands": [
+            { "cmd": "bash scripts/db-up.sh (postgres:16-alpine, fresh)", "exitCode": 0, "observed": "migrations applied to fresh workworld_test" },
+            { "cmd": "npx vitest run tests/db", "exitCode": 0, "observed": "12/12 RLS tests — 2 orgs, participant/assessor/admin; isolation + forbidden mutations verified" },
+            { "cmd": "npx vitest run", "exitCode": 0, "observed": "84/84 (9 files incl. db + assessor + hosted-guard)" },
+            { "cmd": "npx playwright test", "exitCode": 0, "observed": "8/8 (one earlier timing flake in workspace.spec passed on rerun)" },
+            { "cmd": "npm run build", "exitCode": 0 }
+          ],
+          "evidencePaths": ["db/migrations/0001_init.sql", "tests/db/rls.test.ts", "tests/assessments.test.ts", "tests/hosted-guard.test.ts", "src/app/assessor/"],
+          "observation": "machine: assessor workspace with evidence inspection + C1-C5 ratings + comments + append-only audited revisions + portable report; Supabase-compatible RLS migration tested on fresh Dockerized Postgres; RLS inner-column shadowing bug found by tests and fixed at root; hosted guard refuses to run hosted without config (no demo fallback)."
+        }
+      ],
+      "manualJudgment": "Gate met for the stated scope: access boundaries verified on local Postgres with Supabase-compatible roles/claims for two organizations and three roles. Hosted release stays BLOCKED (B1) — not verified against a hosted Supabase project. Grader never impersonates a reviewer (separate uncalibrated suggestions field).",
+      "blockers": ["B1"],
+      "nextAction": "M7: full release-gate checks, adversarial inputs, dependency audit, UI inspection at final revision."
+    },
     { "id": "M7", "title": "Whole-product verification and hardening", "status": "pending", "prerequisites": ["M3", "M4", "M5", "M6"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Full check suite + adversarial inputs + UI inspection." },
     { "id": "M8", "title": "Deployable release and operational closure", "status": "pending", "prerequisites": ["M7"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Release package, archive, checksums, rollback proof." },
     { "id": "M9", "title": "Research, pilot and recruitment materials", "status": "pending", "prerequisites": ["M5"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Technical report + draft materials from real runs." },

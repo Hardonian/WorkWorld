@@ -1,0 +1,79 @@
+{
+  "repository": "https://github.com/Hardonian/WorkWorld",
+  "branch": "main",
+  "commit": "5cd89975759c5b4a5657091c8c18ca2fb98dfc58",
+  "dirtyTree": [
+    "M TASK_STATE.json",
+    " M evidence/m3/screenshots/02-workspace-brief.png",
+    " M evidence/m3/screenshots/03-orders-drafted.png",
+    " M evidence/m3/screenshots/04-delivery-checked-in.png",
+    " M evidence/m3/screenshots/05-outcome-evidence.png",
+    " M evidence/m3/screenshots/06-mobile-workspace.png",
+    " M package-lock.json",
+    " M package.json",
+    " M scripts/capture-screenshots.ts",
+    " M scripts/eval-runner.ts",
+    " M src/components/workspace/AssistantCard.tsx",
+    " M src/components/workspace/Workspace.tsx",
+    " M src/components/workspace/panels.tsx",
+    " M src/domain/artifacts.ts",
+    " M src/domain/reducer.ts",
+    " M src/grading/baseline.ts",
+    " M src/grading/checks.ts",
+    " M src/server/session.ts",
+    " M tests/agents.test.ts",
+    " M tests/domain.test.ts",
+    " M tests/store.test.ts",
+    "?? eslint.config.mjs",
+    "?? evidence/m3/screenshots/07-assessor.png",
+    "?? tests/sanitize.test.ts"
+  ],
+  "generatedAt": "2026-10-02T02:56:05.921Z",
+  "graderVersion": "1.0.0",
+  "taskState": [
+    {
+      "id": "M0",
+      "status": "passed"
+    },
+    {
+      "id": "M1",
+      "status": "passed"
+    },
+    {
+      "id": "M2",
+      "status": "passed"
+    },
+    {
+      "id": "M3",
+      "status": "passed"
+    },
+    {
+      "id": "M4",
+      "status": "passed"
+    },
+    {
+      "id": "M5",
+      "status": "passed"
+    },
+    {
+      "id": "M6",
+      "status": "passed"
+    },
+    {
+      "id": "M7",
+      "status": "pending"
+    },
+    {
+      "id": "M8",
+      "status": "pending"
+    },
+    {
+      "id": "M9",
+      "status": "pending"
+    },
+    {
+      "id": "M10",
+      "status": "pending"
+    }
+  ]
+}
