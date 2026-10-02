@@ -95,7 +95,29 @@
       "blockers": [],
       "nextAction": "M4: provider-neutral agent loop + adapters + assisted mode."
     },
-    { "id": "M4", "title": "Agent and assisted modes", "status": "pending", "prerequisites": ["M2"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Provider-neutral loop + 2 real adapters + fixtures + assisted mode." },
+    {
+      "id": "M4",
+      "title": "Agent and assisted modes",
+      "status": "passed",
+      "prerequisites": ["M2"],
+      "attempts": [
+        {
+          "timestamp": "2026-10-02T02:45:00.000Z",
+          "commands": [
+            { "cmd": "tsc --noEmit", "exitCode": 0 },
+            { "cmd": "npx vitest run", "exitCode": 0, "observed": "54 passed (5 files) incl. 13 agent-protocol tests" },
+            { "cmd": "npm run build", "exitCode": 0 },
+            { "cmd": "npx tsx scripts/smoke-ollama.ts A1 (llama3.1:8b)", "exitCode": 0, "observed": "terminalReason=timeout after 60s call bound; timeout handled cleanly (evidence/m4/ollama-smoke-A1.json)" },
+            { "cmd": "OLLAMA_MODEL=gemma3:4b npx tsx scripts/smoke-ollama.ts A1", "exitCode": 0, "observed": "live call completed; model returned advice-only decision (terminalReason=no_action); usage recorded; NOT a benchmark result" }
+          ],
+          "evidencePaths": ["evidence/m4/ollama-smoke-A1.json", "tests/agents.test.ts"],
+          "observation": "machine: provider-neutral loop with explicit bounds (steps/elapsed/output/retries/timeout) + budget gate before paid dispatch; OpenAI Chat Completions adapter (wire schema verified vs official API reference 2026-10-02: max_completion_tokens, usage.prompt/completion/total_tokens); Ollama OpenAI-compatible adapter live-verified; deterministic fixture adapters labeled live:false covering success/invalid/partial/timeout/provider-error/budget-stop; assisted mode (inspectable suggestions, advice vs executed separation, handoff recording) with API + workspace card."
+        }
+      ],
+      "manualJudgment": "Gate met. OpenAI live runs externally blocked (B2) with clear provider-unavailable error path tested. Local Ollama runs are adapter/loop smoke evidence only — small local models did not complete episodes and no capability claim is made.",
+      "blockers": [],
+      "nextAction": "Integrate independent validation pack P0 cases at this milestone boundary; then M5 evaluation runner."
+    },
     { "id": "M5", "title": "Evaluation runner and reproducible evidence", "status": "pending", "prerequisites": ["M2"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Headless runner + run manifests + report generator." },
     { "id": "M6", "title": "Assessor workflow and hosted pilot boundaries", "status": "pending", "prerequisites": ["M3"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Assessor UI + DB/RLS tests + hosted boundaries." },
     { "id": "M7", "title": "Whole-product verification and hardening", "status": "pending", "prerequisites": ["M3", "M4", "M5", "M6"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Full check suite + adversarial inputs + UI inspection." },

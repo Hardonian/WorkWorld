@@ -104,7 +104,12 @@ export async function applyActionInput(
     return { error: (e as Error).message, code: "PAYLOAD_INVALID" };
   }
 
-  const actor = { id: "participant", kind: "human" as const, role: "participant" as const };
+  const condition = engine.observe().condition;
+  const actor = {
+    id: "participant",
+    kind: condition === "assisted" ? ("assisted" as const) : ("human" as const),
+    role: "participant" as const,
+  };
   const transition = engine.step(action, actor);
   await store().saveState(runId, engine.getState());
   await store().appendAction(runId, { action, actor });

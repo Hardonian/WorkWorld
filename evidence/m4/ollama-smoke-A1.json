@@ -1,0 +1,107 @@
+{
+  "kind": "live-local-ollama-smoke (NOT a benchmark result)",
+  "scenarioId": "A1",
+  "adapter": {
+    "id": "ollama:gemma3:4b",
+    "kind": "ollama-openai-compatible",
+    "live": true,
+    "model": "gemma3:4b",
+    "endpoint": "http://127.0.0.1:11434/v1/chat/completions",
+    "streaming": false,
+    "rateLimitPolicy": "min interval 0ms; bounded retries (1) honoring Retry-After on 429",
+    "pricingSource": "local endpoint — no metered cost",
+    "notes": "Wire schema: model, messages, max_completion_tokens, temperature; usage.prompt_tokens/completion_tokens/total_tokens (official API reference, retrieved 2026-10-02)."
+  },
+  "terminalReason": "no_action",
+  "outcome": "fail",
+  "checksPassed": "7/9",
+  "failures": [
+    "requirements_met",
+    "required_updates_done"
+  ],
+  "usages": [
+    {
+      "promptTokens": 2341,
+      "completionTokens": 68,
+      "totalTokens": 2409,
+      "costMinor": null,
+      "pricingSource": "unknown_cost"
+    },
+    {
+      "promptTokens": 2341,
+      "completionTokens": 66,
+      "totalTokens": 2407,
+      "costMinor": null,
+      "pricingSource": "unknown_cost"
+    },
+    {
+      "promptTokens": 2341,
+      "completionTokens": 66,
+      "totalTokens": 2407,
+      "costMinor": null,
+      "pricingSource": "unknown_cost"
+    },
+    {
+      "promptTokens": 2341,
+      "completionTokens": 66,
+      "totalTokens": 2407,
+      "costMinor": null,
+      "pricingSource": "unknown_cost"
+    },
+    {
+      "promptTokens": 2341,
+      "completionTokens": 66,
+      "totalTokens": 2407,
+      "costMinor": null,
+      "pricingSource": "unknown_cost"
+    },
+    {
+      "promptTokens": 2341,
+      "completionTokens": 66,
+      "totalTokens": 2407,
+      "costMinor": null,
+      "pricingSource": "unknown_cost"
+    },
+    {
+      "promptTokens": 2341,
+      "completionTokens": 66,
+      "totalTokens": 2407,
+      "costMinor": null,
+      "pricingSource": "unknown_cost"
+    },
+    {
+      "promptTokens": 2341,
+      "completionTokens": 66,
+      "totalTokens": 2407,
+      "costMinor": null,
+      "pricingSource": "unknown_cost"
+    }
+  ],
+  "wallClockMs": 118220,
+  "events": [
+    "observation: step 0: day 0, revision 0",
+    "decision: Draft a purchase order based on the manager's instructions and comparing supplier options. Prioritize Kettle & Crate for lead time and price",
+    "action_rejected: invalid action payload: type must be a string",
+    "observation: step 1: day 0, revision 0",
+    "decision: Draft a purchase order based on the manager's instructions and comparing supplier options. Prioritize Kettle & Crate for lead time and price",
+    "action_rejected: invalid action payload: type must be a string",
+    "observation: step 2: day 0, revision 0",
+    "decision: Draft a purchase order based on the manager's instructions and comparing supplier options. Prioritize Kettle & Crate for lead time and price",
+    "action_rejected: invalid action payload: type must be a string",
+    "observation: step 3: day 0, revision 0",
+    "decision: Draft a purchase order based on the manager's instructions and comparing supplier options. Prioritize Kettle & Crate for lead time and price",
+    "action_rejected: invalid action payload: type must be a string",
+    "observation: step 4: day 0, revision 0",
+    "decision: Draft a purchase order based on the manager's instructions and comparing supplier options. Prioritize Kettle & Crate for lead time and price",
+    "action_rejected: invalid action payload: type must be a string",
+    "observation: step 5: day 0, revision 0",
+    "decision: Draft a purchase order based on the manager's instructions and comparing supplier options. Prioritize Kettle & Crate for lead time and price",
+    "action_rejected: invalid action payload: type must be a string",
+    "observation: step 6: day 0, revision 0",
+    "decision: Draft a purchase order based on the manager's instructions and comparing supplier options. Prioritize Kettle & Crate for lead time and price",
+    "action_rejected: invalid action payload: type must be a string",
+    "observation: step 7: day 0, revision 0",
+    "decision: Draft a purchase order based on the manager's instructions and comparing supplier options. Prioritize Kettle & Crate for lead time and price",
+    "action_rejected: invalid action payload: type must be a string"
+  ]
+}

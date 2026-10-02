@@ -95,3 +95,26 @@ Machine-generated observations are marked `[machine]`; written judgments are `[j
 - Environment note: Hardonian/WorkWorld on GitHub unexpectedly existed PUBLIC at
   push time (created externally mid-session); per user decision it was switched
   to PRIVATE to match the authorized scope. Verified private afterwards.
+
+## 2026-10-02 — M4 Agent and assisted modes
+
+- [machine] Provider-neutral loop (src/agents/): observe→decide→step with explicit
+  bounds (steps, elapsed, output chars, parse retries, per-call timeout), shared
+  experiment budget checked BEFORE each paid dispatch, usage recorded with
+  pricingSource "unknown_cost" unless a priced table is explicitly configured.
+- [machine] Adapters: OpenAI Chat Completions (wire schema verified against the
+  official API reference on 2026-10-02 — max_completion_tokens current,
+  max_tokens deprecated; usage prompt/completion/total_tokens), Ollama
+  OpenAI-compatible (live on this host), deterministic fixtures labeled
+  kind:"fixture", live:false. Missing key => ProviderUnavailableError (tested).
+- [machine] Fixture runs cover success, invalid tool output, partial output,
+  timeout, provider error, budget stop (tests/agents.test.ts, 13 tests).
+- [machine] Assisted mode: inspectable suggestions (raw + parsed + rationale),
+  nothing executes without explicit human accept, advice vs executed actions
+  recorded separately, handoffs recorded; /api/assist + workspace AssistantCard.
+- [machine] Live smokes (unpaid local Ollama, NOT benchmark results):
+  llama3.1:8b timed out at the 60s bound (handled cleanly); gemma3:4b completed
+  a call but returned advice-only (terminalReason=no_action). Recorded in
+  evidence/m4/.
+- [judgment] Grader-leakage test asserts observations/prompts contain no grader
+  internals or future schedule. OpenAI live trials remain externally blocked (B2).

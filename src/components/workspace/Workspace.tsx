@@ -14,6 +14,7 @@ import {
   SuppliersPanel,
   TicketsPanel,
 } from "./panels.tsx";
+import AssistantCard from "./AssistantCard.tsx";
 
 type TabId =
   | "brief"
@@ -219,6 +220,7 @@ export default function Workspace() {
         </main>
 
         <aside className="space-y-4">
+          <AssistantCard act={act} status={obs.status} />
           <Card title="Progress">
             <ul className="space-y-1 text-sm text-slate-700">
               <li>
