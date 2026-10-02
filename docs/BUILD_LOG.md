@@ -118,3 +118,24 @@ Machine-generated observations are marked `[machine]`; written judgments are `[j
   evidence/m4/.
 - [judgment] Grader-leakage test asserts observations/prompts contain no grader
   internals or future schedule. OpenAI live trials remain externally blocked (B2).
+
+## 2026-10-02 — Validation-pack integration + M5 evaluation runner
+
+- [machine] Pack integration (commit 429d9a7): X01 cumulative-settlement guard
+  (real defect: two invoices could double-settle one receipt — now blocked at
+  approve/settle boundary), X02 aggregate authorization at the mutation boundary,
+  X04 approval revocation + commit-time validity. P0 dev tests X01/X02/X04/X06/
+  X08/X09/X13/X14 added (tests/x-cases.test.ts); 66 vitest green; negatives 6/6
+  (N4 now authorization_correct + requirements_met with distinct categories).
+- [machine] docs/validation-pack/ (SHA256SUMS verified) + CASE_MAPPING.md for all
+  16 cases (P0 all PASS; X07/X11/X15 PARTIAL with stated limitations).
+- [machine] M5: scripts/eval-runner.ts — manifests carry revision/dirty-tree,
+  grader+scenario versions, seed, condition, agent config, budget provenance,
+  bounds, terminal reasons, usage, digests; CSV + report generator; fixture vs
+  stochastic separated. Replay verification: 6/6 deterministic runs reproduce at
+  pinned commit 429d9a7. Baseline 6/6 pass; negatives+controls 12 runs (6/6).
+- [machine] Evidence exports: evidence-exports/m5/ (26 files + zip) and
+  m2-retroactive (explicitly labeled post-hoc). Exports contain no secrets or
+  participant data.
+- [judgment] No live-model trials (B2). No leaderboard from fixtures. Withheld
+  W1-W6 excluded from exports; contamination-resistance not claimed from storage.

@@ -1,0 +1,57 @@
+{
+  "repository": "https://github.com/Hardonian/WorkWorld",
+  "branch": "main",
+  "commit": "429d9a757e56ed6a9094ceb4e1d1b196b3501a1f",
+  "dirtyTree": [
+    "?? scripts/build-evidence-export.ts",
+    "?? scripts/eval-runner.ts"
+  ],
+  "generatedAt": "2026-10-02T02:30:31.067Z",
+  "graderVersion": "1.0.0",
+  "taskState": [
+    {
+      "id": "M0",
+      "status": "passed"
+    },
+    {
+      "id": "M1",
+      "status": "passed"
+    },
+    {
+      "id": "M2",
+      "status": "passed"
+    },
+    {
+      "id": "M3",
+      "status": "passed"
+    },
+    {
+      "id": "M4",
+      "status": "passed"
+    },
+    {
+      "id": "M5",
+      "status": "pending"
+    },
+    {
+      "id": "M6",
+      "status": "pending"
+    },
+    {
+      "id": "M7",
+      "status": "pending"
+    },
+    {
+      "id": "M8",
+      "status": "pending"
+    },
+    {
+      "id": "M9",
+      "status": "pending"
+    },
+    {
+      "id": "M10",
+      "status": "pending"
+    }
+  ]
+}

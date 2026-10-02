@@ -118,7 +118,29 @@
       "blockers": [],
       "nextAction": "Integrate independent validation pack P0 cases at this milestone boundary; then M5 evaluation runner."
     },
-    { "id": "M5", "title": "Evaluation runner and reproducible evidence", "status": "pending", "prerequisites": ["M2"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Headless runner + run manifests + report generator." },
+    {
+      "id": "M5",
+      "title": "Evaluation runner and reproducible evidence",
+      "status": "passed",
+      "prerequisites": ["M2", "M4"],
+      "attempts": [
+        {
+          "timestamp": "2026-10-02T05:15:00.000Z",
+          "commands": [
+            { "cmd": "npx tsx scripts/eval-runner.ts --adapter baseline --out eval-runs", "exitCode": 0, "observed": "6 runs, 6 pass; manifest + report + CSV written" },
+            { "cmd": "npx tsx scripts/eval-runner.ts --adapter negatives-with-controls --out eval-runs", "exitCode": 0, "observed": "12 runs: 6 fail (controls) / 6 pass (competent contrasting controls)" },
+            { "cmd": "npx tsx scripts/eval-runner.ts --verify-manifest eval-runs/manifest-baseline-*.json", "exitCode": 0, "observed": "6/6 deterministic runs reproduced at pinned commit 429d9a7" },
+            { "cmd": "npx tsx scripts/build-evidence-export.ts --label m5", "exitCode": 0, "observed": "26-file export + zip: identity, logs, case mapping, manifests, screenshots, boundaries" },
+            { "cmd": "npx tsx scripts/build-evidence-export.ts --label m2-retroactive", "exitCode": 0, "observed": "retroactive M2 export (labeled as such in RETROACTIVE_NOTE.md)" }
+          ],
+          "evidencePaths": ["eval-runs/", "evidence-exports/m5.zip", "evidence-exports/m2-retroactive/"],
+          "observation": "machine: manifests carry code revision (commit/branch/dirty), environment, grader version, scenario versions, seed, condition, agent config (fixture vs live model separated), budget with pricing provenance, bounds, per-run terminal reason/usage/digest; CSV + markdown report generated; raw failures retained; replay verification confirms pinned manifests reproduce recorded digests."
+        }
+      ],
+      "manualJudgment": "Gate met for fixture runs. No live-model trials ran (B2); no leaderboard is published from fixtures. Denominators stated (6 scenarios; 12 control runs); seeds are labeled correlated-within-episode in the report claim limits. Withheld material (W1-W6) excluded from all fixtures and exports; contamination resistance is NOT claimed from private storage alone.",
+      "blockers": [],
+      "nextAction": "M6: assessor workflow + DB/RLS tenant isolation tests (Dockerized Postgres)."
+    },
     { "id": "M6", "title": "Assessor workflow and hosted pilot boundaries", "status": "pending", "prerequisites": ["M3"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Assessor UI + DB/RLS tests + hosted boundaries." },
     { "id": "M7", "title": "Whole-product verification and hardening", "status": "pending", "prerequisites": ["M3", "M4", "M5", "M6"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Full check suite + adversarial inputs + UI inspection." },
     { "id": "M8", "title": "Deployable release and operational closure", "status": "pending", "prerequisites": ["M7"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Release package, archive, checksums, rollback proof." },
