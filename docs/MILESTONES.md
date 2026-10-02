@@ -8,8 +8,8 @@ Gate evidence lives in `evidence/<milestone>/` and `docs/BUILD_LOG.md`.
 |----|-----------|-------|--------------|
 | M0 | Discovery and bootstrap | passed | repo+branch correct, lockfile install, real local route responds |
 | M1 | Task specification and related work | passed | 6 episode specs, grader contract, split policy, related-work table with dates, unvalidated assumptions listed |
-| M2 | State engine, persistence, adversarial grading | in_progress | 6 runnable episodes, baseline passes, 6 negative controls fail correctly, invariants + retry/stale tests pass, checkpoint/restore/replay verified |
-| M3 | Complete human workspace | pending | every episode completable via UI, shared domain core, refresh/resume works, Playwright covers workflows |
+| M2 | State engine, persistence, adversarial grading | passed | 6 runnable episodes, baseline passes, 6 negative controls fail correctly, invariants + retry/stale tests pass, checkpoint/restore/replay verified |
+| M3 | Complete human workspace | in_progress | every episode completable via UI, shared domain core, refresh/resume works, Playwright covers workflows |
 | M4 | Agent and assisted modes | pending | 2 real adapters + fixtures compile with protocol tests; failure-mode fixtures pass; assisted mode works; no grader leakage |
 | M5 | Evaluation runner and reproducible evidence | pending | pinned manifests reproduce tables; baseline + negatives run; denominators stated; withheld material excluded from fixtures |
 | M6 | Assessor workflow and hosted pilot boundaries | pending | assessor flow works; real DB/RLS tests prove isolation for 2 orgs + roles; hosted unconfigured => safe unavailable |

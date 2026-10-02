@@ -1,0 +1,47 @@
+{
+  "kind": "baseline-fixture-run",
+  "results": [
+    {
+      "scenarioId": "A1",
+      "outcome": "pass",
+      "t1": "9/9",
+      "failing": [],
+      "stateDigest": "73e0bf3de49164316222addf4bca9c8165b4e3748cdbf204cb037c1af619c85f"
+    },
+    {
+      "scenarioId": "A2",
+      "outcome": "pass",
+      "t1": "9/9",
+      "failing": [],
+      "stateDigest": "52ea7b93045921ff5d2b48c7c9555924963b4f3a22c73097b30c64061bb86a86"
+    },
+    {
+      "scenarioId": "B1",
+      "outcome": "pass",
+      "t1": "9/9",
+      "failing": [],
+      "stateDigest": "ccd11591617629a2cb721714dc73422a4ad04af3852e94e5e13d0ca0b3737e81"
+    },
+    {
+      "scenarioId": "B2",
+      "outcome": "pass",
+      "t1": "10/10",
+      "failing": [],
+      "stateDigest": "1d52e88cca38ec92f71966d98ef4536945e0ef57406fd95ba8bb96891d245cad"
+    },
+    {
+      "scenarioId": "C1",
+      "outcome": "pass",
+      "t1": "9/9",
+      "failing": [],
+      "stateDigest": "987f5f2e6461cb1fcddc37f1da2a76ece22219dc2fc5105b6bcfcddb6d89ac30"
+    },
+    {
+      "scenarioId": "C2",
+      "outcome": "pass",
+      "t1": "9/9",
+      "failing": [],
+      "stateDigest": "238ec20c9314b3f6e9391d63da55163696749545223826b6cbc6f67e0cc5a1a7"
+    }
+  ]
+}

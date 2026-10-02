@@ -50,3 +50,24 @@ Machine-generated observations are marked `[machine]`; written judgments are `[j
 - [judgment] M1 gate met. Episodes remain practitioner-unvalidated (assumption
   #1 in EPISODE_SPECS §8). Research question and contribution are framed as
   hypotheses, not findings.
+
+## 2026-10-01 — M2 State engine, persistence and adversarial grading
+
+- [machine] Domain core implemented: typed actions (23 kinds), pure reducer with
+  policy enforcement (P1–P12 mapped to codes), logical-time scheduler with
+  9 scheduled-event kinds, double-entry ledger (minor units), safe spreadsheet
+  grammar (SUM/AVG/MIN/MAX + arithmetic, bounded) with CSV formula-injection
+  defense, EpisodeEngine (reset/observe/step/checkpoint/restore/replay + digests).
+- [machine] Six episode definitions (A1/A2/B1/B2/C1/C2) zod-validated at load;
+  withheld W1–W6 policy/causal variants in src/scenarios/withheld/.
+- [machine] Persistence: FileStore (JSONL actions + digest-verified state.json)
+  and MemoryStore; CorruptStateError carries an explicit recovery path.
+- [machine] Evidence runs: `npm run baseline` → 6/6 episodes pass all T1 checks;
+  `npm run negatives` → N1–N6 each fail exactly its expected check
+  (evidence/m2/*.json). vitest 41/41 green; tsc clean.
+- [machine] Defects found by the test suite and fixed at root cause:
+  AP credit-balance sign inversion in applyTxn; cell-ref rendering off-by-one
+  ('@1' vs 'A1') breaking ranges; disjunctive sub-predicates over-counted as
+  individually required; event-minute boundary (>= vs >) on post-change evidence.
+- [judgment] Baseline/negative runs are authored fixtures, not model behavior.
+  feasible_commitments is a documented lead-time lower bound, not a planning proof.

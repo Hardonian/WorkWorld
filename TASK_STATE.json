@@ -50,7 +50,28 @@
       "blockers": [],
       "nextAction": "M2: implement domain core + scenario definitions + baseline + negative controls."
     },
-    { "id": "M2", "title": "State engine, persistence and adversarial grading", "status": "pending", "prerequisites": ["M1"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Implement domain core + episodes + baseline + negative controls." },
+    {
+      "id": "M2",
+      "title": "State engine, persistence and adversarial grading",
+      "status": "passed",
+      "prerequisites": ["M1"],
+      "attempts": [
+        {
+          "timestamp": "2026-10-01T23:30:00.000Z",
+          "commands": [
+            { "cmd": "tsc --noEmit", "exitCode": 0 },
+            { "cmd": "npx vitest run", "exitCode": 0, "observed": "41 passed (4 files)" },
+            { "cmd": "npm run baseline -- --json evidence/m2/baseline.json", "exitCode": 0, "observed": "6/6 episodes pass T1 (A1 9/9, A2 9/9, B1 9/9, B2 10/10, C1 9/9, C2 9/9)" },
+            { "cmd": "npm run negatives -- --json evidence/m2/negatives.json", "exitCode": 0, "observed": "6/6 controls fail exactly their expected check (N1 requirements_met, N2 required_updates_done, N3 no_duplicate_settlement, N4 authorization_correct, N5 feasible_commitments, N6 help_policy)" }
+          ],
+          "evidencePaths": ["evidence/m2/test-log.txt", "evidence/m2/baseline.json", "evidence/m2/negatives.json", "evidence/m2/typecheck.txt"],
+          "observation": "machine: typed domain core (types/reducer/ledger/artifacts/engine/observation), event-sourced with logical-time scheduler, idempotency + revision protection, safe spreadsheet grammar + CSV injection defense; 6 scenario definitions validated by zod at load; FileStore/MemoryStore with digest-verified state and CorruptStateError recovery path; checkpoint/restore + replay digests verified in tests."
+        }
+      ],
+      "manualJudgment": "Gate met with real execution evidence. Bugs found and fixed by the suite during the build: AP credit-balance sign error, cell-ref off-by-one, disjunctive predicate over-counting, boundary off-by-one on event-minute actions. Baseline/negative runs are labeled fixtures. feasible_commitments is a documented lower-bound heuristic (lead-time feasibility), not a full planning proof.",
+      "blockers": [],
+      "nextAction": "M3: build the human workspace UI over the shared domain core."
+    },
     { "id": "M3", "title": "Complete human workspace", "status": "pending", "prerequisites": ["M2"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Build learner UI over the shared domain core." },
     { "id": "M4", "title": "Agent and assisted modes", "status": "pending", "prerequisites": ["M2"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Provider-neutral loop + 2 real adapters + fixtures + assisted mode." },
     { "id": "M5", "title": "Evaluation runner and reproducible evidence", "status": "pending", "prerequisites": ["M2"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Headless runner + run manifests + report generator." },

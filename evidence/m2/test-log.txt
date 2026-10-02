@@ -1,0 +1,10 @@
+npm warn Unknown env config "devdir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+ RUN  v5.0.3 /home/scott/repos/workworld
+
+
+ Test Files  4 passed (4)
+      Tests  41 passed (41)
+   Start at  21:26:20
+   Duration  419ms (transform 56%, import 36%, tests 7%, worker 2%)
+
