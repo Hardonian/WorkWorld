@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "next dev -p 3100",
     "build": "next build",
-    "start": "next start -p 3100",
+    "start": "next start -p ${WW_PORT:-3100}",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",

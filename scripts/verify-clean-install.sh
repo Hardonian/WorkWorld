@@ -19,7 +19,7 @@ echo "clean-install: npm ci OK (lockfile install)"
 npm run build >/dev/null 2>&1
 echo "clean-install: build OK"
 
-PORT="$PORT" npm start >"$WORK/server.log" 2>&1 &
+WW_PORT="$PORT" npm start >"$WORK/server.log" 2>&1 &
 SERVER_PID=$!
 trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
 
