@@ -1,0 +1,311 @@
+{
+  "manifestVersion": 1,
+  "createdAt": "2026-10-02T03:12:47.011Z",
+  "codeRevision": {
+    "commit": "311f07dcb0c8aa37547b1fa1720d2c139e90bc1a",
+    "branch": "main",
+    "dirtyFiles": [
+      "evidence-exports/m10-final/",
+      "evidence/release-gate/"
+    ]
+  },
+  "environment": {
+    "node": "v26.8.2",
+    "platform": "linux"
+  },
+  "graderVersion": "1.0.0",
+  "scenarioVersions": [
+    {
+      "id": "A1",
+      "version": "1.0.0"
+    },
+    {
+      "id": "A1",
+      "version": "1.0.0"
+    },
+    {
+      "id": "B2",
+      "version": "1.0.0"
+    },
+    {
+      "id": "A1",
+      "version": "1.0.0"
+    },
+    {
+      "id": "C1",
+      "version": "1.0.0"
+    },
+    {
+      "id": "B2",
+      "version": "1.0.0"
+    },
+    {
+      "id": "A1",
+      "version": "1.0.0"
+    },
+    {
+      "id": "A2",
+      "version": "1.0.0"
+    },
+    {
+      "id": "B1",
+      "version": "1.0.0"
+    },
+    {
+      "id": "B2",
+      "version": "1.0.0"
+    },
+    {
+      "id": "C1",
+      "version": "1.0.0"
+    },
+    {
+      "id": "C2",
+      "version": "1.0.0"
+    }
+  ],
+  "condition": "agent",
+  "agent": {
+    "id": "scripted-negative-controls+competent-controls",
+    "kind": "fixture",
+    "live": false,
+    "model": "fixture"
+  },
+  "determinismNote": "deterministic fixture — each negative control paired with competent controls; NOT model results",
+  "budget": {
+    "limitMinor": 0,
+    "currency": "CAD",
+    "pricingSource": "unknown_cost"
+  },
+  "bounds": {
+    "maxSteps": 24
+  },
+  "seeds": [
+    42
+  ],
+  "runs": [
+    {
+      "runId": "neg-N1",
+      "scenarioId": "A1",
+      "scenarioVersion": "1.0.0",
+      "seed": 42,
+      "terminalReason": "submitted",
+      "outcome": "fail",
+      "t1Passed": 8,
+      "t1Total": 9,
+      "failingChecks": [
+        "requirements_met"
+      ],
+      "usageTokens": 0,
+      "usageCostMinor": 0,
+      "wallClockMs": 0,
+      "stateDigest": "aa1143df585daf7c3e06a38d0bfc75c14af4ba282f8c1a98f7d5d99501a2a478",
+      "determinism": "deterministic-fixture",
+      "actionsJsonlPath": "eval-runs/actions-neg-N1.jsonl"
+    },
+    {
+      "runId": "neg-N2",
+      "scenarioId": "A1",
+      "scenarioVersion": "1.0.0",
+      "seed": 42,
+      "terminalReason": "submitted",
+      "outcome": "fail",
+      "t1Passed": 8,
+      "t1Total": 9,
+      "failingChecks": [
+        "required_updates_done"
+      ],
+      "usageTokens": 0,
+      "usageCostMinor": 0,
+      "wallClockMs": 0,
+      "stateDigest": "6e2c1a82c90d8f89fa4705537983130b57469b9b28fb471b8f786a3d0388e31e",
+      "determinism": "deterministic-fixture",
+      "actionsJsonlPath": "eval-runs/actions-neg-N2.jsonl"
+    },
+    {
+      "runId": "neg-N3",
+      "scenarioId": "B2",
+      "scenarioVersion": "1.0.0",
+      "seed": 42,
+      "terminalReason": "submitted",
+      "outcome": "fail",
+      "t1Passed": 9,
+      "t1Total": 10,
+      "failingChecks": [
+        "no_duplicate_settlement"
+      ],
+      "usageTokens": 0,
+      "usageCostMinor": 0,
+      "wallClockMs": 0,
+      "stateDigest": "ccc0d4e734a14ad00c6f2d9f6401393759b877e8e5ec5560adb5172c800be547",
+      "determinism": "deterministic-fixture",
+      "actionsJsonlPath": "eval-runs/actions-neg-N3.jsonl"
+    },
+    {
+      "runId": "neg-N4",
+      "scenarioId": "A1",
+      "scenarioVersion": "1.0.0",
+      "seed": 42,
+      "terminalReason": "submitted",
+      "outcome": "fail",
+      "t1Passed": 7,
+      "t1Total": 9,
+      "failingChecks": [
+        "authorization_correct",
+        "requirements_met"
+      ],
+      "usageTokens": 0,
+      "usageCostMinor": 0,
+      "wallClockMs": 0,
+      "stateDigest": "c2ec66808f8a3c23809c20e2b40c615098f3f04b4de4e7ab5edaaba3cbc0ce07",
+      "determinism": "deterministic-fixture",
+      "actionsJsonlPath": "eval-runs/actions-neg-N4.jsonl"
+    },
+    {
+      "runId": "neg-N5",
+      "scenarioId": "C1",
+      "scenarioVersion": "1.0.0",
+      "seed": 42,
+      "terminalReason": "submitted",
+      "outcome": "fail",
+      "t1Passed": 8,
+      "t1Total": 9,
+      "failingChecks": [
+        "feasible_commitments"
+      ],
+      "usageTokens": 0,
+      "usageCostMinor": 0,
+      "wallClockMs": 0,
+      "stateDigest": "9c3ece7b7ae5dc5966561e85b23e656a6be401b4e67eecb66e7409222a1331fe",
+      "determinism": "deterministic-fixture",
+      "actionsJsonlPath": "eval-runs/actions-neg-N5.jsonl"
+    },
+    {
+      "runId": "neg-N6",
+      "scenarioId": "B2",
+      "scenarioVersion": "1.0.0",
+      "seed": 42,
+      "terminalReason": "submitted",
+      "outcome": "fail",
+      "t1Passed": 9,
+      "t1Total": 10,
+      "failingChecks": [
+        "help_policy"
+      ],
+      "usageTokens": 0,
+      "usageCostMinor": 0,
+      "wallClockMs": 0,
+      "stateDigest": "da3ac41b345ff35bf6aa1d48642cf1611a87e1b55d170e197c1ed1cb4d40d3d1",
+      "determinism": "deterministic-fixture",
+      "actionsJsonlPath": "eval-runs/actions-neg-N6.jsonl"
+    },
+    {
+      "runId": "baseline-A1",
+      "scenarioId": "A1",
+      "scenarioVersion": "1.0.0",
+      "seed": 42,
+      "terminalReason": "submitted",
+      "outcome": "pass",
+      "t1Passed": 9,
+      "t1Total": 9,
+      "failingChecks": [],
+      "usageTokens": 0,
+      "usageCostMinor": 0,
+      "wallClockMs": 0,
+      "stateDigest": "e12efe344372076b2318fb1c18a2db5e74fe48402ac2e63f83e9c60d19a6e5ff",
+      "determinism": "deterministic-fixture",
+      "actionsJsonlPath": "eval-runs/actions-baseline-A1.jsonl"
+    },
+    {
+      "runId": "baseline-A2",
+      "scenarioId": "A2",
+      "scenarioVersion": "1.0.0",
+      "seed": 42,
+      "terminalReason": "submitted",
+      "outcome": "pass",
+      "t1Passed": 9,
+      "t1Total": 9,
+      "failingChecks": [],
+      "usageTokens": 0,
+      "usageCostMinor": 0,
+      "wallClockMs": 0,
+      "stateDigest": "52ea7b93045921ff5d2b48c7c9555924963b4f3a22c73097b30c64061bb86a86",
+      "determinism": "deterministic-fixture",
+      "actionsJsonlPath": "eval-runs/actions-baseline-A2.jsonl"
+    },
+    {
+      "runId": "baseline-B1",
+      "scenarioId": "B1",
+      "scenarioVersion": "1.0.0",
+      "seed": 42,
+      "terminalReason": "submitted",
+      "outcome": "pass",
+      "t1Passed": 9,
+      "t1Total": 9,
+      "failingChecks": [],
+      "usageTokens": 0,
+      "usageCostMinor": 0,
+      "wallClockMs": 0,
+      "stateDigest": "ccd11591617629a2cb721714dc73422a4ad04af3852e94e5e13d0ca0b3737e81",
+      "determinism": "deterministic-fixture",
+      "actionsJsonlPath": "eval-runs/actions-baseline-B1.jsonl"
+    },
+    {
+      "runId": "baseline-B2",
+      "scenarioId": "B2",
+      "scenarioVersion": "1.0.0",
+      "seed": 42,
+      "terminalReason": "submitted",
+      "outcome": "pass",
+      "t1Passed": 10,
+      "t1Total": 10,
+      "failingChecks": [],
+      "usageTokens": 0,
+      "usageCostMinor": 0,
+      "wallClockMs": 0,
+      "stateDigest": "1d52e88cca38ec92f71966d98ef4536945e0ef57406fd95ba8bb96891d245cad",
+      "determinism": "deterministic-fixture",
+      "actionsJsonlPath": "eval-runs/actions-baseline-B2.jsonl"
+    },
+    {
+      "runId": "baseline-C1",
+      "scenarioId": "C1",
+      "scenarioVersion": "1.0.0",
+      "seed": 42,
+      "terminalReason": "submitted",
+      "outcome": "pass",
+      "t1Passed": 9,
+      "t1Total": 9,
+      "failingChecks": [],
+      "usageTokens": 0,
+      "usageCostMinor": 0,
+      "wallClockMs": 0,
+      "stateDigest": "9903706063c02ab626ca9d445bd4804bc52dd67ae5469a24491462bf1eb8567b",
+      "determinism": "deterministic-fixture",
+      "actionsJsonlPath": "eval-runs/actions-baseline-C1.jsonl"
+    },
+    {
+      "runId": "baseline-C2",
+      "scenarioId": "C2",
+      "scenarioVersion": "1.0.0",
+      "seed": 42,
+      "terminalReason": "submitted",
+      "outcome": "pass",
+      "t1Passed": 9,
+      "t1Total": 9,
+      "failingChecks": [],
+      "usageTokens": 0,
+      "usageCostMinor": 0,
+      "wallClockMs": 0,
+      "stateDigest": "7354cb3c6b152c29212b82fdf33bedc2fea792502b45e85f34772ec8f36aeeac",
+      "determinism": "deterministic-fixture",
+      "actionsJsonlPath": "eval-runs/actions-baseline-C2.jsonl"
+    }
+  ],
+  "totals": {
+    "runCount": 12,
+    "passed": 6,
+    "failed": 6,
+    "totalTokens": 0
+  }
+}

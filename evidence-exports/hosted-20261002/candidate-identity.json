@@ -1,0 +1,56 @@
+{
+  "repository": "https://github.com/Hardonian/WorkWorld",
+  "branch": "main",
+  "commit": "433b678b791552631a5331e7d87735a959e6c535",
+  "dirtyTree": [
+    "M evidence/release-gate/latest.json"
+  ],
+  "generatedAt": "2026-10-02T16:50:43.864Z",
+  "graderVersion": "1.0.0",
+  "taskState": [
+    {
+      "id": "M0",
+      "status": "passed"
+    },
+    {
+      "id": "M1",
+      "status": "passed"
+    },
+    {
+      "id": "M2",
+      "status": "passed"
+    },
+    {
+      "id": "M3",
+      "status": "passed"
+    },
+    {
+      "id": "M4",
+      "status": "passed"
+    },
+    {
+      "id": "M5",
+      "status": "passed"
+    },
+    {
+      "id": "M6",
+      "status": "passed"
+    },
+    {
+      "id": "M7",
+      "status": "pending"
+    },
+    {
+      "id": "M8",
+      "status": "passed"
+    },
+    {
+      "id": "M9",
+      "status": "passed"
+    },
+    {
+      "id": "M10",
+      "status": "passed"
+    }
+  ]
+}

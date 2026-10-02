@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T16:46:27.600Z",
+  "generatedAt": "2026-10-02T16:49:51.904Z",
   "localReadiness": "local technical candidate: PASS",
   "hostedReadiness": "hosted: VERIFIED against the hosted project (RLS suite green via WW_TEST_PG_URL; gsssdavzyorvhtdolvaj.supabase.co)",
   "researchReadiness": "harness validation only — no live-model or human-study evidence",
@@ -12,7 +12,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T16:46:00.133Z",
+      "started": "2026-10-02T16:49:26.316Z",
       "tail": "  8:10  warning  'existsSync' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars |  | ✖ 2 problems (0 errors, 2 warnings)"
     },
     {
@@ -22,7 +22,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T16:46:03.040Z",
+      "started": "2026-10-02T16:49:29.242Z",
       "tail": "> workworld@0.1.0 typecheck | > tsc --noEmit"
     },
     {
@@ -32,8 +32,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T16:46:05.700Z",
-      "tail": "      Tests  90 passed (90) |    Start at  12:46:06 |    Duration  8.95s (tests 76%, transform 16%, import 8%)"
+      "started": "2026-10-02T16:49:30.568Z",
+      "tail": "      Tests  90 passed (90) |    Start at  12:49:31 |    Duration  8.77s (tests 78%, transform 14%, import 7%)"
     },
     {
       "id": "baseline",
@@ -42,7 +42,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T16:46:15.108Z",
+      "started": "2026-10-02T16:49:39.799Z",
       "tail": "C2 PASS T1 9/9 |  | baseline: 6/6 episodes pass (fixture actor, not a model)"
     },
     {
@@ -52,7 +52,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T16:46:15.543Z",
+      "started": "2026-10-02T16:49:40.114Z",
       "tail": "N6 OK  expected=[help_policy] actual=[help_policy] — indiscriminate requests for human help |  | negative controls: 6/6 detected for the right reasons"
     },
     {
@@ -62,7 +62,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T16:46:15.885Z",
+      "started": "2026-10-02T16:49:40.441Z",
       "tail": " | ○  (Static)   prerendered as static content | ƒ  (Dynamic)  server-rendered on demand"
     },
     {
@@ -72,7 +72,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T16:46:20.327Z",
+      "started": "2026-10-02T16:49:44.626Z",
       "tail": "> tsx scripts/validate-task-state.ts |  | TASK_STATE.json OK: 11 milestones, 2 external blockers; docs/TASK_STATE.schema.json refreshed"
     },
     {
@@ -82,7 +82,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T16:46:20.587Z",
+      "started": "2026-10-02T16:49:44.869Z",
       "tail": ""
     },
     {
@@ -92,8 +92,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T16:46:21.046Z",
-      "tail": "      Tests  12 passed (12) |    Start at  12:46:21 |    Duration  8.63s (tests 99%)"
+      "started": "2026-10-02T16:49:45.322Z",
+      "tail": "      Tests  12 passed (12) |    Start at  12:49:45 |    Duration  8.67s (tests 99%)"
     }
   ]
 }
