@@ -33,12 +33,22 @@
     {
       "id": "M1",
       "title": "Task specification and related work",
-      "status": "in_progress",
+      "status": "passed",
       "prerequisites": ["M0"],
-      "attempts": [],
-      "manualJudgment": null,
+      "attempts": [
+        {
+          "timestamp": "2026-10-01T22:30:00.000Z",
+          "commands": [
+            { "cmd": "web_search x7 (GDPval, TheAgentCompany, WorkArena, tau2, Mechanize, Forage, Workera, 2026 enterprise benchmarks)", "exitCode": 0, "observed": "primary + secondary sources retrieved and dated; see docs/RELATED_WORK.md" },
+            { "cmd": "write docs/EPISODE_SPECS.md docs/GRADER_CONTRACT.md docs/RELATED_WORK.md materials/*", "exitCode": 0 }
+          ],
+          "evidencePaths": ["docs/EPISODE_SPECS.md", "docs/GRADER_CONTRACT.md", "docs/RELATED_WORK.md", "materials/practitioner-review-packet.md", "materials/participant-info-consent-draft.md", "materials/human-feasibility-protocol.md", "materials/assessor-guide.md"],
+          "observation": "machine: 6 episode specs (A1,A2,B1,B2,C1,C2) with policies P1-P12, typed action set, scheduled events, terminal conditions, T1 outcome checks, T3 rubric; 6 withheld variants W1-W6 designed; related-work table compiled from dated sources; study materials drafted with pending labels."
+        }
+      ],
+      "manualJudgment": "Gate met: implementable specs, grader contract, split policy, dated related-work table, explicit unvalidated assumptions (EPISODE_SPECS §8), withheld variants are policy/causal (not renames). External practitioner review remains pending and is labeled as such. No novelty claim made.",
       "blockers": [],
-      "nextAction": "Author 6 episode specs + grader contract + related-work table with source dates."
+      "nextAction": "M2: implement domain core + scenario definitions + baseline + negative controls."
     },
     { "id": "M2", "title": "State engine, persistence and adversarial grading", "status": "pending", "prerequisites": ["M1"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Implement domain core + episodes + baseline + negative controls." },
     { "id": "M3", "title": "Complete human workspace", "status": "pending", "prerequisites": ["M2"], "attempts": [], "manualJudgment": null, "blockers": [], "nextAction": "Build learner UI over the shared domain core." },

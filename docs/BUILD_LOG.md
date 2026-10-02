@@ -27,3 +27,26 @@ Machine-generated observations are marked `[machine]`; written judgments are `[j
   session (D8), Dockerized Postgres for RLS tests (D7), Ollama as live local
   OpenAI-compatible provider (D5).
 - Name: "WorkWorld" is a working title; no trademark clearance claimed (D1).
+
+## 2026-10-01 — M1 Task specification and related work
+
+- [machine] Related work compiled from live retrieval 2026-10-01: GDPval (OpenAI,
+  2025-09-25), TheAgentCompany (arXiv:2412.14161), WorkArena/WorkArena++
+  (ServiceNow, NeurIPS 2024 / arXiv:2407.05291), τ²-bench (Sierra), Mechanize
+  (2025-04), Forage, Workera (Pearson acquisition 2026-09-29), Enterprise-Bench
+  (DevRev/Laude 2026-07-09), EnterpriseClawBench (arXiv:2606.23654). Secondary
+  sources marked (2°). Table + contribution hypothesis: docs/RELATED_WORK.md.
+- [machine] Authored: docs/EPISODE_SPECS.md (3 families, 6 episodes A1/A2/B1/B2/
+  C1/C2; policy P1–P12; typed action set; scheduled events; terminal conditions;
+  T1 outcome checks; T3 rubric), docs/GRADER_CONTRACT.md (check taxonomy, 8
+  required state checks, 6 negative controls, split policy, determinism note,
+  attack surfaces, claim limits).
+- [machine] Withheld variants W1–W6 defined (policy/causal changes: threshold
+  change, post-authorization price change, supplier insolvency, USD invoice,
+  deadline collapse, duplicate payment-run pressure).
+- [machine] Study materials drafted in materials/: practitioner-review packet,
+  participant info + consent draft, human-feasibility protocol, assessor guide.
+  All labeled pending; no approval or review claimed.
+- [judgment] M1 gate met. Episodes remain practitioner-unvalidated (assumption
+  #1 in EPISODE_SPECS §8). Research question and contribution are framed as
+  hypotheses, not findings.
