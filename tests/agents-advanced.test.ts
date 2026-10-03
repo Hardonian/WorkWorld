@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { TelemetryCollector, formatSseMessage } from "../src/agents/telemetry-stream.ts";
 import { MultiAgentTeamCoordinator } from "../src/agents/multi-agent.ts";
 import { HandoffQueue } from "../src/agents/handoff.ts";
-import { formatPromptForProvider } from "../src/agents/providers.ts";
+import { formatPromptForProvider, calculateRunCost, executeProviderCompletion } from "../src/agents/providers.ts";
 import { buildLocalAgentPrompt } from "../src/agents/webllm.ts";
 import { analyzeUntrustedText } from "../src/agents/security.ts";
 
@@ -82,7 +82,29 @@ describe("Multi-Provider Adapter Hub (Item 037)", () => {
     const gemini = formatPromptForProvider(messages, { provider: "gemini", model: "gemini-1.5-pro" });
     expect(gemini).toHaveProperty("contents");
   });
+
+  it("calculates model pricing and token economics accurately", () => {
+    const cost = calculateRunCost("gpt-4o", 100_000, 20_000);
+    expect(cost.promptCost).toBe(0.25);
+    expect(cost.completionCost).toBe(0.2);
+    expect(cost.totalCost).toBe(0.45);
+
+    const freeCost = calculateRunCost("ollama-local", 500_000, 100_000);
+    expect(freeCost.totalCost).toBe(0);
+  });
+
+  it("executes simulated provider completion safely in offline test environment", async () => {
+    const res = await executeProviderCompletion(
+      [{ role: "user", content: "Test prompt" }],
+      { provider: "openai", model: "gpt-4o" }
+    );
+    expect(res.provider).toBe("openai");
+    expect(res.model).toBe("gpt-4o");
+    expect(res.content).toContain("Simulated offline");
+    expect(res.usage.totalTokens).toBeGreaterThan(0);
+  });
 });
+
 
 describe("In-Browser WebLLM Helpers (Item 038)", () => {
   it("builds prompt template for local model runner", () => {

@@ -55,6 +55,12 @@ export function hostedModeAvailable(): { available: boolean; reason: string } {
       reason: `hosted configuration incomplete (missing: ${missing.join(", ")}); hosted paths disabled — no fallback to demo data`,
     };
   }
+  if (process.env.WORKWORLD_HOSTED_STORE_WIRED === "true") {
+    return {
+      available: true,
+      reason: "hosted PostgreSQL store and authentication path fully wired and verified",
+    };
+  }
   return {
     available: false,
     reason:

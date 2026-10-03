@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workworld-app
+  namespace: production
+  labels:
+    app.kubernetes.io/name: workworld
+    app.kubernetes.io/component: web-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: workworld
+  template:
+    metadata:
+      labels:
+        app: workworld
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+      containers:
+        - name: workworld
+          image: workworld:0.1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3100
+              name: http
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: WORKWORLD_MODE
+              value: "hosted"
+            - name: WORKWORLD_HOSTED_STORE_WIRED
+              value: "true"
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1536Mi"
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 3100
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3100
+            initialDelaySeconds: 10
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: workworld-service
+  namespace: production
+spec:
+  type: ClusterIP
+  selector:
+    app: workworld
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3100
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: workworld-hpa
+  namespace: production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: workworld-app
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70

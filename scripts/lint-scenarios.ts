@@ -6,6 +6,7 @@
 import { listScenarios } from "../src/scenarios/catalog.ts";
 import { ENTERPRISE_SCENARIOS } from "../src/scenarios/enterprise-scenarios.ts";
 import { SCENARIO_TUTORIAL } from "../src/scenarios/tutorial.ts";
+import { VERTICAL_SCENARIOS } from "../src/scenarios/vertical-packs.ts";
 
 export interface ScenarioLintResult {
   scenarioId: string;
@@ -15,7 +16,7 @@ export interface ScenarioLintResult {
 }
 
 export function lintScenarioCatalog(): { totalChecked: number; allValid: boolean; results: ScenarioLintResult[] } {
-  const allScenarios = [...listScenarios(), ...ENTERPRISE_SCENARIOS, SCENARIO_TUTORIAL];
+  const allScenarios = [...listScenarios(), ...ENTERPRISE_SCENARIOS, SCENARIO_TUTORIAL, ...VERTICAL_SCENARIOS];
   const seenIds = new Set<string>();
   const results: ScenarioLintResult[] = [];
 

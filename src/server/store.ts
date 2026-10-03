@@ -201,16 +201,24 @@ export class FileStore implements EventStore {
   }
 }
 
-export function makeStore(kind: "memory" | "file", dataDir?: string): EventStore {
+import { PostgresStore } from "./store-postgres.ts";
+
+export function makeStore(kind: "memory" | "file" | "postgres", dataDir?: string): EventStore {
   if (kind === "memory") return new MemoryStore();
+  if (kind === "postgres") return new PostgresStore();
   return new FileStore(dataDir ?? process.env.WORKWORLD_DATA_DIR ?? "./var/demo-data");
 }
 
 let defaultStoreInstance: EventStore | null = null;
 export function getStore(): EventStore {
   if (!defaultStoreInstance) {
-    const kind = (process.env.WORKWORLD_STORE ?? "file") as "memory" | "file";
-    defaultStoreInstance = makeStore(kind);
+    if (process.env.WORKWORLD_MODE === "hosted" || process.env.WORKWORLD_STORE === "postgres") {
+      defaultStoreInstance = new PostgresStore();
+    } else {
+      const kind = (process.env.WORKWORLD_STORE ?? "file") as "memory" | "file";
+      defaultStoreInstance = makeStore(kind);
+    }
   }
   return defaultStoreInstance;
 }
+
