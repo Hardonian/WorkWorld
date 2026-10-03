@@ -34,3 +34,5 @@ export {
 export * from "./erp-importer.ts";
 export * from "./voice.ts";
 export * from "./policy-overrides.ts";
+export * from "./export-xlsx.ts";
+export * from "./merkle-audit.ts";

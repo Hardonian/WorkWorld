@@ -4,6 +4,7 @@ import * as Server from "../src/server/index.ts";
 import * as Grading from "../src/grading/index.ts";
 import * as Scenarios from "../src/scenarios/index.ts";
 import * as Agents from "../src/agents/index.ts";
+import * as Sdk from "../src/sdk/index.ts";
 
 describe("Architecture & Code Quality: Unified Barrel Exports", () => {
   it("exports all core simulation domain primitives and engines", () => {
@@ -23,6 +24,8 @@ describe("Architecture & Code Quality: Unified Barrel Exports", () => {
     expect(Domain.ErpSandboxImporter).toBeDefined();
     expect(Domain.VoiceCallManager).toBeDefined();
     expect(Domain.evaluateFormulaSafe).toBeDefined();
+    expect(Domain.MerkleAuditTree).toBeDefined();
+    expect(Domain.exportLedgerToCsv).toBeDefined();
   });
 
   it("exports all server, security, and multi-tenant services", () => {
@@ -43,6 +46,8 @@ describe("Architecture & Code Quality: Unified Barrel Exports", () => {
     expect(Server.AgentSafetyCertificationRunner).toBeDefined();
     expect(Server.PostgresStore).toBeDefined();
     expect(Server.RealtimeVoiceStreamingEngine).toBeDefined();
+    expect(Server.CommercialBillingService).toBeDefined();
+    expect(Server.DataLossPreventionScanner).toBeDefined();
   });
 
   it("exports all grading, rubric, and calibration modules", () => {
@@ -83,4 +88,11 @@ describe("Architecture & Code Quality: Unified Barrel Exports", () => {
     expect(Agents.BenchmarkArena).toBeDefined();
     expect(Agents.analyzeUntrustedText).toBeDefined();
   });
+
+  it("exports all client SDK and agent framework tools", () => {
+    expect(Sdk.WorkWorldClient).toBeDefined();
+    expect(Sdk.LangChainAgentAdapter).toBeDefined();
+    expect(Sdk.WORKWORLD_LANGCHAIN_TOOL_DEFINITIONS).toBeDefined();
+  });
 });
+

@@ -142,6 +142,16 @@ export interface LedgerTxn {
   }[];
 }
 
+export interface JournalEntry {
+  id: string;
+  minute: number;
+  memo: string;
+  debitAccount: string;
+  creditAccount: string;
+  debits: Minor;
+  credits: Minor;
+}
+
 export interface TicketNote {
   atMinute: number;
   text: string;

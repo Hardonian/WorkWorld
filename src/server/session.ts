@@ -35,9 +35,13 @@ function isValidSessionId(id: string): boolean {
 }
 
 export async function getSessionId(): Promise<string | null> {
-  const jar = await cookies();
-  const id = jar.get(COOKIE)?.value;
-  return id && isValidSessionId(id) ? id : null;
+  try {
+    const jar = await cookies();
+    const id = jar.get(COOKIE)?.value;
+    return id && isValidSessionId(id) ? id : null;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -195,6 +199,98 @@ export async function applyActionForRun(
     await store().appendAction(runId, { action, actor });
     await store().saveState(runId, engine.getState());
     return { transition, observation: engine.observe() };
+  });
+}
+
+export async function applyBatchActionInputs(
+  rawActions: Array<Record<string, unknown>>,
+  requestedActorKind?: Extract<ActorKind, "human" | "agent" | "assisted">,
+): Promise<
+  | {
+      results: Array<{ actionId?: string; type: string; transition: Transition }>;
+      observation: Observation;
+    }
+  | { error: string; code: string }
+> {
+  const runId = await getSessionId();
+  if (!runId) return noSession();
+  return applyBatchActionsForRun(runId, rawActions, requestedActorKind ?? "human");
+}
+
+export async function applyBatchActionsForRun(
+  runId: string,
+  rawActions: Array<Record<string, unknown>>,
+  requestedActorKind: Extract<ActorKind, "human" | "agent" | "assisted">,
+): Promise<
+  | {
+      results: Array<{ actionId?: string; type: string; transition: Transition }>;
+      observation: Observation;
+    }
+  | { error: string; code: string }
+> {
+  return withRunLock(runId, async () => {
+    const loaded = await loadEngineForRun(runId);
+    if (!loaded) return noSession();
+    const { engine } = loaded;
+
+    const results: Array<{ actionId?: string; type: string; transition: Transition }> = [];
+
+    for (const raw of rawActions) {
+      let action: Action;
+      try {
+        const sanitized = sanitizeActionInput(raw);
+        const expectedRevision =
+          raw.expectedRevision === undefined
+            ? engine.observe().revision
+            : Number(raw.expectedRevision);
+        if (!Number.isSafeInteger(expectedRevision) || expectedRevision < 0) {
+          throw new Error("expectedRevision must be a non-negative integer");
+        }
+        const suppliedKey = raw.idempotencyKey;
+        if (
+          suppliedKey !== undefined &&
+          (typeof suppliedKey !== "string" || suppliedKey.length < 1 || suppliedKey.length > 128)
+        ) {
+          throw new Error("idempotencyKey must be a non-empty string up to 128 characters");
+        }
+        action = {
+          ...sanitized,
+          actionId: typeof raw.actionId === "string" ? raw.actionId : randomUUID(),
+          idempotencyKey: (typeof suppliedKey === "string" ? suppliedKey : undefined) ?? randomUUID(),
+          expectedRevision,
+        } as Action;
+      } catch (e) {
+        return { error: (e as Error).message, code: "PAYLOAD_INVALID" };
+      }
+
+      const condition = engine.observe().condition;
+      const actor = {
+        id: "participant",
+        kind:
+          requestedActorKind === "agent"
+            ? ("agent" as const)
+            : condition === "assisted"
+              ? ("assisted" as const)
+              : ("human" as const),
+        role: "participant" as const,
+      };
+
+      const transition = engine.step(action, actor);
+      await store().appendAction(runId, { action, actor });
+
+      results.push({
+        actionId: action.actionId,
+        type: action.type,
+        transition,
+      });
+
+      if (!transition.ok) {
+        break;
+      }
+    }
+
+    await store().saveState(runId, engine.getState());
+    return { results, observation: engine.observe() };
   });
 }
 
