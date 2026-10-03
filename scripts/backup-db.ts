@@ -107,3 +107,30 @@ export class DatabaseBackupEngine {
     return eligible[0] || null;
   }
 }
+
+// Standalone CLI runner (Pillar 9, Item 083)
+if (typeof process !== "undefined" && process.argv[1]?.includes("backup-db")) {
+  const engine = new DatabaseBackupEngine();
+  const args = process.argv.slice(2);
+  const verifyIdx = args.indexOf("--verify");
+
+  const targetFile = verifyIdx !== -1 ? args[verifyIdx + 1] : undefined;
+  if (targetFile) {
+    console.log(`Verifying backup integrity: ${targetFile}`);
+    const verification = engine.verifyIntegrity(targetFile);
+    if (verification.valid) {
+      console.log(`PASS: SHA256 integrity verified (${verification.calculatedHash})`);
+      process.exit(0);
+    } else {
+      console.error(`FAIL: SHA256 mismatch. Expected ${verification.expectedHash}, calculated ${verification.calculatedHash}`);
+      process.exit(1);
+    }
+  } else {
+    console.log("WorkWorld Database Backup Engine");
+    const { backupFile, metadata } = engine.createSnapshot("workworld_prod");
+    console.log(`Snapshot created: ${backupFile}`);
+    console.log(`Backup ID: ${metadata.backupId}`);
+    console.log(`SHA-256: ${metadata.sha256}`);
+    console.log(`Tables: ${Object.entries(metadata.tableCounts).map(([k, v]) => `${k}=${v}`).join(", ")}`);
+  }
+}

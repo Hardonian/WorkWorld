@@ -23,6 +23,9 @@
     "db:up": "bash scripts/db-up.sh",
     "db:down": "bash scripts/db-down.sh",
     "db:test": "vitest run tests/db",
+    "db:backup": "tsx scripts/backup-db.ts",
+    "lint:scenarios": "tsx scripts/lint-scenarios.ts",
+    "benchmark:stress": "tsx scripts/stress-test.ts",
     "release-gate": "node scripts/release-gate.mjs",
     "validate:task-state": "tsx scripts/validate-task-state.ts",
     "doctor": "tsx scripts/doctor.ts"
