@@ -16,12 +16,12 @@ describe("Architecture & Code Quality: Unified Barrel Exports", () => {
     expect(Domain.generateDebitMemo).toBeDefined();
     expect(Domain.convertCurrency).toBeDefined();
     expect(Domain.calculateSupplierScorecard).toBeDefined();
-    expect(Domain.WarehouseManager).toBeDefined();
-    expect(Domain.AccrualEngine).toBeDefined();
-    expect(Domain.RmaManager).toBeDefined();
-    expect(Domain.LogisticsEngine).toBeDefined();
-    expect(Domain.ErpImporter).toBeDefined();
-    expect(Domain.VoiceCallEngine).toBeDefined();
+    expect(Domain.checkBinCapacity).toBeDefined();
+    expect(Domain.amortizePrepaidContracts).toBeDefined();
+    expect(Domain.createRmaRequest).toBeDefined();
+    expect(Domain.calculateFreightQuotes).toBeDefined();
+    expect(Domain.ErpSandboxImporter).toBeDefined();
+    expect(Domain.VoiceCallManager).toBeDefined();
     expect(Domain.evaluateFormulaSafe).toBeDefined();
   });
 
@@ -30,17 +30,17 @@ describe("Architecture & Code Quality: Unified Barrel Exports", () => {
     expect(Server.AuditLogService).toBeDefined();
     expect(Server.authorizeRole).toBeDefined();
     expect(Server.TokenBucketRateLimiter).toBeDefined();
-    expect(Server.WebhookDispatcher).toBeDefined();
-    expect(Server.McpServer).toBeDefined();
+    expect(Server.signWebhookPayload).toBeDefined();
+    expect(Server.handleMcpRequest).toBeDefined();
     expect(Server.SamlProvider).toBeDefined();
     expect(Server.generateApiKey).toBeDefined();
-    expect(Server.OrganizationManager).toBeDefined();
-    expect(Server.InvitationManager).toBeDefined();
-    expect(Server.SessionManager).toBeDefined();
-    expect(Server.LtiProvider).toBeDefined();
-    expect(Server.AtsIntegrationHub).toBeDefined();
-    expect(Server.MultiplayerWarRoom).toBeDefined();
-    expect(Server.AgentSafetyCertification).toBeDefined();
+    expect(Server.OrganizationRegistry).toBeDefined();
+    expect(Server.InvitationService).toBeDefined();
+    expect(Server.SessionRegistry).toBeDefined();
+    expect(Server.LtiAdvantageService).toBeDefined();
+    expect(Server.AtsIntegrationService).toBeDefined();
+    expect(Server.WarRoomSession).toBeDefined();
+    expect(Server.AgentSafetyCertificationRunner).toBeDefined();
   });
 
   it("exports all grading, rubric, and calibration modules", () => {
@@ -48,13 +48,13 @@ describe("Architecture & Code Quality: Unified Barrel Exports", () => {
     expect(Grading.runBaseline).toBeDefined();
     expect(Grading.buildJudgePrompt).toBeDefined();
     expect(Grading.generateEvaluationManifest).toBeDefined();
-    expect(Grading.DoubleBlindQueue).toBeDefined();
-    expect(Grading.calculateActionPathDistance).toBeDefined();
-    expect(Grading.calculatePartialCredit).toBeDefined();
-    expect(Grading.calculateAssessorAgreement).toBeDefined();
+    expect(Grading.createBlindedPackage).toBeDefined();
+    expect(Grading.evaluatePathEfficiency).toBeDefined();
+    expect(Grading.scoreQuantityProportion).toBeDefined();
+    expect(Grading.evaluateAssessorCalibration).toBeDefined();
     expect(Grading.generateSkillDiagnostics).toBeDefined();
-    expect(Grading.exportAssessmentReport).toBeDefined();
-    expect(Grading.calculateTokenEconomics).toBeDefined();
+    expect(Grading.generatePrintableReportHtml).toBeDefined();
+    expect(Grading.calculateRunEconomics).toBeDefined();
   });
 
   it("exports all scenario catalog, compiler, and DSL builders", () => {
@@ -72,10 +72,10 @@ describe("Architecture & Code Quality: Unified Barrel Exports", () => {
     expect(Agents.buildMessages).toBeDefined();
     expect(Agents.BudgetLedger).toBeDefined();
     expect(Agents.summarizeTrajectory).toBeDefined();
-    expect(Agents.MultiProviderHub).toBeDefined();
-    expect(Agents.MultiAgentCoordinator).toBeDefined();
-    expect(Agents.ApprovalQueue).toBeDefined();
+    expect(Agents.formatPromptForProvider).toBeDefined();
+    expect(Agents.MultiAgentTeamCoordinator).toBeDefined();
+    expect(Agents.HandoffQueue).toBeDefined();
     expect(Agents.BenchmarkArena).toBeDefined();
-    expect(Agents.scanPromptSecurity).toBeDefined();
+    expect(Agents.analyzeUntrustedText).toBeDefined();
   });
 });
