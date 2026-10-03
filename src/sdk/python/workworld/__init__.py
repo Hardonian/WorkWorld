@@ -4,6 +4,7 @@ Type-safe client library for driving WorkWorld simulations in Python evaluation 
 """
 
 from .client import WorkWorldClient, EpisodeObservation, ActionResult, GradeResult
+from .gym import WorkWorldGymEnv
 
-__all__ = ["WorkWorldClient", "EpisodeObservation", "ActionResult", "GradeResult"]
+__all__ = ["WorkWorldClient", "EpisodeObservation", "ActionResult", "GradeResult", "WorkWorldGymEnv"]
 __version__ = "0.1.0"
