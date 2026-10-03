@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { ThemeToggle } from "../../components/ui/ThemeProvider.tsx";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Methods and API · WorkWorld" };
 
 export default function DocsPage() {
   return (
@@ -77,10 +80,10 @@ const report = engine.grade();`}</pre>
         {/* Section 2: Model Context Protocol */}
         <section className="space-y-4">
           <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-            2. Model Context Protocol (MCP) Integration
+            2. Experimental agent JSON-RPC interface
           </h3>
           <p className="text-sm text-slate-600 dark:text-slate-400">
-            WorkWorld exposes standard JSON-RPC 2.0 / MCP tool calling at <code className="font-mono text-indigo-600 dark:text-indigo-400">/api/mcp</code>. Any MCP-compatible agent host (Cursor, Claude Desktop, Antigravity) can connect instantly:
+            WorkWorld exposes a small JSON-RPC tool subset at <code className="font-mono text-indigo-600 dark:text-indigo-400">/api/mcp</code>. It is intended for local harness integration and is not yet packaged or verified as a drop-in MCP server for third-party hosts:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
             <div className="rounded-lg border border-slate-200 dark:border-slate-800 p-4 bg-white dark:bg-slate-900">
@@ -106,7 +109,7 @@ const report = engine.grade();`}</pre>
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-              3. Public REST API v1
+              3. Demo REST API v1
             </h3>
             <Link
               href="/api/v1/openapi"
@@ -151,7 +154,7 @@ const report = engine.grade();`}</pre>
         {/* Section 4: TypeScript SDK */}
         <section className="space-y-4">
           <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-            4. TypeScript SDK Quickstart
+            4. In-repository TypeScript client
           </h3>
           <div className="rounded-xl bg-slate-900 p-4 text-xs font-mono text-slate-100 overflow-x-auto">
             <pre>{`import { WorkWorldClient } from "@/sdk/client";

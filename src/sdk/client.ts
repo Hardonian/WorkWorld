@@ -15,6 +15,7 @@ export interface ClientConfig {
 export class WorkWorldClient {
   private readonly baseUrl: string;
   private readonly apiKey?: string;
+  private readonly revisions = new Map<string, number>();
 
   constructor(config: ClientConfig = {}) {
     this.baseUrl = (config.baseUrl || "http://localhost:3100").replace(/\/$/, "");
@@ -46,7 +47,7 @@ export class WorkWorldClient {
     scenarioId: string = "A1",
     options: { condition?: "human" | "agent" | "assisted"; seed?: number } = {}
   ): Promise<{ sessionId: string; runId: string; scenarioId: string; observation: Observation }> {
-    return this.request("/api/v1/episodes", {
+    const started = await this.request<{ sessionId: string; runId: string; scenarioId: string; observation: Observation }>("/api/v1/episodes", {
       method: "POST",
       body: JSON.stringify({
         scenarioId,
@@ -54,6 +55,8 @@ export class WorkWorldClient {
         seed: options.seed ?? 42,
       }),
     });
+    this.revisions.set(started.sessionId, started.observation.revision);
+    return started;
   }
 
   /**
@@ -63,6 +66,7 @@ export class WorkWorldClient {
     const data = await this.request<{ observation: Observation }>(
       `/api/v1/episodes?sessionId=${encodeURIComponent(sessionId)}`
     );
+    this.revisions.set(sessionId, data.observation.revision);
     return data.observation;
   }
 
@@ -79,21 +83,29 @@ export class WorkWorldClient {
     revision: number;
     observation: Observation;
   }> {
-    return this.request("/api/v1/actions", {
+    const result = await this.request<{
+      ok: boolean;
+      feedback: string;
+      errors: { code: string; message: string }[];
+      revision: number;
+      observation: Observation;
+    }>("/api/v1/actions", {
       method: "POST",
       body: JSON.stringify({ sessionId, action }),
     });
+    this.revisions.set(sessionId, result.revision);
+    return result;
   }
 
   /**
    * Advances logical simulation time by a specified number of minutes.
    */
-  public async advanceTime(sessionId: string, minutes: number = 60, currentRevision: number = 0) {
+  public async advanceTime(sessionId: string, minutes: number = 60, currentRevision?: number) {
     const action: Action = {
       type: "advance_time",
       actionId: "act_" + Math.random().toString(36).substring(2, 9),
       idempotencyKey: "idem_" + Math.random().toString(36).substring(2, 9),
-      expectedRevision: currentRevision,
+      expectedRevision: currentRevision ?? this.revisions.get(sessionId) ?? 0,
       minutes,
     };
     return this.step(sessionId, action);
@@ -109,13 +121,13 @@ export class WorkWorldClient {
     lines: PoLine[],
     requestedDeliveryDay: number = 3,
     note: string = "",
-    currentRevision: number = 0
+    currentRevision?: number
   ) {
     const action: Action = {
       type: "draft_purchase_order",
       actionId: "act_" + Math.random().toString(36).substring(2, 9),
       idempotencyKey: "idem_" + Math.random().toString(36).substring(2, 9),
-      expectedRevision: currentRevision,
+      expectedRevision: currentRevision ?? this.revisions.get(sessionId) ?? 0,
       poId,
       supplierId,
       lines,
@@ -128,12 +140,12 @@ export class WorkWorldClient {
   /**
    * Authorizes a purchase order.
    */
-  public async authorizePo(sessionId: string, poId: PoId, currentRevision: number = 0) {
+  public async authorizePo(sessionId: string, poId: PoId, currentRevision?: number) {
     const action: Action = {
       type: "authorize_purchase_order",
       actionId: "act_" + Math.random().toString(36).substring(2, 9),
       idempotencyKey: "idem_" + Math.random().toString(36).substring(2, 9),
-      expectedRevision: currentRevision,
+      expectedRevision: currentRevision ?? this.revisions.get(sessionId) ?? 0,
       poId,
     };
     return this.step(sessionId, action);
@@ -147,13 +159,13 @@ export class WorkWorldClient {
     deliveryId: DeliveryId,
     verifiedLines: DeliveryLine[],
     note: string = "Recorded delivery via SDK",
-    currentRevision: number = 0
+    currentRevision?: number
   ) {
     const action: Action = {
       type: "record_delivery",
       actionId: "act_" + Math.random().toString(36).substring(2, 9),
       idempotencyKey: "idem_" + Math.random().toString(36).substring(2, 9),
-      expectedRevision: currentRevision,
+      expectedRevision: currentRevision ?? this.revisions.get(sessionId) ?? 0,
       deliveryId,
       verifiedLines,
       note,

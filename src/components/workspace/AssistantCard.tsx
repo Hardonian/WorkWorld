@@ -23,7 +23,7 @@ export default function AssistantCard({
   act,
   status,
 }: {
-  act: (payload: Record<string, unknown>) => Promise<void>;
+  act: (payload: Record<string, unknown>) => Promise<boolean>;
   status: string;
 }) {
   const [suggestion, setSuggestion] = useState<SuggestionView | null>(null);
@@ -32,7 +32,7 @@ export default function AssistantCard({
 
   return (
     <Card title="Assistant (you stay responsible)">
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-slate-500 dark:text-slate-400">
         Suggestions are proposals only — nothing executes until you apply one. Advice and executed
         actions are recorded separately.
       </p>
@@ -70,7 +70,7 @@ export default function AssistantCard({
       ) : null}
 
       {suggestion ? (
-        <div className="mt-3 space-y-2 rounded-md bg-slate-50 p-2 text-xs">
+        <div className="mt-3 space-y-2 rounded-md bg-slate-50 p-2 text-xs dark:bg-slate-800/60">
           <div className="flex flex-wrap items-center gap-1">
             <Tag tone={suggestion.fixture ? "warn" : "info"}>
               {suggestion.provider}/{suggestion.model}
@@ -82,8 +82,8 @@ export default function AssistantCard({
                 : `cost ${suggestion.usage.costMinor} minor`}
             </Tag>
           </div>
-          {suggestion.notes ? <p className="text-slate-700">Rationale: {suggestion.notes}</p> : null}
-          {suggestion.advice ? <p className="text-slate-700">Advice: {suggestion.advice}</p> : null}
+          {suggestion.notes ? <p className="text-slate-700 dark:text-slate-300">Rationale: {suggestion.notes}</p> : null}
+          {suggestion.advice ? <p className="text-slate-700 dark:text-slate-300">Advice: {suggestion.advice}</p> : null}
           {suggestion.handoff ? (
             <p className="rounded border border-amber-200 bg-amber-50 p-1.5 text-amber-800">
               Requests your decision: {suggestion.handoff}
@@ -93,10 +93,10 @@ export default function AssistantCard({
           {suggestion.proposedAction ? (
             <>
               <details>
-                <summary className="cursor-pointer font-medium text-slate-700">
+                <summary className="cursor-pointer font-medium text-slate-700 dark:text-slate-300">
                   Inspect proposed action
                 </summary>
-                <pre className="mt-1 overflow-auto rounded bg-white p-2 text-[11px]">
+                <pre className="mt-1 overflow-auto rounded bg-white p-2 text-[11px] dark:bg-slate-950">
                   {JSON.stringify(suggestion.proposedAction, null, 2)}
                 </pre>
               </details>
@@ -109,7 +109,7 @@ export default function AssistantCard({
               </Button>
             </>
           ) : (
-            <p className="text-slate-500">Advice only — nothing to execute.</p>
+            <p className="text-slate-500 dark:text-slate-400">Advice only — nothing to execute.</p>
           )}
         </div>
       ) : null}

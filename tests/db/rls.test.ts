@@ -2,9 +2,9 @@
  * Hosted-boundary tests: real Postgres RLS with Supabase-compatible roles/claims.
  * Two organizations, participant/assessor/admin roles, forbidden mutations.
  * Requires the isolated test database: `npm run db:up` (Dockerized, local only).
- * Scope statement: this verifies the migration's access boundaries on a fresh
- * local Postgres with Supabase-compatible roles; it is NOT verification against
- * a hosted Supabase project (external blocker B1).
+ * Scope statement: by default this verifies the migration's access boundaries
+ * on fresh local Postgres with Supabase-compatible roles. When WW_TEST_PG_URL
+ * targets the dedicated hosted project, the same suite verifies hosted RLS.
  */
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { Client } from "pg";

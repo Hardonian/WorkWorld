@@ -2,6 +2,12 @@ import Link from "next/link";
 import { listScenarios } from "../scenarios/catalog.ts";
 import StartButton from "../components/home/StartButton.tsx";
 import { ThemeToggle } from "../components/ui/ThemeProvider.tsx";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Episode catalog · WorkWorld",
+  description: "Run synthetic professional-work simulations and inspect deterministic outcome evidence.",
+};
 
 export default function Home() {
   const scenarios = listScenarios();
@@ -19,11 +25,11 @@ export default function Home() {
               WorkWorld
             </span>
             <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-              Enterprise v1.0
+              Local research candidate
             </span>
           </div>
 
-          <nav className="flex items-center gap-4 text-xs font-semibold">
+          <nav className="flex flex-wrap items-center justify-end gap-4 text-xs font-semibold">
             <Link href="/workspace" className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               Workspace
             </Link>
@@ -48,10 +54,10 @@ export default function Home() {
       <main className="mx-auto max-w-6xl px-6 py-12 space-y-12">
         <section className="text-center max-w-3xl mx-auto space-y-4">
           <p className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
-            Professional Operations Apprenticeship &amp; AI Benchmark Arena
+            Operations apprenticeship &amp; evaluation research
           </p>
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 leading-tight">
-            Executable Business Work Simulations
+            Executable professional-work simulations
           </h1>
           <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
             Operate a persistent, consequential operations environment — purchase orders, deliveries, invoices, ledgers, tickets, and spreadsheets. Graded on <strong>true business state correctness</strong>, not narrative report polish.
@@ -61,13 +67,13 @@ export default function Home() {
               href="/workspace"
               className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-indigo-700 transition-colors"
             >
-              Launch Guided Simulation
+              Launch guided simulation
             </Link>
             <Link
-              href="/leaderboard"
+              href="/docs"
               className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
             >
-              View Model Leaderboard
+              Review methods &amp; API
             </Link>
           </div>
         </section>
@@ -91,10 +97,10 @@ export default function Home() {
               🤖
             </div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-              Native MCP &amp; Public REST API
+              Agent-ready harness
             </h3>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-              Connect external AI agents (Claude, GPT-4o, Gemini, local Ollama) via standard Model Context Protocol or REST API v1 endpoints with complete telemetry.
+              Run deterministic fixtures, OpenAI-compatible providers, or local Ollama through one bounded agent loop. An experimental REST and JSON-RPC interface is included for local evaluation.
             </p>
           </div>
 
@@ -103,10 +109,10 @@ export default function Home() {
               📜
             </div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-              Verifiable Credentials
+              Inspectable evidence
             </h3>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-              Learner and agent evaluations produce cryptographically signed digests and verifiable credential URLs for institutional accreditation and employer review.
+              Every run retains state digests, action evidence, narrow deterministic checks, and separately attributable human judgments. The project does not issue credentials or employment claims.
             </p>
           </div>
         </section>
@@ -119,7 +125,7 @@ export default function Home() {
                 Operations Apprenticeship Episodes
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Northline Supply Co. (synthetic). Six initial reviewed episodes spanning purchasing, reconciliation, and customer recovery.
+                Northline Supply Co. (synthetic). {scenarios.length} authored, code-reviewed episodes spanning purchasing, reconciliation, and customer recovery; practitioner validation remains pending.
               </p>
             </div>
           </div>
@@ -133,7 +139,7 @@ export default function Home() {
                 <div>
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-mono font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                      Episode {s.id}
+                      {s.id} · {s.family.replace(/_/g, " ")}
                     </span>
                     {i === 0 ? (
                       <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300">
@@ -158,7 +164,7 @@ export default function Home() {
                   </span>
                   <StartButton
                     scenarioId={s.id}
-                    label={i === 0 ? "Start Guided" : "Launch Episode"}
+                    label={i === 0 ? "Start guided episode" : "Start episode"}
                   />
                 </div>
               </article>

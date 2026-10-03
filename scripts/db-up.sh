@@ -27,6 +27,7 @@ for i in $(seq 1 30); do
   sleep 1
 done
 
-docker exec -i "$NAME" psql -U postgres -d workworld_test < db/migrations/0001_init.sql >/dev/null
-echo "db-up: migrations applied (db/migrations/0001_init.sql)"
-echo "db-up: WW_TEST_PG_URL=postgres://postgres:postgres@127.0.0.1:${PORT}/workworld_test"
+export WW_TEST_PG_URL="postgres://postgres:postgres@127.0.0.1:${PORT}/workworld_test"
+node scripts/apply-migrations.mjs
+echo "db-up: all ordered migrations applied"
+echo "db-up: WW_TEST_PG_URL=$WW_TEST_PG_URL"

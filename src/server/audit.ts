@@ -1,9 +1,9 @@
 /**
- * WorkWorld Security & Administrative Audit Log.
- * Tamper-evident, hash-chained log for enterprise compliance (SOC2 / FERPA).
+ * Prototype in-memory hash-chained audit log. This detects mutation during one
+ * process lifetime; it is not durable compliance evidence.
  */
 
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import type { Role } from "./rbac.ts";
 
 export interface SecurityAuditRecord {
@@ -34,11 +34,12 @@ export class AuditLogService {
   public static log(
     entry: Omit<SecurityAuditRecord, "id" | "timestamp" | "previousHash" | "recordHash">
   ): SecurityAuditRecord {
-    const id = "sec_" + Math.random().toString(36).substring(2, 11);
+    const id = randomUUID();
     const timestamp = new Date().toISOString();
     const previousHash = this.lastHash;
 
-    const dataToHash = `${id}|${timestamp}|${entry.actorId}|${entry.actorRole}|${entry.action}|${entry.targetResource}|${entry.status}|${previousHash}`;
+    const metadata = JSON.stringify(entry.metadata ?? {});
+    const dataToHash = `${id}|${timestamp}|${entry.actorId}|${entry.actorRole}|${entry.action}|${entry.targetResource}|${entry.ipAddress}|${entry.status}|${metadata}|${previousHash}`;
     const recordHash = createHash("sha256").update(dataToHash).digest("hex");
 
     const record: SecurityAuditRecord = {
@@ -55,7 +56,7 @@ export class AuditLogService {
   }
 
   public static getLog(): SecurityAuditRecord[] {
-    return [...this.inMemoryLog];
+    return structuredClone(this.inMemoryLog);
   }
 
   public static verifyChain(): boolean {
@@ -64,7 +65,8 @@ export class AuditLogService {
       if (record.previousHash !== currentExpectedPrev) {
         return false;
       }
-      const dataToHash = `${record.id}|${record.timestamp}|${record.actorId}|${record.actorRole}|${record.action}|${record.targetResource}|${record.status}|${record.previousHash}`;
+      const metadata = JSON.stringify(record.metadata ?? {});
+      const dataToHash = `${record.id}|${record.timestamp}|${record.actorId}|${record.actorRole}|${record.action}|${record.targetResource}|${record.ipAddress}|${record.status}|${metadata}|${record.previousHash}`;
       const computed = createHash("sha256").update(dataToHash).digest("hex");
       if (computed !== record.recordHash) {
         return false;

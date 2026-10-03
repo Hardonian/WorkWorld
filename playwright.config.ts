@@ -9,7 +9,7 @@ export default defineConfig({
   workers: 1,
   use: {
     baseURL: "http://localhost:3100",
-    trace: "retain-on-failure",
+    trace: process.env.CI ? "retain-on-failure" : "off",
   },
   webServer: {
     command: "npm run dev",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-03T01:01:19.396Z",
+  "generatedAt": "2026-10-03T01:26:29.764Z",
   "localReadiness": "local technical candidate: PASS",
   "hostedReadiness": "hosted: blocked_external (no hosted configuration; B1)",
   "researchReadiness": "harness validation only — no live-model or human-study evidence",
@@ -12,7 +12,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-03T01:00:33.627Z",
+      "started": "2026-10-03T01:25:39.574Z",
       "tail": "> workworld@0.1.0 lint | > eslint ."
     },
     {
@@ -22,7 +22,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-03T01:00:45.436Z",
+      "started": "2026-10-03T01:25:52.088Z",
       "tail": "> workworld@0.1.0 typecheck | > tsc --noEmit"
     },
     {
@@ -32,8 +32,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-03T01:00:52.241Z",
-      "tail": "\u001b[2m  Transform \u001b[22m \u001b[33mtransforming modules took 3.02s\u001b[39m\u001b[2m · 33% of tracked time, re-done on every run\u001b[22m | \u001b[2m            \u001b[22m \u001b[2mpersist transforms across runs with \u001b[22m\u001b[33mfsModuleCache: true\u001b[39m | \u001b[2m            \u001b[22m \u001b[2mlearn more: https://vitest.dev/guide/improving-performance#caching-between-reruns\u001b[22m"
+      "started": "2026-10-03T01:25:56.882Z",
+      "tail": "\u001b[2m  Transform \u001b[22m \u001b[33mtransforming modules took 3.24s\u001b[39m\u001b[2m · 31% of tracked time, re-done on every run\u001b[22m | \u001b[2m            \u001b[22m \u001b[2mpersist transforms across runs with \u001b[22m\u001b[33mfsModuleCache: true\u001b[39m | \u001b[2m            \u001b[22m \u001b[2mlearn more: https://vitest.dev/guide/improving-performance#caching-between-reruns\u001b[22m"
     },
     {
       "id": "baseline",
@@ -42,7 +42,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-03T01:00:56.938Z",
+      "started": "2026-10-03T01:26:02.144Z",
       "tail": "C2 PASS T1 9/9 |  | baseline: 6/6 episodes pass (fixture actor, not a model)"
     },
     {
@@ -52,7 +52,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-03T01:00:58.602Z",
+      "started": "2026-10-03T01:26:03.906Z",
       "tail": "N6 OK  expected=[help_policy] actual=[help_policy] — indiscriminate requests for human help |  | negative controls: 6/6 detected for the right reasons"
     },
     {
@@ -62,7 +62,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-03T01:01:00.344Z",
+      "started": "2026-10-03T01:26:05.724Z",
       "tail": " | ○  (Static)   prerendered as static content | ƒ  (Dynamic)  server-rendered on demand"
     },
     {
@@ -72,7 +72,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-03T01:01:15.696Z",
+      "started": "2026-10-03T01:26:25.187Z",
       "tail": "> tsx scripts/validate-task-state.ts |  | TASK_STATE.json OK: 11 milestones, 2 external blockers; docs/TASK_STATE.schema.json refreshed"
     },
     {
@@ -82,7 +82,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-03T01:01:17.083Z",
+      "started": "2026-10-03T01:26:26.801Z",
       "tail": ""
     }
   ]

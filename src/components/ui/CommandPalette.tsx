@@ -74,16 +74,16 @@ export function CommandPalette({
     {
       id: "nav-analytics",
       category: "Navigation",
-      title: "Go to Executive Analytics Dashboard",
-      description: "View cohort completion rates and mastery heatmaps",
+      title: "Go to Evidence Dashboard",
+      description: "Review verified readiness facts and open validation gates",
       shortcut: "G D",
       onSelect: () => router.push("/analytics"),
     },
     {
       id: "nav-leaderboard",
       category: "Navigation",
-      title: "Go to AI Model Leaderboard",
-      description: "Compare frontier models on operational correctness",
+      title: "Go to Evaluation Status",
+      description: "See fixture evidence and explicit model-result claim limits",
       shortcut: "G L",
       onSelect: () => router.push("/leaderboard"),
     },
@@ -208,7 +208,6 @@ export function CommandPalette({
       category: "System",
       title: "Toggle Dark / Light Mode",
       description: "Switch visual color scheme",
-      shortcut: "Cmd+D",
       onSelect: () => toggleTheme(),
     },
   ];
@@ -245,6 +244,9 @@ export function CommandPalette({
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Command palette"
       className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-slate-950/60 backdrop-blur-sm p-4 animate-in fade-in-0"
       onClick={onClose}
     >
@@ -276,6 +278,7 @@ export function CommandPalette({
               setSelectedIndex(0);
             }}
             onKeyDown={handleKeyDown}
+            aria-label="Search commands"
             placeholder="Type a command, search modules, or jump to page..."
             className="flex-1 bg-transparent text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none"
           />
@@ -292,14 +295,15 @@ export function CommandPalette({
             </div>
           ) : (
             filtered.map((cmd, idx) => (
-              <div
+              <button
+                type="button"
                 key={cmd.id}
                 onClick={() => {
                   cmd.onSelect();
                   onClose();
                 }}
                 onMouseEnter={() => setSelectedIndex(idx)}
-                className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-sm cursor-pointer transition-colors ${
+                className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm cursor-pointer transition-colors ${
                   idx === selectedIndex
                     ? "bg-indigo-50 text-indigo-900 dark:bg-indigo-950/60 dark:text-indigo-100"
                     : "text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800/60"
@@ -323,7 +327,7 @@ export function CommandPalette({
                     {cmd.shortcut}
                   </kbd>
                 ) : null}
-              </div>
+              </button>
             ))
           )}
         </div>

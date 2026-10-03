@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { Observation } from "../../domain/observation.ts";
 import { Button, Card, Empty, Field, StatusTag, Tag, formatMinor, inputClass } from "./ui.tsx";
 
-type Act = (payload: Record<string, unknown>) => Promise<void>;
+type Act = (payload: Record<string, unknown>) => Promise<boolean>;
 
 interface PanelProps {
   obs: Observation;

@@ -28,6 +28,8 @@ function gate(id, description, cmd, required = true) {
     console.log(`PASS ${id}`);
   } catch (e) {
     const err = e;
+    if (err.stderr) console.error(`[gate ${id} stderr]:`, err.stderr.toString());
+    if (err.stdout) console.error(`[gate ${id} stdout]:`, err.stdout.toString());
     results.push({ id, description, cmd, required, exitCode: err.status ?? 1, ok: false, started, tail: redact(`${err.stdout ?? ""} ${err.stderr ?? ""}`.trim().split("\n").slice(-3).join(" | ")) });
     console.log(`${required ? "FAIL" : "WARN"} ${id}`);
   }

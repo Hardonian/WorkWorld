@@ -3,7 +3,10 @@ import "./globals.css";
 import { ThemeProvider } from "../components/ui/ThemeProvider.tsx";
 
 export const metadata: Metadata = {
-  title: "WorkWorld — Executable Professional-Work Simulations",
+  title: {
+    default: "WorkWorld — Executable Professional-Work Simulations",
+    template: "%s",
+  },
   description:
     "Executable business operations apprenticeship simulations with inspectable state assessment evidence.",
 };

@@ -65,6 +65,21 @@ describe("FileStore persistence", () => {
     expect(JSON.stringify(loaded)).toBe(JSON.stringify(engine.getState()));
   });
 
+  it("repeatedly replaces a file-backed checkpoint without exposing corrupt state", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ww-store-"));
+    try {
+      const store = new FileStore(dir);
+      await store.createRun(meta);
+      const engine = runBaseline("A1");
+      for (let attempt = 0; attempt < 25; attempt += 1) {
+        await store.saveState(meta.runId, engine.getState());
+        await expect(store.loadState(meta.runId)).resolves.toEqual(engine.getState());
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it("rejects run ids that could escape the configured data directory", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ww-store-"));
     try {

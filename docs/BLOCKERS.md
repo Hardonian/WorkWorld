@@ -14,10 +14,21 @@ Precise blockers, failed attempts, alternatives, and what unblocks them.
   different already-paid provider. The runner already enforces a budget check
   before every paid dispatch.
 
+## B3. Hosted application path — IMPLEMENTATION BLOCKED (open)
+- What: authenticated application traffic using the hosted Postgres/Supabase
+  episode and assessment tables end to end.
+- Current evidence: migrations and RLS policies are verified against the hosted
+  database. The Next.js application still uses the demo FileStore/MemoryStore.
+- Safety behavior: selecting `WORKWORLD_MODE=hosted` refuses episode starts and
+  readiness returns `503`; the app never silently stores hosted work in demo files.
+- Unblock: integrate trusted user identity, implement a transactional Postgres
+  EventStore with revision/idempotency guarantees, and run participant + assessor
+  browser smoke tests against the hosted deployment.
+
 ## Closed
 
-### B1. Hosted (Supabase) release — CLOSED 2026-10-02 (verified)
-- What: verification against a real hosted Supabase/Postgres project and hosted release.
+### B1. Hosted Supabase database boundary — CLOSED 2026-10-02 (verified)
+- What: verification against a real hosted Supabase/Postgres project at the database/RLS boundary.
 - Resolution: dedicated hosted project `gsssdavzyorvhtdolvaj.supabase.co`
   provisioned (separate from any other application's project). Migrations applied
   via `scripts/apply-migrations.mjs` over a session-mode connection (transaction

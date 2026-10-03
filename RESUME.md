@@ -22,12 +22,15 @@ Last updated: 2026-10-02 (M10 complete — local release candidate; resume-day r
     runner budget-checks before every paid dispatch.
   - **human governance**: ethics/consent approval before any participant work
     (materials/ drafts); practitioner reviewers invited by the user only.
-- Hosted (B1) CLOSED 2026-10-02: dedicated project `gsssdavzyorvhtdolvaj.supabase.co`,
+- Hosted database boundary (B1) CLOSED 2026-10-02: dedicated project `gsssdavzyorvhtdolvaj.supabase.co`,
   12/12 RLS verified remotely via the `hosted-rls` release gate. Credentials in
   `.env.local` (gitignored) + operator secrets file. To re-verify with hosted
   checks: `set -a; source ~/.hermes/secrets/supabase.env; set +a; npm run release-gate`
   (expect `hosted: VERIFIED`). Hosted schema changes: `node scripts/apply-migrations.mjs`
   (session-mode URL required).
+- Hosted application execution remains open as B3: auth identity and a
+  transactional Postgres EventStore are not wired. `WORKWORLD_MODE=hosted`
+  therefore fails closed instead of using demo persistence.
 - Durable records: `TASK_STATE.json` (authoritative; `npm run validate:task-state`),
   `docs/BUILD_LOG.md`, `docs/BLOCKERS.md`, `docs/TECHNICAL_REPORT.md`.
 - Resume rule: reread this file + TASK_STATE.json + git status; validate evidence

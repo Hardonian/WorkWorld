@@ -1,0 +1,43 @@
+services:
+  workworld:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: workworld:latest
+    container_name: workworld-app
+    ports:
+      - "3100:3100"
+    environment:
+      - NODE_ENV=production
+      - PORT=3100
+      - HOSTNAME=0.0.0.0
+      - WORKWORLD_STORE=file
+      - WORKWORLD_DATA_DIR=/app/var/demo-data
+      - WORKWORLD_ASSESSMENT_DIR=/app/var/assessments
+      - OLLAMA_BASE_URL=http://ollama:11434
+    volumes:
+      - workworld-data:/app/var/demo-data
+      - workworld-assessments:/app/var/assessments
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3100/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: workworld-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    restart: unless-stopped
+    profiles:
+      - with-ollama
+
+volumes:
+  workworld-data:
+  workworld-assessments:
+  ollama-models:

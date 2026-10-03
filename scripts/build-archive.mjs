@@ -38,7 +38,7 @@ sh(`git archive --format=tar.gz --prefix=${name}/ -o ${tarball} HEAD`);
 
 // Verify extraction in a clean directory and check for forbidden content.
 const verifyDir = join(outDir, "verify");
-rmSync(verifyDir, { recursive: true, force: true });
+rmSync(verifyDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 mkdirSync(verifyDir, { recursive: true });
 sh(`tar -xzf ${tarball} -C ${verifyDir}`);
 const files = walk(join(verifyDir, name)).sort();
@@ -72,7 +72,7 @@ writeFileSync(
     "\n",
 );
 
-rmSync(verifyDir, { recursive: true, force: true });
+rmSync(verifyDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 
 if (problems.length > 0) {
   console.error("ARCHIVE VERIFICATION FAILED:");

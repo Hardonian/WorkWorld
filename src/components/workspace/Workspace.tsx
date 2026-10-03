@@ -23,6 +23,7 @@ import { AuditDrawer } from "./AuditDrawer.tsx";
 import { ReconciliationVisualizer } from "./ReconciliationVisualizer.tsx";
 import { ToastProvider, useToast } from "../ui/Toast.tsx";
 import { useKeyboardShortcuts } from "../ui/useKeyboardShortcuts.ts";
+import { closingBalances } from "../../domain/ledger.ts";
 
 type TabId =
   | "brief"
@@ -59,6 +60,7 @@ interface Assessment {
 function WorkspaceContent() {
   const [obs, setObs] = useState<Observation | null>(null);
   const [tab, setTab] = useState<TabId>("brief");
+  const [feedback, setFeedback] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
   const [assessment, setAssessment] = useState<Assessment | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitSummary, setSubmitSummary] = useState("");
@@ -80,7 +82,7 @@ function WorkspaceContent() {
   }, []);
 
   const act = useCallback(
-    async (payload: Record<string, unknown>) => {
+    async (payload: Record<string, unknown>): Promise<boolean> => {
       try {
         const res = await fetch("/api/actions", {
           method: "POST",
@@ -90,6 +92,18 @@ function WorkspaceContent() {
         const data = await res.json();
         if (data.observation) setObs(data.observation);
 
+        const errMessages = (data.errors ?? [])
+          .map((e: { message: string }) => e.message)
+          .join("; ");
+        const feedbackText = data.ok
+          ? data.feedback || "Done."
+          : `Rejected: ${errMessages || data.error || "Request could not be applied."}`;
+
+        setFeedback({
+          kind: data.ok ? "ok" : "error",
+          text: feedbackText,
+        });
+
         if (data.ok) {
           addToast({
             type: "success",
@@ -97,21 +111,22 @@ function WorkspaceContent() {
             message: data.feedback || `${String(payload.type).replace(/_/g, " ")} completed successfully.`,
           });
         } else {
-          const errMessages = (data.errors ?? [])
-            .map((e: { message: string }) => e.message)
-            .join("; ");
           addToast({
             type: "policy",
             title: "Action Rejected by Policy",
             message: errMessages || "Operation disallowed under current scenario policies.",
           });
         }
+        return res.ok && data.ok === true;
       } catch (err: unknown) {
+        const errorText = err instanceof Error ? err.message : "Failed to execute action.";
+        setFeedback({ kind: "error", text: errorText });
         addToast({
           type: "error",
           title: "Network Error",
-          message: err instanceof Error ? err.message : "Failed to execute action.",
+          message: errorText,
         });
+        return false;
       }
     },
     [addToast]
@@ -120,8 +135,11 @@ function WorkspaceContent() {
   const handleAdvanceTime = useCallback(
     async (minutes: number) => {
       setIsAdvancingTime(true);
-      await act({ type: "advance_time", minutes });
-      setIsAdvancingTime(false);
+      try {
+        await act({ type: "advance_time", minutes });
+      } finally {
+        setIsAdvancingTime(false);
+      }
     },
     [act]
   );
@@ -174,25 +192,30 @@ function WorkspaceContent() {
   }
 
   // Calculate HUD metrics
-  const unreadMessagesCount = obs.inbox.filter((m) => m.direction === "in").length;
+  const inboundMessageCount = obs.inbox.filter((m) => m.direction === "in").length;
   const pendingPoCount = Object.values(obs.purchaseOrders).filter(
     (p) => p.status === "draft" || p.status === "pending_approval"
   ).length;
   const pendingDeliveryCount = Object.values(obs.deliveries).filter((d) => d.status === "arrived").length;
 
-  const currentCashMinor = obs.ledger.opening.cash ?? 0;
+  const balances = closingBalances(obs.ledger.opening, obs.ledger.txns);
+  const openingEquityMinor =
+    obs.ledger.opening.cash +
+    obs.ledger.opening.accounts_receivable +
+    obs.ledger.opening.inventory -
+    obs.ledger.opening.accounts_payable;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors pb-12">
       {/* Top Simulation HUD */}
       <SimulationHUD
         scenarioId={obs.scenarioId}
-        family={obs.brief.company}
+        contextLabel={obs.brief.role}
         minute={obs.clockMinute}
-        cashMinor={currentCashMinor}
+        cashMinor={balances.cash}
         budgetCommittedMinor={obs.budget.committedMinor}
         budgetLimitMinor={obs.policy.budgetMinor}
-        unreadCount={unreadMessagesCount}
+        inboundMessageCount={inboundMessageCount}
         pendingPoCount={pendingPoCount}
         pendingDeliveryCount={pendingDeliveryCount}
         revision={obs.revision}
@@ -202,7 +225,51 @@ function WorkspaceContent() {
         isAdvancing={isAdvancingTime}
       />
 
+      {feedback ? (
+        <div className="mx-auto max-w-7xl px-4 pt-4">
+          <div
+            role="status"
+            aria-live="polite"
+            className={`rounded-md border px-4 py-2 text-sm ${
+              feedback.kind === "ok"
+                ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/80 dark:border-emerald-800 dark:text-emerald-200"
+                : "border-rose-200 bg-rose-50 text-rose-800 dark:bg-rose-950/80 dark:border-rose-800 dark:text-rose-200"
+            }`}
+          >
+            {feedback.text}
+          </div>
+        </div>
+      ) : null}
+
       <div className="mx-auto max-w-7xl px-4 py-6">
+        <header className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-400">
+              {obs.brief.company} · {obs.brief.role} · {obs.scenarioId}
+            </p>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+              {obs.episodeTitle}{" "}
+              <span className="text-slate-400 dark:text-slate-500 font-normal">
+                · Day {obs.day} / logical {obs.clockMinute}m
+              </span>
+            </h1>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Tag tone="info">
+              budget {formatMinor(obs.budget.committedMinor, obs.policy.currency)} /{" "}
+              {formatMinor(obs.budget.limitMinor, obs.policy.currency)}
+            </Tag>
+            <Tag tone={obs.status === "active" ? "ok" : "warn"}>{obs.status}</Tag>
+            <Button
+              variant="secondary"
+              onClick={() => handleAdvanceTime(1440)}
+              disabled={obs.status !== "active" || isAdvancingTime}
+            >
+              Advance 1 day
+            </Button>
+          </div>
+        </header>
+
         <div className="grid gap-6 lg:grid-cols-[220px_1fr_320px]">
           {/* Navigation Sidebar */}
           <nav aria-label="Workspace sections" className="flex flex-wrap gap-1 lg:flex-col">
@@ -211,6 +278,7 @@ function WorkspaceContent() {
                 key={t.id}
                 onClick={() => setTab(t.id)}
                 aria-current={tab === t.id ? "page" : undefined}
+                aria-label={t.label}
                 className={`flex items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
                   tab === t.id
                     ? "bg-indigo-600 text-white shadow-xs"
@@ -218,7 +286,10 @@ function WorkspaceContent() {
                 }`}
               >
                 <span>{t.label}</span>
-                <span className={`text-[10px] font-mono opacity-60 ${tab === t.id ? "text-white" : "text-slate-400"}`}>
+                <span
+                  aria-hidden="true"
+                  className={`text-[10px] opacity-60 ${tab === t.id ? "text-white" : "text-slate-400"}`}
+                >
                   {idx + 1}
                 </span>
               </button>
@@ -266,13 +337,8 @@ function WorkspaceContent() {
             {tab === "ledger" ? (
               <div className="space-y-6">
                 <ReconciliationVisualizer
-                  balances={{
-                    cash: obs.ledger.opening.cash,
-                    accounts_receivable: obs.ledger.opening.accounts_receivable,
-                    inventory: obs.ledger.opening.inventory,
-                    accounts_payable: obs.ledger.opening.accounts_payable,
-                    opening_equity: 4000000,
-                  }}
+                  balances={balances}
+                  openingEquityMinor={openingEquityMinor}
                   transactions={obs.ledger.txns}
                   currency={obs.policy.currency}
                 />
@@ -324,7 +390,11 @@ function WorkspaceContent() {
                   <div className="mt-2">
                     <Button
                       onClick={async () => {
-                        await act({ type: "submit_work", summary: submitSummary || "submitted" });
+                        const submitted = await act({
+                          type: "submit_work",
+                          summary: submitSummary || "submitted",
+                        });
+                        if (!submitted) return;
                         const res = await fetch("/api/session", { method: "POST" });
                         const data = await res.json();
                         if (data.report) setAssessment(data.report);

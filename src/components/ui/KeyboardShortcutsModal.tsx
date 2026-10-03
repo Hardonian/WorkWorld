@@ -22,6 +22,9 @@ export function KeyboardShortcutsModal({ isOpen, onClose }: KeyboardShortcutsMod
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="keyboard-shortcuts-title"
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4 animate-in fade-in-0"
       onClick={onClose}
     >
@@ -34,7 +37,7 @@ export function KeyboardShortcutsModal({ isOpen, onClose }: KeyboardShortcutsMod
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 font-bold text-sm">
               ?
             </span>
-            <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-base">
+            <h3 id="keyboard-shortcuts-title" className="font-semibold text-slate-900 dark:text-slate-100 text-base">
               Keyboard Shortcuts
             </h3>
           </div>

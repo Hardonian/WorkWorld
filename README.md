@@ -17,8 +17,8 @@ polish of the report.
 
 | Dimension | State |
 |-----------|-------|
-| Local technical candidate | verified: 89 unit/integration tests (incl. real Postgres RLS), 8 browser e2e tests, lint/typecheck/build clean |
-| Hosted candidate | **blocked** — no hosted Supabase project configured (docs/BLOCKERS.md B1); RLS verified on local Postgres with Supabase-compatible roles |
+| Local technical candidate | verified automated suite (including real Postgres RLS), 8 original browser e2e journeys, lint/typecheck/build gate |
+| Hosted candidate | **not wired** — hosted Supabase RLS is verified, but app auth and the Postgres EventStore adapter are not integrated; hosted execution refuses to fall back to demo storage |
 | Research evidence | **harness validation only** — no live-model comparison, no human study |
 | Commercial evidence | **none** — protocols only; no customers, pilots, or revenue |
 

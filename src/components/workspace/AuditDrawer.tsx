@@ -10,7 +10,7 @@ interface AuditDrawerProps {
 }
 
 export function AuditDrawer({ isOpen, onClose, observation }: AuditDrawerProps) {
-  const [filter, setFilter] = useState<"all" | "errors" | "actions">("all");
+  const [filter, setFilter] = useState<"all" | "errors">("all");
 
   if (!isOpen || !observation) return null;
 
@@ -22,6 +22,9 @@ export function AuditDrawer({ isOpen, onClose, observation }: AuditDrawerProps) 
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="audit-drawer-title"
       className="fixed inset-0 z-50 flex justify-end bg-slate-950/40 backdrop-blur-xs animate-in fade-in-0"
       onClick={onClose}
     >
@@ -33,7 +36,7 @@ export function AuditDrawer({ isOpen, onClose, observation }: AuditDrawerProps) 
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6 py-4 bg-slate-50/50 dark:bg-slate-950/50">
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
+              <h2 id="audit-drawer-title" className="text-base font-bold text-slate-900 dark:text-slate-100">
                 Audit Timeline &amp; State Trace
               </h2>
               <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-mono font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
@@ -114,7 +117,7 @@ export function AuditDrawer({ isOpen, onClose, observation }: AuditDrawerProps) 
             </div>
           ) : (
             filteredActions.map((h, i: number) => {
-              const isOk = h.outcome === "ok";
+              const isOk = h.outcome === "applied" || h.outcome === "replayed";
               return (
                 <div
                   key={i}

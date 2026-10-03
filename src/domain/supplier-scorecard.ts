@@ -48,28 +48,34 @@ export function calculateSupplierScorecard(
     if (!matchingPo) continue;
 
     // Estimated delivery day based on arrival minute
-    const arrivedDay = Math.floor(del.arrivedAtMinute / (8 * 60)) + 1;
+    const arrivedDay = Math.floor(del.arrivedAtMinute / 1440);
     if (arrivedDay <= matchingPo.requestedDeliveryDay) {
       onTimeDeliveries++;
     }
 
     // Check line qty accuracy
-    const poLineMap = new Map(matchingPo.lines.map((l) => [l.itemId, l.qty]));
-    let lineAccurate = true;
-    for (const delLine of del.lines) {
-      const expected = poLineMap.get(delLine.itemId) ?? 0;
-      if (delLine.qty < expected || delLine.substituteFor) {
-        lineAccurate = false;
-        break;
-      }
-    }
+    const lineAccurate = matchingPo.lines.every((poLine) => {
+      const received = del.lines
+        .filter((line) => line.itemId === poLine.itemId || line.substituteFor === poLine.itemId)
+        .reduce((sum, line) => sum + line.qty, 0);
+      return received === poLine.qty;
+    });
     if (lineAccurate) accurateDeliveries++;
   }
 
   // Price compliance
   let priceCompliantInvoices = 0;
   for (const inv of supplierInvoices) {
-    if (inv.status !== "disputed" && !inv.disputeReason) {
+    const po = inv.poId ? supplierPos.find((candidate) => candidate.id === inv.poId) : undefined;
+    const compliant =
+      po !== undefined &&
+      inv.lines.every((line) =>
+        po.lines.some(
+          (poLine) =>
+            poLine.itemId === line.itemId && poLine.unitPriceMinor === line.unitPriceMinor,
+        ),
+      );
+    if (compliant && inv.status !== "disputed" && !inv.disputeReason) {
       priceCompliantInvoices++;
     }
   }

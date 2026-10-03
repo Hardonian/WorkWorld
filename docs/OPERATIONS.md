@@ -10,15 +10,16 @@ npm run dev                    # http://localhost:3100
 npm run build && npm start
 ```
 
-Health: `GET /health` returns service/mode/time (no secrets). Readiness: the
-process serves `/health` only after boot completes.
+Liveness: `GET /health` returns service/mode/time (no secrets). Readiness:
+`GET /health/ready` verifies the configured demo store and returns `503` when
+hosted mode is selected because that application path is intentionally disabled.
 
 ## Modes
 
 | Mode | Config | Behavior |
 |------|--------|----------|
 | demo (default) | none | per-session state in `var/demo-data` (FileStore) or memory |
-| hosted | `WORKWORLD_MODE=hosted` + `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` | Supabase/Postgres; **refuses to start sessions when config is incomplete** — never falls back to demo data |
+| hosted | reserved | Database schema/RLS is verified, but app auth + Postgres EventStore are not wired; **all hosted episode starts are refused** — never falls back to demo data |
 
 ## Data, backup, restore
 
@@ -26,7 +27,7 @@ process serves `/health` only after boot completes.
   **Backup:** copy `var/demo-data` (append-only history + digest-verified state).
   **Restore:** copy back; `loadState` verifies digests and refuses corrupt
   snapshots with an explicit recovery path (checkpoint / replay / restart).
-- Hosted: use the managed project's backup tooling. Migrations are versioned in
+- Hosted database boundary: use the managed project's backup tooling. Migrations are versioned in
   `db/migrations/` and apply to a **fresh** database:
   `bash scripts/db-up.sh` (test stack) or `node scripts/apply-migrations.mjs`
   (hosted — requires `WW_TEST_PG_URL`/`DATABASE_URL` in session mode, :5432;
@@ -65,5 +66,6 @@ npm run release-gate
 
 Runs lint, typecheck, tests, baseline, negatives, build and archive checks;
 exits nonzero when a required technical gate lacks current evidence. Hosted
-readiness is reported separately and stays `blocked_external` until verified
-against a real hosted project.
+database-boundary readiness is reported separately. Application-hosted readiness
+stays blocked until authenticated identity and the Postgres EventStore are wired
+and exercised end to end.

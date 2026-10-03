@@ -1,16 +1,19 @@
 "use client";
 
 import React from "react";
-import type { LedgerTxn, AccountId } from "../../domain/types.ts";
+import type { LedgerTxn } from "../../domain/types.ts";
+import type { Balances } from "../../domain/ledger.ts";
 
 interface ReconciliationVisualizerProps {
-  balances: Record<AccountId, number>;
+  balances: Balances;
+  openingEquityMinor: number;
   transactions: LedgerTxn[];
   currency?: string;
 }
 
 export function ReconciliationVisualizer({
   balances,
+  openingEquityMinor,
   transactions,
   currency = "CAD",
 }: ReconciliationVisualizerProps) {
@@ -23,7 +26,7 @@ export function ReconciliationVisualizer({
     (balances.inventory ?? 0);
 
   const totalLiabilitiesAndEquity =
-    (balances.accounts_payable ?? 0) + (balances.opening_equity ?? 0);
+    (balances.accounts_payable ?? 0) + openingEquityMinor;
 
   const isBalanced = Math.abs(totalAssets - totalLiabilitiesAndEquity) < 1; // minor precision
 
@@ -57,7 +60,7 @@ export function ReconciliationVisualizer({
       </div>
 
       {/* T-Accounts Grid */}
-      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
         {/* Cash */}
         <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-3.5 dark:border-slate-800 dark:bg-slate-800/40">
           <div className="flex justify-between items-center text-xs">
@@ -71,6 +74,17 @@ export function ReconciliationVisualizer({
           </h4>
           <p className="mt-2 text-xl font-bold font-mono text-slate-900 dark:text-slate-100">
             {formatMinor(balances.cash ?? 0)}
+          </p>
+        </div>
+
+        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-3.5 dark:border-slate-800 dark:bg-slate-800/40">
+          <div className="flex justify-between items-center text-xs">
+            <span className="font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider text-[10px]">Asset</span>
+            <span className="font-mono text-slate-400">#1100</span>
+          </div>
+          <h4 className="mt-1 text-sm font-bold text-slate-800 dark:text-slate-200">Accounts Receivable</h4>
+          <p className="mt-2 text-xl font-bold font-mono text-slate-900 dark:text-slate-100">
+            {formatMinor(balances.accounts_receivable ?? 0)}
           </p>
         </div>
 
@@ -118,7 +132,7 @@ export function ReconciliationVisualizer({
             Opening Equity
           </h4>
           <p className="mt-2 text-xl font-bold font-mono text-slate-700 dark:text-slate-300">
-            {formatMinor(balances.opening_equity ?? 0)}
+            {formatMinor(openingEquityMinor)}
           </p>
         </div>
       </div>
@@ -130,7 +144,7 @@ export function ReconciliationVisualizer({
           <span className="text-slate-400">=</span>
           <span>Liabilities: <strong>{formatMinor(balances.accounts_payable ?? 0)}</strong></span>
           <span className="text-slate-400">+</span>
-          <span>Equity: <strong>{formatMinor(balances.opening_equity ?? 0)}</strong></span>
+          <span>Opening equity: <strong>{formatMinor(openingEquityMinor)}</strong></span>
         </div>
         <span className="text-slate-500 dark:text-slate-400 font-sans">
           {transactions.length} reconciled journal entries recorded

@@ -48,13 +48,15 @@ Event-sourced: append-only event log per episode run; derived state by reduce.
 | Mode   | Store            | Tenancy                                  |
 |--------|------------------|------------------------------------------|
 | demo   | `file` (JSONL) or `memory` | per-session opaque ID (httpOnly cookie)  |
-| hosted | Postgres/Supabase | tenant from trusted server identity only  |
+| hosted (schema only) | Postgres/Supabase | RLS verified; application store/auth adapter not wired |
 
 - Demo sessions are isolated by server-generated opaque session ID; client-supplied
   tenant/headers are never trusted. Demo flags cannot bypass hosted authorization.
-- Hosted: participant / assessor / org-admin roles; tenant + role enforced in RLS
-  and in application checks; service-role key server-only.
-- State-changing hosted actions use transactional revision checks + idempotency keys.
+- Hosted target: participant / assessor / org-admin roles with tenant + role
+  enforced in RLS and application checks. Today only the database policy boundary
+  is verified; hosted episode execution is disabled to prevent a demo-store fallback.
+- State-changing demo actions use per-run process serialization plus revision and
+  idempotency checks. Multi-instance transactional mutation remains a hosted-adapter requirement.
 - Corrupt/incompatible state is detected (schema + version + digest check) and a
   recovery path is presented (restore checkpoint / restart episode), never silent repair.
 

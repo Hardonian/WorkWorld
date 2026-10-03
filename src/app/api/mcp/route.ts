@@ -23,9 +23,9 @@ export async function POST(request: Request) {
 
 export async function GET() {
   return NextResponse.json({
-    status: "ok",
+    status: "preview",
     service: "workworld-mcp",
-    spec: "Model Context Protocol (JSON-RPC 2.0)",
+    spec: "Experimental JSON-RPC tool subset",
     endpoint: "/api/mcp",
   });
 }

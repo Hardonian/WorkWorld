@@ -4,10 +4,10 @@ export async function GET() {
   const openApiSpec = {
     openapi: "3.1.0",
     info: {
-      title: "WorkWorld Enterprise Simulation & Evaluation API",
-      version: "1.0.0",
+      title: "WorkWorld Demo Simulation & Evaluation API",
+      version: "0.1.0",
       description:
-        "Public REST API for driving executable business operations simulations, observing state, submitting actions, and retrieving deterministic assessment reports.",
+        "Local/demo API for driving simulations and retrieving narrow deterministic assessment evidence. Session ids are capability tokens; production authentication and tenancy are not implemented.",
       contact: {
         name: "WorkWorld Engineering",
         url: "https://github.com/Hardonian/workworld",

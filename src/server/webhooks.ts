@@ -3,7 +3,7 @@
  * Dispatches signed HMAC-SHA256 payloads for external evaluation harnesses.
  */
 
-import { createHmac } from "node:crypto";
+import { createHmac, randomUUID } from "node:crypto";
 
 export type WebhookEventType =
   | "episode.started"
@@ -45,8 +45,19 @@ export async function dispatchWebhook(
     return { ok: true };
   }
 
+  let target: URL;
+  try {
+    target = new URL(config.url);
+  } catch {
+    return { ok: false, error: "invalid webhook URL" };
+  }
+  const privateLiteral = /^(localhost|127\.|0\.|10\.|169\.254\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|\[?::1\]?)$/i;
+  if (target.protocol !== "https:" || target.username || target.password || privateLiteral.test(target.hostname)) {
+    return { ok: false, error: "webhook URL must be a public HTTPS endpoint without embedded credentials" };
+  }
+
   const payload: WebhookPayload = {
-    id: "evt_" + Math.random().toString(36).substring(2, 11),
+    id: randomUUID(),
     event,
     timestamp: new Date().toISOString(),
     runId,
@@ -61,6 +72,8 @@ export async function dispatchWebhook(
   try {
     const res = await fetch(config.url, {
       method: "POST",
+      redirect: "error",
+      signal: AbortSignal.timeout(10_000),
       headers: {
         "Content-Type": "application/json",
         "X-WorkWorld-Event": event,

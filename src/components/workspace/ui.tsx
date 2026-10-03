@@ -30,7 +30,7 @@ export function Button({
 }) {
   const styles = {
     primary: "bg-indigo-600 text-white hover:bg-indigo-700 disabled:bg-indigo-300",
-    secondary: "bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 disabled:text-slate-400",
+    secondary: "bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 disabled:text-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800",
     danger: "bg-rose-600 text-white hover:bg-rose-700 disabled:bg-rose-300",
     ghost: "text-indigo-700 hover:underline disabled:text-slate-400",
   }[variant];
@@ -58,23 +58,23 @@ export function Field({
 }) {
   return (
     <label className="block">
-      <span className="block text-xs font-semibold uppercase tracking-wide text-slate-600">
+      <span className="block text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">
         {label}
       </span>
       <div className="mt-1">{children}</div>
-      {hint ? <span className="mt-0.5 block text-xs text-slate-500">{hint}</span> : null}
+      {hint ? <span className="mt-0.5 block text-xs text-slate-500 dark:text-slate-400">{hint}</span> : null}
     </label>
   );
 }
 
 export const inputClass =
-  "w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-sm text-slate-900 placeholder:text-slate-400";
+  "w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-sm text-slate-900 placeholder:text-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100";
 
 export function Card({ title, children, actions }: { title: string; children: ReactNode; actions?: ReactNode }) {
   return (
-    <section className="rounded-lg border border-slate-200 bg-white shadow-sm">
-      <header className="flex items-center justify-between border-b border-slate-100 px-4 py-2.5">
-        <h2 className="text-sm font-semibold text-slate-900">{title}</h2>
+    <section className="rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <header className="flex items-center justify-between border-b border-slate-100 px-4 py-2.5 dark:border-slate-800">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
         {actions}
       </header>
       <div className="px-4 py-3">{children}</div>
@@ -84,7 +84,7 @@ export function Card({ title, children, actions }: { title: string; children: Re
 
 export function Empty({ children }: { children: ReactNode }) {
   return (
-    <p className="rounded-md border border-dashed border-slate-300 bg-slate-50 px-3 py-4 text-sm text-slate-500">
+    <p className="rounded-md border border-dashed border-slate-300 bg-slate-50 px-3 py-4 text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-400">
       {children}
     </p>
   );

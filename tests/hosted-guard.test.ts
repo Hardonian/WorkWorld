@@ -22,12 +22,13 @@ describe("hosted mode availability (honest degradation)", () => {
     expect(h.reason).toMatch(/no fallback to demo data/);
   });
 
-  it("hosted mode with configuration reports available but pending hosted verification", () => {
+  it("hosted mode with configuration stays disabled until the application store/auth path is wired", () => {
     process.env.WORKWORLD_MODE = "hosted";
     process.env.SUPABASE_URL = "https://example.supabase.co";
     process.env.SUPABASE_SERVICE_ROLE_KEY = "not-a-real-key";
     const h = hostedModeAvailable();
-    expect(h.available).toBe(true);
-    expect(h.reason).toMatch(/still pending/);
+    expect(h.available).toBe(false);
+    expect(h.reason).toMatch(/not wired/);
+    expect(h.reason).toMatch(/no fallback/);
   });
 });

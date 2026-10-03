@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { ROLE_PERMISSIONS, hasPermission, authorizeRole } from "../src/server/rbac.ts";
 import { AuditLogService } from "../src/server/audit.ts";
 
-describe("Enterprise Security, RBAC & Audit Trail", () => {
+describe("RBAC and in-process audit prototypes", () => {
   describe("Role-Based Access Control", () => {
     it("enforces least-privilege matrix across roles", () => {
       expect(ROLE_PERMISSIONS).toBeDefined();
@@ -30,7 +30,7 @@ describe("Enterprise Security, RBAC & Audit Trail", () => {
   });
 
   describe("Security Audit Log Service", () => {
-    it("creates hash-chained audit records for compliance tracking", () => {
+    it("creates a verifiable hash chain during the process lifetime", () => {
       const entry1 = AuditLogService.log({
         actorId: "usr_101",
         actorRole: "instructor",

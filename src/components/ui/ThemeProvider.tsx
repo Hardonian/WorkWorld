@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 type Theme = "light" | "dark" | "system";
 
@@ -60,20 +60,23 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     return () => mediaQuery.removeEventListener("change", listener);
   }, [theme]);
 
-  const setTheme = (newTheme: Theme) => {
+  const setTheme = useCallback((newTheme: Theme) => {
     setThemeState(newTheme);
     localStorage.setItem("workworld-theme", newTheme);
-  };
+  }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     const next = resolvedTheme === "dark" ? "light" : "dark";
     setTheme(next);
-  };
+  }, [resolvedTheme, setTheme]);
+
+  const value = useMemo(
+    () => ({ theme, resolvedTheme, setTheme, toggleTheme }),
+    [theme, resolvedTheme, setTheme, toggleTheme]
+  );
 
   return (
-    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
 }
 

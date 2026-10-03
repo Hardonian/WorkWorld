@@ -5,12 +5,12 @@ import { ThemeToggle } from "../ui/ThemeProvider.tsx";
 
 interface SimulationHUDProps {
   scenarioId: string;
-  family: string;
+  contextLabel: string;
   minute: number;
   cashMinor: number;
   budgetCommittedMinor: number;
   budgetLimitMinor?: number;
-  unreadCount: number;
+  inboundMessageCount: number;
   pendingPoCount: number;
   pendingDeliveryCount: number;
   revision: number;
@@ -22,12 +22,12 @@ interface SimulationHUDProps {
 
 export function SimulationHUD({
   scenarioId,
-  family,
+  contextLabel,
   minute,
   cashMinor,
   budgetCommittedMinor,
   budgetLimitMinor = 2500000, // $25,000 default budget ceiling
-  unreadCount,
+  inboundMessageCount,
   pendingPoCount,
   pendingDeliveryCount,
   revision,
@@ -36,12 +36,9 @@ export function SimulationHUD({
   onOpenAuditDrawer,
   isAdvancing = false,
 }: SimulationHUDProps) {
-  // Convert logical minutes into simulated business schedule
-  // Assume Day 1 starts at 08:00 AM (480 mins). A work day is 8 hours (480 mins).
-  const startOffset = 8 * 60; // 08:00 AM
-  const totalMins = startOffset + minute;
-  const dayNumber = Math.floor(minute / (8 * 60)) + 1;
-  const dayMinutes = totalMins % (24 * 60);
+  // Domain time is continuous logical minutes; day boundaries are 1,440 minutes.
+  const dayNumber = Math.floor(minute / (24 * 60));
+  const dayMinutes = minute % (24 * 60);
   const hours = Math.floor(dayMinutes / 60);
   const mins = dayMinutes % 60;
   const ampm = hours >= 12 ? "PM" : "AM";
@@ -68,7 +65,7 @@ export function SimulationHUD({
             {scenarioId}
           </span>
           <span className="hidden sm:inline-block text-xs font-medium text-slate-500 dark:text-slate-400 capitalize">
-            {family.replace(/_/g, " ")}
+            {contextLabel}
           </span>
         </div>
 
@@ -81,7 +78,7 @@ export function SimulationHUD({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span>Day {dayNumber} · {timeFormatted}</span>
-            <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">({minute}m)</span>
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold">({minute}m)</div>
           </div>
 
           {/* Quick time controls */}
@@ -113,17 +110,17 @@ export function SimulationHUD({
         {/* Cash Balance */}
         <div className="flex items-center gap-1.5">
           <span className="text-slate-500 dark:text-slate-400">Cash:</span>
-          <span className={`font-mono font-semibold ${cashMinor < 500000 ? "text-rose-600 dark:text-rose-400" : "text-emerald-700 dark:text-emerald-400"}`}>
+          <div className={`font-semibold ${cashMinor < 500000 ? "text-rose-600 dark:text-rose-400" : "text-emerald-700 dark:text-emerald-400"}`}>
             {cashFormatted}
-          </span>
+          </div>
         </div>
 
         {/* Committed Budget */}
         <div className="hidden md:flex items-center gap-2">
           <span className="text-slate-500 dark:text-slate-400">Committed:</span>
-          <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">
+          <div className="font-semibold text-slate-800 dark:text-slate-200">
             {budgetCommittedFormatted}
-          </span>
+          </div>
           <div className="w-16 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
             <div
               className={`h-full rounded-full transition-all ${
@@ -136,10 +133,10 @@ export function SimulationHUD({
 
         {/* Alerts: Inbox & Pending POs */}
         <div className="flex items-center gap-2">
-          {unreadCount > 0 ? (
+          {inboundMessageCount > 0 ? (
             <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-2 py-0.5 text-[11px] font-medium text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300">
-              <span className="h-1.5 w-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400 animate-ping" />
-              {unreadCount} unread
+              <span className="h-1.5 w-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400" />
+              {inboundMessageCount} inbound
             </span>
           ) : null}
 
@@ -186,7 +183,7 @@ export function SimulationHUD({
             <svg className="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <span className="font-mono text-[11px]">r{revision}</span>
+            <div className="text-[11px] font-semibold">r{revision}</div>
           </button>
         ) : null}
 

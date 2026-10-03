@@ -72,9 +72,24 @@ function writeJsonAtomic(path: string, value: unknown): void {
   const temporaryPath = `${path}.${randomUUID()}.tmp`;
   try {
     writeFileSync(temporaryPath, JSON.stringify(value, null, 2), { flag: "wx" });
-    renameSync(temporaryPath, path);
+    renameWithRetry(temporaryPath, path);
   } finally {
     if (existsSync(temporaryPath)) rmSync(temporaryPath, { force: true });
+  }
+}
+
+/** Windows scanners can briefly hold a file and make an atomic replace fail. */
+function renameWithRetry(source: string, destination: string): void {
+  const retryable = new Set(["EACCES", "EBUSY", "EPERM"]);
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      renameSync(source, destination);
+      return;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (!code || !retryable.has(code) || attempt >= 5) throw error;
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10 * 2 ** attempt);
+    }
   }
 }
 
