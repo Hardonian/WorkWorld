@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ThemeToggle } from "../../components/ui/ThemeProvider.tsx";
+import { ActionSequenceVisualizer } from "../../components/analytics/ActionSequenceVisualizer.tsx";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Evidence status · WorkWorld" };
@@ -34,6 +35,9 @@ export default function EvidenceDashboard() {
               <p className="mt-2 text-xs text-slate-600 dark:text-slate-400">{detail}</p>
             </article>
           ))}
+        </section>
+        <section>
+          <ActionSequenceVisualizer />
         </section>
         <section className="grid gap-4 md:grid-cols-3">
           {[
