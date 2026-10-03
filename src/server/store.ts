@@ -6,7 +6,17 @@
  * Corrupt or incompatible state is detected (digest + schema version) and a
  * recovery path is presented — never silently repaired.
  */
-import { mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync, appendFileSync } from "node:fs";
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { randomUUID } from "node:crypto";
 import { join } from "node:path";
 import type { Actor, Action, EpisodeState } from "../domain/types.ts";
 import { digestState } from "../domain/engine.ts";
@@ -48,6 +58,24 @@ export interface EventStore {
   saveState(runId: string, state: EpisodeState): Promise<void>;
   loadState(runId: string): Promise<EpisodeState>;
   listRuns(): Promise<RunMeta[]>;
+}
+
+/** Run ids become directory names in FileStore, so reject separators and dot paths. */
+export function assertSafeRunId(runId: string): void {
+  if (!/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(runId)) {
+    throw new Error("invalid run id");
+  }
+}
+
+/** Write a complete replacement before swapping it into place. */
+function writeJsonAtomic(path: string, value: unknown): void {
+  const temporaryPath = `${path}.${randomUUID()}.tmp`;
+  try {
+    writeFileSync(temporaryPath, JSON.stringify(value, null, 2), { flag: "wx" });
+    renameSync(temporaryPath, path);
+  } finally {
+    if (existsSync(temporaryPath)) rmSync(temporaryPath, { force: true });
+  }
 }
 
 export class MemoryStore implements EventStore {
@@ -95,13 +123,15 @@ export class FileStore implements EventStore {
   }
 
   async createRun(meta: RunMeta): Promise<void> {
+    assertSafeRunId(meta.runId);
     const dir = this.dir(meta.runId);
     mkdirSync(dir, { recursive: true });
-    writeFileSync(join(dir, "meta.json"), JSON.stringify(meta, null, 2));
+    writeJsonAtomic(join(dir, "meta.json"), meta);
     writeFileSync(join(dir, "actions.jsonl"), "");
   }
 
   private meta(runId: string): RunMeta {
+    assertSafeRunId(runId);
     const path = join(this.dir(runId), "meta.json");
     if (!existsSync(path)) throw new Error(`unknown run ${runId}`);
     const meta = JSON.parse(readFileSync(path, "utf8")) as RunMeta;
@@ -128,10 +158,10 @@ export class FileStore implements EventStore {
 
   async saveState(runId: string, state: EpisodeState): Promise<void> {
     this.meta(runId);
-    writeFileSync(
-      join(this.dir(runId), "state.json"),
-      JSON.stringify({ digest: digestState(state), state }, null, 2),
-    );
+    writeJsonAtomic(join(this.dir(runId), "state.json"), {
+      digest: digestState(state),
+      state,
+    });
   }
 
   async loadState(runId: string): Promise<EpisodeState> {
@@ -159,4 +189,13 @@ export class FileStore implements EventStore {
 export function makeStore(kind: "memory" | "file", dataDir?: string): EventStore {
   if (kind === "memory") return new MemoryStore();
   return new FileStore(dataDir ?? process.env.WORKWORLD_DATA_DIR ?? "./var/demo-data");
+}
+
+let defaultStoreInstance: EventStore | null = null;
+export function getStore(): EventStore {
+  if (!defaultStoreInstance) {
+    const kind = (process.env.WORKWORLD_STORE ?? "file") as "memory" | "file";
+    defaultStoreInstance = makeStore(kind);
+  }
+  return defaultStoreInstance;
 }

@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { applyActionInput } from "../../../server/session.ts";
+import { readJsonObject, requestErrorResponse } from "../../../server/http.ts";
 
 export const dynamic = "force-dynamic";
 
@@ -11,9 +12,9 @@ export const dynamic = "force-dynamic";
 export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
   try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "invalid JSON body", code: "PAYLOAD_INVALID" }, { status: 400 });
+    body = await readJsonObject(req);
+  } catch (error) {
+    return requestErrorResponse(error);
   }
   const result = await applyActionInput(body);
   if ("error" in result) {

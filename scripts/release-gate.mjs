@@ -5,7 +5,7 @@
  * never masquerade as passing local gates.
  */
 import { execSync } from "node:child_process";
-import { existsSync, writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync } from "node:fs";
 
 const results = [];
 

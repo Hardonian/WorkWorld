@@ -3,6 +3,7 @@ import { appendRevision, loadAssessment, listAssessedRuns, portableReport, valid
 import { makeStore } from "../../../server/store.ts";
 import { getScenario } from "../../../scenarios/catalog.ts";
 import { gradeEpisode } from "../../../grading/report.ts";
+import { readJsonObject, requestErrorResponse } from "../../../server/http.ts";
 
 export const dynamic = "force-dynamic";
 
@@ -27,17 +28,11 @@ export async function GET() {
 
 /** POST /api/assessor — record an attributable rubric revision. */
 export async function POST(req: NextRequest) {
-  let body: {
-    runId?: string;
-    assessor?: string;
-    ratings?: unknown;
-    comment?: string;
-    revisionNote?: string;
-  };
+  let body: Record<string, unknown>;
   try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "invalid JSON body" }, { status: 400 });
+    body = await readJsonObject(req);
+  } catch (error) {
+    return requestErrorResponse(error);
   }
   const runId = String(body.runId ?? "");
   const assessor = String(body.assessor ?? "").slice(0, 200);
@@ -57,7 +52,7 @@ export async function POST(req: NextRequest) {
       assessor,
       ratings: validateRatings(body.ratings),
       comment: String(body.comment ?? "").slice(0, 4000),
-      revisionNote: body.revisionNote,
+      revisionNote: typeof body.revisionNote === "string" ? body.revisionNote.slice(0, 2000) : undefined,
     });
     return NextResponse.json({ ok: true, revisionCount: doc.revisions.length }, { status: 201 });
   } catch (e) {

@@ -57,8 +57,8 @@ export function appendRevision(
 }
 
 export function listAssessedRuns(): string[] {
-  if (!existsSync(DIR)) return [];
-  return readdirSync(DIR)
+  if (!existsSync(/* turbopackIgnore: true */ DIR)) return [];
+  return readdirSync(/* turbopackIgnore: true */ DIR)
     .filter((f) => f.endsWith(".json"))
     .map((f) => f.replace(/\.json$/, ""));
 }

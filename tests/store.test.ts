@@ -64,4 +64,17 @@ describe("FileStore persistence", () => {
     const loaded = await store.loadState(meta.runId);
     expect(JSON.stringify(loaded)).toBe(JSON.stringify(engine.getState()));
   });
+
+  it("rejects run ids that could escape the configured data directory", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ww-store-"));
+    try {
+      const store = new FileStore(dir);
+      await expect(store.loadState("../outside")).rejects.toThrow(/invalid run id/);
+      await expect(
+        store.createRun({ ...meta, runId: "..\\outside" }),
+      ).rejects.toThrow(/invalid run id/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
 });

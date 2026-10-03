@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { startSession, cookieName } from "../../../server/session.ts";
 import { SCENARIOS } from "../../../scenarios/catalog.ts";
+import { readJsonObject, requestErrorResponse } from "../../../server/http.ts";
 
 export const dynamic = "force-dynamic";
 
@@ -9,13 +10,13 @@ export const dynamic = "force-dynamic";
  * per-session isolated state. Demo mode only — hosted tenancy is separate.
  */
 export async function POST(req: NextRequest) {
-  let body: { scenarioId?: string; condition?: string };
+  let body: Record<string, unknown>;
   try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "invalid JSON body" }, { status: 400 });
+    body = await readJsonObject(req, 8 * 1024);
+  } catch (error) {
+    return requestErrorResponse(error);
   }
-  const scenarioId = body.scenarioId ?? "";
+  const scenarioId = typeof body.scenarioId === "string" ? body.scenarioId : "";
   if (!SCENARIOS[scenarioId]) {
     return NextResponse.json({ error: `unknown scenario ${scenarioId}` }, { status: 404 });
   }
@@ -24,9 +25,11 @@ export async function POST(req: NextRequest) {
   const res = NextResponse.json({ runId, observation }, { status: 201 });
   res.cookies.set(cookieName(), runId, {
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
+    priority: "high",
   });
   return res;
 }

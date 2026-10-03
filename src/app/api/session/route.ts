@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { currentObservation, currentState } from "../../../server/session.ts";
 import { gradeEpisode } from "../../../grading/report.ts";
 import { getScenario } from "../../../scenarios/catalog.ts";
+import { assertSameOrigin, requestErrorResponse } from "../../../server/http.ts";
+import type { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +17,12 @@ export async function GET() {
 }
 
 /** Assessment report for the current run (deterministic checks). */
-export async function POST() {
+export async function POST(req: NextRequest) {
+  try {
+    assertSameOrigin(req);
+  } catch (error) {
+    return requestErrorResponse(error);
+  }
   const state = await currentState();
   if (!state) {
     return NextResponse.json({ error: "no active episode" }, { status: 404 });

@@ -5,6 +5,8 @@ import { suggest, newAssistLog, type AssistLog } from "../../../agents/assisted.
 import { loadBudgetConfig, BudgetLedger } from "../../../agents/budget.ts";
 import { makeOllamaAdapter, makeOpenAIAdapter } from "../../../agents/adapters/chat-completions.ts";
 import type { AgentAdapter } from "../../../agents/types.ts";
+import { assertSameOrigin, requestErrorResponse } from "../../../server/http.ts";
+import type { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +28,12 @@ function pickAdapter(): { adapter: AgentAdapter; budget: BudgetLedger } {
   };
 }
 
-export async function POST() {
+export async function POST(req: NextRequest) {
+  try {
+    assertSameOrigin(req);
+  } catch (error) {
+    return requestErrorResponse(error);
+  }
   const state = await currentState();
   if (!state) {
     return NextResponse.json({ error: "no active episode" }, { status: 404 });

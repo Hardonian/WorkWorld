@@ -1,106 +1,198 @@
 import Link from "next/link";
 import { listScenarios } from "../scenarios/catalog.ts";
 import StartButton from "../components/home/StartButton.tsx";
+import { ThemeToggle } from "../components/ui/ThemeProvider.tsx";
 
 export default function Home() {
   const scenarios = listScenarios();
+
   return (
-    <main className="mx-auto max-w-5xl px-6 py-10">
-      <header className="border-b border-slate-200 pb-8">
-        <p className="text-xs font-semibold uppercase tracking-widest text-indigo-700">
-          WorkWorld · working title
-        </p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight text-slate-900">
-          Executable professional-work simulations
-        </h1>
-        <p className="mt-3 max-w-2xl text-lg text-slate-700">
-          Complete consequential operations work in a persistent environment — orders, deliveries,
-          invoices, ledgers, tickets, sheets — and see outcome evidence that grades the{" "}
-          <em>business state</em>, not the polish of the report.
-        </p>
-        <p className="mt-4 text-sm text-slate-600">
-          This demo is <strong>credentials-free</strong> with <strong>synthetic company data</strong>.
-          Each browser session is isolated and stored server-side (demo file store) so your work
-          survives refresh. It is a training/evaluation harness — not an employment assessment.
-        </p>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
+      {/* Top Navigation Bar */}
+      <header className="sticky top-0 z-30 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-6 py-3.5">
+        <div className="mx-auto max-w-6xl flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold text-sm">
+              W
+            </span>
+            <span className="font-bold tracking-tight text-slate-900 dark:text-slate-100 text-base">
+              WorkWorld
+            </span>
+            <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+              Enterprise v1.0
+            </span>
+          </div>
+
+          <nav className="flex items-center gap-4 text-xs font-semibold">
+            <Link href="/workspace" className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+              Workspace
+            </Link>
+            <Link href="/assessor" className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+              Assessor
+            </Link>
+            <Link href="/analytics" className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+              Analytics
+            </Link>
+            <Link href="/leaderboard" className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+              Leaderboard
+            </Link>
+            <Link href="/docs" className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+              Docs &amp; API
+            </Link>
+            <ThemeToggle />
+          </nav>
+        </div>
       </header>
 
-      <section className="mt-8">
-        <h2 className="text-xl font-semibold">Small-business operations apprenticeship</h2>
-        <p className="mt-1 text-sm text-slate-600">
-          Role: Operations Coordinator at Northline Supply Co. (synthetic). Three scenario families,
-          six episodes. Start with the guided routine episode.
-        </p>
-
-        <div className="mt-5 grid gap-4 sm:grid-cols-2">
-          {scenarios.map((s, i) => (
-            <article
-              key={s.id}
-              className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+      {/* Hero Section */}
+      <main className="mx-auto max-w-6xl px-6 py-12 space-y-12">
+        <section className="text-center max-w-3xl mx-auto space-y-4">
+          <p className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
+            Professional Operations Apprenticeship &amp; AI Benchmark Arena
+          </p>
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 leading-tight">
+            Executable Business Work Simulations
+          </h1>
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
+            Operate a persistent, consequential operations environment — purchase orders, deliveries, invoices, ledgers, tickets, and spreadsheets. Graded on <strong>true business state correctness</strong>, not narrative report polish.
+          </p>
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/workspace"
+              className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-indigo-700 transition-colors"
             >
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  {s.id} · {s.family.replace(/_/g, " ")}
-                </p>
-                {i === 0 ? (
-                  <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-800">
-                    guided start
+              Launch Guided Simulation
+            </Link>
+            <Link
+              href="/leaderboard"
+              className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+            >
+              View Model Leaderboard
+            </Link>
+          </div>
+        </section>
+
+        {/* Feature Highlights Grid */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-2">
+            <div className="h-8 w-8 rounded-lg bg-indigo-100 dark:bg-indigo-950 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold">
+              ⚖️
+            </div>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              State-Based Grading
+            </h3>
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+              Deterministic outcome checks read actual ledgers and documents: authorization, 3-way matching, zero duplicate settlement, and exact financial balances.
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-2">
+            <div className="h-8 w-8 rounded-lg bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold">
+              🤖
+            </div>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              Native MCP &amp; Public REST API
+            </h3>
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+              Connect external AI agents (Claude, GPT-4o, Gemini, local Ollama) via standard Model Context Protocol or REST API v1 endpoints with complete telemetry.
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-2">
+            <div className="h-8 w-8 rounded-lg bg-amber-100 dark:bg-amber-950 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold">
+              📜
+            </div>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              Verifiable Credentials
+            </h3>
+            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+              Learner and agent evaluations produce cryptographically signed digests and verifiable credential URLs for institutional accreditation and employer review.
+            </p>
+          </div>
+        </section>
+
+        {/* Episode Catalog Section */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                Operations Apprenticeship Episodes
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Northline Supply Co. (synthetic). Six initial reviewed episodes spanning purchasing, reconciliation, and customer recovery.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {scenarios.map((s, i) => (
+              <article
+                key={s.id}
+                className="flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 transition-all hover:border-indigo-400 dark:hover:border-indigo-600"
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-mono font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                      Episode {s.id}
+                    </span>
+                    {i === 0 ? (
+                      <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300">
+                        Guided Start
+                      </span>
+                    ) : null}
+                  </div>
+                  <h3 className="mt-2 text-base font-bold text-slate-900 dark:text-slate-100">{s.title}</h3>
+                  <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-3">
+                    {s.brief.situation}
+                  </p>
+                  <ul className="mt-3 space-y-1 text-[11px] text-slate-500 dark:text-slate-400">
+                    {s.brief.objectives.slice(0, 2).map((o) => (
+                      <li key={o} className="truncate">• {o}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                  <span className="text-[11px] text-slate-400 font-mono">
+                    Budget: ${(s.policy.budgetMinor / 100).toLocaleString()} CAD
                   </span>
-                ) : null}
-              </div>
-              <h3 className="mt-1 text-lg font-semibold text-slate-900">{s.title}</h3>
-              <p className="mt-2 flex-1 text-sm text-slate-600">{s.brief.situation}</p>
-              <ul className="mt-3 space-y-1 text-xs text-slate-500">
-                {s.brief.objectives.slice(0, 2).map((o) => (
-                  <li key={o}>• {o}</li>
-                ))}
-              </ul>
-              <div className="mt-4">
-                <StartButton
-                  scenarioId={s.id}
-                  label={i === 0 ? "Start guided episode" : "Start episode"}
-                />
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+                  <StartButton
+                    scenarioId={s.id}
+                    label={i === 0 ? "Start Guided" : "Launch Episode"}
+                  />
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
 
-      <section className="mt-10 rounded-lg border border-slate-200 bg-white p-6">
-        <h2 className="text-lg font-semibold">How assessment works</h2>
-        <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-slate-700">
-          <li>
-            <strong>Deterministic outcome checks</strong> read the actual state: authorization,
-            document consistency, no duplicate settlement, exact balances, feasible commitments,
-            required updates, evidence preservation, budget.
-          </li>
-          <li>
-            <strong>A polished report cannot conceal wrong business state</strong> — quality never
-            flips a fatal failure.
-          </li>
-          <li>
-            <strong>Human rubric</strong> (communication, judgment, prioritization) is recorded
-            separately by an assessor.
-          </li>
-        </ul>
-        <p className="mt-3 text-xs text-slate-500">
-          Deterministic checks verify narrow tested properties only. Nothing here is verified skill,
-          employability, accreditation, or hiring suitability.
-        </p>
-      </section>
-
-      <footer className="mt-10 flex flex-wrap items-center gap-4 border-t border-slate-200 pt-6 text-sm">
-        <Link href="/workspace" className="text-indigo-700 hover:underline">
-          Open workspace
-        </Link>
-        <Link href="/health" className="text-indigo-700 hover:underline">
-          Health endpoint
-        </Link>
-        <span className="text-slate-500">
-          Evaluator interface: see docs/ARCHITECTURE.md (reset / observe / step / checkpoint /
-          restore / grade).
-        </span>
-      </footer>
-    </main>
+        {/* Footer */}
+        <footer className="border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+          <div className="flex items-center gap-4">
+            <Link href="/workspace" className="hover:text-indigo-600 dark:hover:text-indigo-400">
+              Learner Workspace
+            </Link>
+            <Link href="/assessor" className="hover:text-indigo-600 dark:hover:text-indigo-400">
+              Assessor Review
+            </Link>
+            <Link href="/analytics" className="hover:text-indigo-600 dark:hover:text-indigo-400">
+              Analytics
+            </Link>
+            <Link href="/leaderboard" className="hover:text-indigo-600 dark:hover:text-indigo-400">
+              AI Leaderboard
+            </Link>
+            <Link href="/docs" className="hover:text-indigo-600 dark:hover:text-indigo-400">
+              Docs &amp; API
+            </Link>
+            <Link href="/health" className="hover:text-indigo-600 dark:hover:text-indigo-400">
+              System Health
+            </Link>
+          </div>
+          <div>
+            <span>WorkWorld Platform · MIT Licensed · Synthetic Benchmark Data</span>
+          </div>
+        </footer>
+      </main>
+    </div>
   );
 }

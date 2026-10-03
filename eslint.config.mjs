@@ -16,6 +16,7 @@ export default defineConfig([
   globalIgnores([
     "node_modules/**",
     ".next/**",
+    ".kilo/**",
     "out/**",
     "eval-runs/**",
     "evidence/**",
