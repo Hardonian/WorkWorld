@@ -38,22 +38,44 @@ export function lintScenarioCatalog(): { totalChecked: number; allValid: boolean
     }
 
     // 3. Validate ledger opening balance
-    if (s.initialState.ledger.opening.cash < 0) {
-      errors.push(`Opening cash cannot be negative: ${s.initialState.ledger.opening.cash}`);
+    interface LintableScenario {
+      initial?: { ledgerOpening?: { cash?: number } };
+      initialState?: { ledger?: { opening?: { cash?: number } } };
+      rubric?: { rules?: { id: string }[] };
+      grading?: { requirements?: { id: string }[] };
+      requirementPredicates?: unknown[];
+      requiredUpdates?: unknown[];
+      events?: { atMinute?: number; fireAtMinute?: number }[];
+      scheduledEvents?: { atMinute?: number; fireAtMinute?: number }[];
+    }
+    const anyScenario = s as unknown as LintableScenario;
+    const openingCash =
+      anyScenario.initial?.ledgerOpening?.cash ??
+      anyScenario.initialState?.ledger?.opening?.cash ??
+      0;
+    if (openingCash < 0) {
+      errors.push(`Opening cash cannot be negative: ${openingCash}`);
     }
 
-    // 4. Validate rubric
-    if (!s.rubric.rules || s.rubric.rules.length === 0) {
-      errors.push("Rubric must contain at least one rule");
+    // 4. Validate rubric / grading requirements
+    const hasRules =
+      (anyScenario.rubric?.rules && anyScenario.rubric.rules.length > 0) ||
+      (anyScenario.grading?.requirements && anyScenario.grading.requirements.length > 0) ||
+      (anyScenario.requirementPredicates && anyScenario.requirementPredicates.length > 0) ||
+      (anyScenario.requiredUpdates && anyScenario.requiredUpdates.length > 0);
+    if (!hasRules) {
+      errors.push("Scenario must define grading rules, requirement predicates, or required updates");
     }
 
     // 5. Validate event temporal monotonicity
     let lastMinute = 0;
-    for (const ev of s.events) {
-      if (ev.atMinute < lastMinute) {
-        errors.push(`Event atMinute ${ev.atMinute} is out of chronological order`);
+    const events = anyScenario.events ?? anyScenario.scheduledEvents ?? [];
+    for (const ev of events) {
+      const minute = ev.atMinute ?? ev.fireAtMinute ?? 0;
+      if (minute < lastMinute) {
+        errors.push(`Event at minute ${minute} is out of chronological order`);
       }
-      lastMinute = ev.atMinute;
+      lastMinute = minute;
     }
 
     results.push({
@@ -69,7 +91,7 @@ export function lintScenarioCatalog(): { totalChecked: number; allValid: boolean
 }
 
 // If invoked as standalone CLI script
-if (typeof process !== "undefined" && import.meta.url === `file://${process.argv[1]?.replace(/\\/g, "/")}`) {
+if (typeof process !== "undefined" && process.argv[1]?.includes("lint-scenarios")) {
   console.log("WorkWorld Scenario Catalog Linter & DAG Verifier");
   const { totalChecked, allValid, results } = lintScenarioCatalog();
   console.log(`Validated ${totalChecked} scenarios across routine and enterprise families.`);

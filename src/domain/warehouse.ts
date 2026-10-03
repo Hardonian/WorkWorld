@@ -138,7 +138,8 @@ export function summarizeWarehouseNetwork(warehouses: WarehouseLocation[]): {
       totalOccupied += bin.currentQty;
       if (bin.itemId && bin.currentQty > 0) {
         if (!stockByItem[bin.itemId]) stockByItem[bin.itemId] = {};
-        stockByItem[bin.itemId][wh.id] = (stockByItem[bin.itemId][wh.id] ?? 0) + bin.currentQty;
+        const itemMap = stockByItem[bin.itemId]!;
+        itemMap[wh.id] = (itemMap[wh.id] ?? 0) + bin.currentQty;
       }
     }
   }

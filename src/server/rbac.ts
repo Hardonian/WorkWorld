@@ -4,6 +4,7 @@
  */
 
 export type Role = "learner" | "assessor" | "instructor" | "org_admin" | "super_admin";
+export type UserRole = Role;
 
 export type Permission =
   | "episode:play"

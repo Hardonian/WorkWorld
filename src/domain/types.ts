@@ -376,6 +376,78 @@ export interface Transition {
   state: EpisodeState;
 }
 
+export interface Policy {
+  approvalThresholdMinor: Minor;
+  budgetMinor: Minor;
+  currency: Currency;
+  helpPolicy: { maxHelpRequests: number; fatalBeyond: boolean };
+}
+
+export interface SupplierCatalogItem {
+  itemId: ItemId;
+  name?: string;
+  unitPriceMinor: Minor;
+  leadDays?: number;
+  unitOfMeasure?: string;
+}
+
+export interface SupplierCatalogVendor {
+  supplierId: SupplierId;
+  name: string;
+  terms?: string;
+  leadDays: number;
+  items: Record<ItemId, SupplierCatalogItem>;
+}
+
+export type SupplierCatalog = Record<SupplierId, SupplierCatalogVendor>;
+
+export interface RubricRule {
+  id: string;
+  category?: string;
+  points: number;
+  description: string;
+  tier?: "T1" | "T2" | "T3" | string;
+}
+
+export interface ScenarioRubric {
+  fatalTiers?: string[];
+  rules?: RubricRule[];
+}
+
+export interface Scenario {
+  id: string;
+  family: string;
+  title: string;
+  description: string;
+  difficulty?: "beginner" | "intermediate" | "advanced";
+  tags?: string[];
+  brief: {
+    company: string;
+    role: string;
+    situation: string;
+    objectives: string[];
+    guidance: string[];
+  };
+  policy: Policy;
+  supplierCatalog: SupplierCatalog;
+  events?: unknown[];
+  rubric?: ScenarioRubric;
+  initialState: {
+    clockMinute: number;
+    inventory: Record<ItemId, number>;
+    inbox?: unknown[];
+    purchaseOrders?: Record<PoId, unknown>;
+    deliveries?: Record<DeliveryId, unknown>;
+    invoices?: Record<InvoiceId, unknown>;
+    ledger?: {
+      opening: Record<Exclude<AccountId, "opening_equity">, Minor>;
+      txns: LedgerTxn[];
+    };
+    tickets?: Record<TicketId, unknown>;
+    [key: string]: unknown;
+  };
+}
+
 export interface EpisodeState {
   runId: string;
   scenarioId: string;
@@ -385,12 +457,7 @@ export interface EpisodeState {
   clockMinute: number;
   status: "active" | "submitted" | "expired";
   revision: number;
-  policy: {
-    approvalThresholdMinor: Minor;
-    budgetMinor: Minor;
-    currency: Currency;
-    helpPolicy: { maxHelpRequests: number; fatalBeyond: boolean };
-  };
+  policy: Policy;
   items: Record<ItemId, Item>;
   suppliers: Record<SupplierId, Supplier>;
   purchaseOrders: Record<PoId, PurchaseOrder>;

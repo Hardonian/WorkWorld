@@ -37,9 +37,11 @@ export function generateStochasticScenario(
 
   // Perturb supplier catalog
   const perturbedCatalog: SupplierCatalog = {};
-  for (const [vendorId, vendor] of Object.entries(base.supplierCatalog)) {
+  for (const vendorId of Object.keys(base.supplierCatalog)) {
+    const vendor = base.supplierCatalog[vendorId]!;
     const perturbedItems: typeof vendor.items = {};
-    for (const [itemId, item] of Object.entries(vendor.items)) {
+    for (const itemId of Object.keys(vendor.items)) {
+      const item = vendor.items[itemId]!;
       const deltaFactor = 1 + (rand() * 2 - 1) * pricePct;
       perturbedItems[itemId] = {
         ...item,
@@ -57,7 +59,8 @@ export function generateStochasticScenario(
 
   // Perturb initial inventory
   const perturbedInventory: Record<string, number> = {};
-  for (const [itemId, qty] of Object.entries(base.initialState.inventory)) {
+  for (const itemId of Object.keys(base.initialState.inventory)) {
+    const qty = base.initialState.inventory[itemId] ?? 0;
     const stockPct = (options.initialStockDeviationPct ?? 10) / 100;
     const factor = 1 + (rand() * 2 - 1) * stockPct;
     perturbedInventory[itemId] = Math.max(0, Math.round(qty * factor));

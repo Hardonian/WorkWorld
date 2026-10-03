@@ -52,8 +52,8 @@ describe("Warehouse & Bin Management (Item 015)", () => {
     const summary = summarizeWarehouseNetwork([whMain, whClinic]);
     expect(summary.totalCapacity).toBe(1200);
     expect(summary.totalOccupied).toBe(70);
-    expect(summary.stockByItem["GLV-100"]["WH-MAIN"]).toBe(60);
-    expect(summary.stockByItem["GLV-100"]["WH-CLINIC"]).toBe(10);
+    expect(summary.stockByItem["GLV-100"]?.["WH-MAIN"]).toBe(60);
+    expect(summary.stockByItem["GLV-100"]?.["WH-CLINIC"]).toBe(10);
   });
 });
 
@@ -71,11 +71,11 @@ describe("Accruals & Recurring Amortization (Item 017)", () => {
   it("amortizes straight-line daily expense and produces adjusting entries", () => {
     const { updatedContracts, adjustingEntries, totalAmortizedMinor } = amortizePrepaidContracts([contract], 30);
     expect(adjustingEntries).toHaveLength(1);
-    expect(adjustingEntries[0].debitAccount).toBe("insurance_expense");
-    expect(adjustingEntries[0].creditAccount).toBe("prepaid_expenses");
-    expect(adjustingEntries[0].amountMinor).toBe(30000); // 30/120 * 120,000 = 30,000 ($300.00)
+    expect(adjustingEntries[0]!.debitAccount).toBe("insurance_expense");
+    expect(adjustingEntries[0]!.creditAccount).toBe("prepaid_expenses");
+    expect(adjustingEntries[0]!.amountMinor).toBe(30000); // 30/120 * 120,000 = 30,000 ($300.00)
     expect(totalAmortizedMinor).toBe(30000);
-    expect(updatedContracts[0].accumulatedAmortizationMinor).toBe(30000);
+    expect(updatedContracts[0]!.accumulatedAmortizationMinor).toBe(30000);
   });
 
   it("calculates remaining unamortized asset balance", () => {

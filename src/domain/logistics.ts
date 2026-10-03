@@ -59,7 +59,7 @@ export function calculateFreightQuotes(
     // If required lead time is tighter than tier's standard lead, apply emergency surcharge
     const isEmergency = config.leadDays <= 1 || config.leadDays <= daysAllowed;
     const emergencyExpediteSurchargeMinor =
-      config.expediteMultiplier > 1
+      config.expediteMultiplier > 1 && isEmergency
         ? Math.round(baseWithHaz * (config.expediteMultiplier - 1))
         : 0;
 

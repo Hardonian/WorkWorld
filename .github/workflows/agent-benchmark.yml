@@ -1,0 +1,50 @@
+name: WorkWorld Agent Benchmark CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    name: Deterministic Benchmark & Release Gates
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Scenario Catalog Linting
+        run: npx tsx scripts/lint-scenarios.ts
+
+      - name: Run Typecheck
+        run: npm run typecheck
+
+      - name: Run Unit Tests
+        run: npm test
+
+      - name: Run Deterministic Baseline Episodes
+        run: npm run baseline
+
+      - name: Run Negative Invariant Controls
+        run: npm run negatives
+
+      - name: Run Release Gate
+        run: npm run release-gate
+
+      - name: Upload Release Gate Evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-gate-evidence
+          path: evidence/release-gate/latest.json

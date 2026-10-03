@@ -72,7 +72,11 @@ writeFileSync(
     "\n",
 );
 
-rmSync(verifyDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+try {
+  rmSync(verifyDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 250 });
+} catch {
+  // Best-effort cleanup; file handles on Windows may be held temporarily by scanner
+}
 
 if (problems.length > 0) {
   console.error("ARCHIVE VERIFICATION FAILED:");
