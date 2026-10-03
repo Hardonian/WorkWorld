@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
-import { getStore } from "../../../../server/store.ts";
-import { EpisodeEngine } from "../../../../domain/engine.ts";
-import { getScenario } from "../../../../scenarios/catalog.ts";
-import { buildObservation } from "../../../../domain/observation.ts";
 import { globalApiRateLimiter } from "../../../../server/rate-limiter.ts";
-import type { Action, Actor } from "../../../../domain/types.ts";
+import { applyActionForRun } from "../../../../server/session.ts";
+import { readJsonObject, RequestError, requestErrorResponse } from "../../../../server/http.ts";
 
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for") || "local";
@@ -24,41 +21,35 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = await request.json();
+    const body = await readJsonObject(request, 64 * 1024, { sameOrigin: false });
     const { sessionId, action } = body;
 
-    if (!sessionId || !action) {
+    if (typeof sessionId !== "string" || !action || typeof action !== "object" || Array.isArray(action)) {
       return NextResponse.json(
         { error: "Missing required parameters: sessionId and action" },
         { status: 400 }
       );
     }
 
-    const store = getStore();
-    const state = await store.loadState(sessionId);
-    if (!state) {
-      return NextResponse.json({ error: `Session ${sessionId} not found` }, { status: 404 });
+    const result = await applyActionForRun(
+      sessionId,
+      action as Record<string, unknown>,
+      "agent",
+    );
+    if ("error" in result) {
+      return NextResponse.json(result, { status: result.code === "NO_SESSION" ? 404 : 400 });
     }
-
-    const scenario = getScenario(state.scenarioId);
-    const engine = EpisodeEngine.fromState(scenario, state);
-    const actor: Actor = { id: "api_agent", kind: "agent", role: "participant" };
-    const transition = engine.step(action as Action, actor);
-
-    if (transition.ok) {
-      await store.saveState(sessionId, engine.getState());
-    }
-
-    const observation = buildObservation(engine.getState(), scenario);
+    const { transition, observation } = result;
 
     return NextResponse.json({
       ok: transition.ok,
       feedback: transition.feedback,
       errors: transition.errors,
-      revision: transition.state.revision,
+      revision: observation.revision,
       observation,
     });
   } catch (err: unknown) {
+    if (err instanceof RequestError) return requestErrorResponse(err);
     const message = err instanceof Error ? err.message : "Failed to execute action";
     return NextResponse.json({ error: message }, { status: 400 });
   }

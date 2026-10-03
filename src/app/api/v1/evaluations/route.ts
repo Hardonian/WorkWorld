@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { getStore } from "../../../../server/store.ts";
 import { getScenario } from "../../../../scenarios/catalog.ts";
 import { gradeEpisode } from "../../../../grading/report.ts";
 import { globalApiRateLimiter } from "../../../../server/rate-limiter.ts";
+import { currentStateForRun } from "../../../../server/session.ts";
+import { readJsonObject, RequestError, requestErrorResponse } from "../../../../server/http.ts";
 
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for") || "local";
@@ -22,15 +23,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = await request.json();
+    const body = await readJsonObject(request, 8 * 1024, { sameOrigin: false });
     const { sessionId } = body;
 
-    if (!sessionId) {
+    if (typeof sessionId !== "string") {
       return NextResponse.json({ error: "Missing required parameter: sessionId" }, { status: 400 });
     }
 
-    const store = getStore();
-    const state = await store.loadState(sessionId);
+    const state = await currentStateForRun(sessionId);
     if (!state) {
       return NextResponse.json({ error: `Session ${sessionId} not found` }, { status: 404 });
     }
@@ -45,6 +45,7 @@ export async function POST(request: Request) {
       scenarioId: state.scenarioId,
     });
   } catch (err: unknown) {
+    if (err instanceof RequestError) return requestErrorResponse(err);
     const message = err instanceof Error ? err.message : "Failed to grade evaluation";
     return NextResponse.json({ error: message }, { status: 400 });
   }

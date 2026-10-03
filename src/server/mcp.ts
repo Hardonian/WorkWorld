@@ -3,11 +3,10 @@
  * Exposes standardized JSON-RPC 2.0 / MCP tools for AI agents and evaluation harnesses.
  */
 
-import { getStore } from "./store.ts";
 import { getScenario } from "../scenarios/catalog.ts";
 import { buildObservation } from "../domain/observation.ts";
-import { EpisodeEngine } from "../domain/engine.ts";
-import type { Action, Actor, Supplier } from "../domain/types.ts";
+import type { Supplier } from "../domain/types.ts";
+import { applyActionForRun, currentStateForRun } from "./session.ts";
 
 export interface McpToolDefinition {
   name: string;
@@ -103,8 +102,7 @@ export async function handleMcpRequest(request: {
         };
       }
 
-      const store = getStore();
-      const state = await store.loadState(sessionId);
+      const state = await currentStateForRun(sessionId);
       if (!state) {
         return {
           jsonrpc: "2.0",
@@ -170,8 +168,8 @@ export async function handleMcpRequest(request: {
       }
 
       if (name === "submit_action") {
-        const actionPayload = args.action as Action;
-        if (!actionPayload || !actionPayload.type) {
+        const actionPayload = args.action;
+        if (!actionPayload || typeof actionPayload !== "object" || Array.isArray(actionPayload)) {
           return {
             jsonrpc: "2.0",
             id,
@@ -179,13 +177,19 @@ export async function handleMcpRequest(request: {
           };
         }
 
-        const engine = EpisodeEngine.fromState(scenario, state);
-        const actor: Actor = { id: "mcp_agent", kind: "agent", role: "participant" };
-        const transition = engine.step(actionPayload, actor);
-
-        if (transition.ok) {
-          await store.saveState(sessionId, engine.getState());
+        const actionResult = await applyActionForRun(
+          sessionId,
+          actionPayload as Record<string, unknown>,
+          "agent",
+        );
+        if ("error" in actionResult) {
+          return {
+            jsonrpc: "2.0",
+            id,
+            error: { code: -32602, message: actionResult.error },
+          };
         }
+        const { transition, observation } = actionResult;
 
         return {
           jsonrpc: "2.0",
@@ -199,8 +203,8 @@ export async function handleMcpRequest(request: {
                     ok: transition.ok,
                     feedback: transition.feedback,
                     errors: transition.errors,
-                    newRevision: transition.state.revision,
-                    clockMinute: transition.state.clockMinute,
+                    newRevision: observation.revision,
+                    clockMinute: observation.clockMinute,
                   },
                   null,
                   2
