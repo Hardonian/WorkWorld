@@ -41,6 +41,8 @@ describe("Architecture & Code Quality: Unified Barrel Exports", () => {
     expect(Server.AtsIntegrationService).toBeDefined();
     expect(Server.WarRoomSession).toBeDefined();
     expect(Server.AgentSafetyCertificationRunner).toBeDefined();
+    expect(Server.PostgresStore).toBeDefined();
+    expect(Server.RealtimeVoiceStreamingEngine).toBeDefined();
   });
 
   it("exports all grading, rubric, and calibration modules", () => {
@@ -65,6 +67,7 @@ describe("Architecture & Code Quality: Unified Barrel Exports", () => {
     expect(Scenarios.ScenarioBuilder).toBeDefined();
     expect(Scenarios.generateStochasticScenario).toBeDefined();
     expect(Scenarios.applyDifficultyPreset).toBeDefined();
+    expect(Scenarios.VERTICAL_SCENARIOS).toBeDefined();
   });
 
   it("exports all frontier agent runtime, loop, and budget utilities", () => {
@@ -73,6 +76,8 @@ describe("Architecture & Code Quality: Unified Barrel Exports", () => {
     expect(Agents.BudgetLedger).toBeDefined();
     expect(Agents.summarizeTrajectory).toBeDefined();
     expect(Agents.formatPromptForProvider).toBeDefined();
+    expect(Agents.calculateRunCost).toBeDefined();
+    expect(Agents.executeProviderCompletion).toBeDefined();
     expect(Agents.MultiAgentTeamCoordinator).toBeDefined();
     expect(Agents.HandoffQueue).toBeDefined();
     expect(Agents.BenchmarkArena).toBeDefined();
