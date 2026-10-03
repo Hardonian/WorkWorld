@@ -5,7 +5,7 @@
  * with a checksum manifest and a clean-directory extraction verification.
  */
 import { execSync } from "node:child_process";
-import { mkdirSync, rmSync, existsSync, writeFileSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { mkdirSync, rmSync, writeFileSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 

@@ -11,21 +11,14 @@ import type { Action, EpisodeState, Transition } from "../domain/types.ts";
 import type { ActorKind } from "../domain/types.ts";
 import { getScenario } from "../scenarios/catalog.ts";
 import type { Observation } from "../domain/observation.ts";
-import { makeStore, STORE_SCHEMA_VERSION, type EventStore } from "./store.ts";
+import { getStore, STORE_SCHEMA_VERSION } from "./store.ts";
 import { sanitizeActionInput } from "./actions.ts";
 
 const COOKIE = "ww_session";
 const RUN_TTL_MS = 1000 * 60 * 60 * 24 * 7;
 
-let storeSingleton: EventStore | null = null;
 const runTails = new Map<string, Promise<void>>();
-function store(): EventStore {
-  if (!storeSingleton) {
-    const kind = (process.env.WORKWORLD_STORE ?? "file") as "memory" | "file";
-    storeSingleton = makeStore(kind);
-  }
-  return storeSingleton;
-}
+const store = getStore;
 
 export interface SessionInfo {
   runId: string;

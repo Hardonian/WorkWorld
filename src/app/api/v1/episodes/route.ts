@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
-import { listScenarios, getScenario } from "../../../../scenarios/catalog.ts";
-import { getStore } from "../../../../server/store.ts";
-import { EpisodeEngine } from "../../../../domain/engine.ts";
-import { buildObservation } from "../../../../domain/observation.ts";
+import { listScenarios } from "../../../../scenarios/catalog.ts";
 import { globalApiRateLimiter } from "../../../../server/rate-limiter.ts";
+import { currentObservationForRun, startSession } from "../../../../server/session.ts";
+import { readJsonObject, RequestError, requestErrorResponse } from "../../../../server/http.ts";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -21,14 +20,10 @@ export async function GET(request: Request) {
     return NextResponse.json({ scenarios });
   }
 
-  const store = getStore();
-  const state = await store.loadState(sessionId);
-  if (!state) {
+  const observation = await currentObservationForRun(sessionId);
+  if (!observation) {
     return NextResponse.json({ error: `Session ${sessionId} not found` }, { status: 404 });
   }
-
-  const scenario = getScenario(state.scenarioId);
-  const observation = buildObservation(state, scenario);
   return NextResponse.json({ observation });
 }
 
@@ -50,30 +45,24 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = await request.json();
-    const { scenarioId = "A1", condition = "agent", seed = 42 } = body;
-
-    const scenario = getScenario(scenarioId);
-    const runId = "run_" + Math.random().toString(36).substring(2, 10);
-    const engine = EpisodeEngine.reset(scenario, {
-      runId,
-      seed,
-      condition,
-    });
-
-    const store = getStore();
-    const sessionId = "sess_" + Math.random().toString(36).substring(2, 12);
-    await store.saveState(sessionId, engine.getState());
-
-    const observation = buildObservation(engine.getState(), scenario);
+    const body = await readJsonObject(request, 8 * 1024, { sameOrigin: false });
+    const scenarioId = typeof body.scenarioId === "string" ? body.scenarioId : "A1";
+    const condition =
+      body.condition === "human" || body.condition === "assisted" ? body.condition : "agent";
+    const seed = body.seed === undefined ? 42 : Number(body.seed);
+    if (!Number.isSafeInteger(seed)) {
+      return NextResponse.json({ error: "seed must be an integer" }, { status: 400 });
+    }
+    const { runId, observation } = await startSession(scenarioId, condition, seed);
 
     return NextResponse.json({
-      sessionId,
+      sessionId: runId,
       runId,
       scenarioId,
       observation,
     });
   } catch (err: unknown) {
+    if (err instanceof RequestError) return requestErrorResponse(err);
     const message = err instanceof Error ? err.message : "Failed to initialize episode";
     return NextResponse.json({ error: message }, { status: 400 });
   }
