@@ -68,6 +68,7 @@ function WorkspaceContent() {
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isAuditDrawerOpen, setIsAuditDrawerOpen] = useState(false);
   const [isAdvancingTime, setIsAdvancingTime] = useState(false);
+  const [splitTab, setSplitTab] = useState<TabId | null>(null);
 
   const { addToast } = useToast();
 
@@ -267,8 +268,37 @@ function WorkspaceContent() {
             >
               Advance 1 day
             </Button>
+            <button
+              type="button"
+              onClick={() => setSplitTab(splitTab ? null : tab === "orders" ? "invoices" : "orders")}
+              className={`rounded-lg border px-2.5 py-1 text-xs font-semibold transition-colors ${
+                splitTab
+                  ? "border-indigo-600 bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
+                  : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              }`}
+              title="Compare modules side-by-side"
+            >
+              {splitTab ? "Close split" : "Split view"}
+            </button>
           </div>
         </header>
+
+        {/* Mobile / Tablet Horizontal Navigation Bar */}
+        <div className="lg:hidden mb-4 flex gap-1.5 overflow-x-auto pb-2 border-b border-slate-200 dark:border-slate-800">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                tab === t.id
+                  ? "bg-indigo-600 text-white shadow-xs"
+                  : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
 
         <div className="grid gap-6 lg:grid-cols-[220px_1fr_320px]">
           {/* Navigation Sidebar */}
@@ -298,56 +328,155 @@ function WorkspaceContent() {
 
           {/* Main Module Content */}
           <main>
-            {tab === "brief" ? (
-              <Card title="Episode brief">
-                <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">{obs.brief.situation}</p>
-                <h3 className="mt-4 text-sm font-semibold">Objectives</h3>
-                <ul className="mt-1 list-inside list-disc space-y-1 text-sm text-slate-700 dark:text-slate-300">
-                  {obs.brief.objectives.map((o) => (
-                    <li key={o}>{o}</li>
-                  ))}
-                </ul>
-                <h3 className="mt-4 text-sm font-semibold">Guidance</h3>
-                <ul className="mt-1 list-inside list-disc space-y-1 text-sm text-slate-700 dark:text-slate-300">
-                  {obs.brief.guidance.map((g) => (
-                    <li key={g}>{g}</li>
-                  ))}
-                </ul>
-                <h3 className="mt-4 text-sm font-semibold">Checklist (what “done” involves)</h3>
-                <ul className="mt-1 list-inside list-disc space-y-1 text-sm text-slate-700 dark:text-slate-300">
-                  {obs.publicChecklist.map((c) => (
-                    <li key={c}>{c}</li>
-                  ))}
-                </ul>
-                <h3 className="mt-4 text-sm font-semibold">Rules that bite</h3>
-                <p className="text-sm text-slate-700 dark:text-slate-300">
-                  Orders above {formatMinor(obs.policy.approvalThresholdMinor, obs.policy.currency)} need
-                  manager approval before authorization. Never settle undelivered goods. Duplicated
-                  invoices must be flagged. Customer promises must be achievable from real sourcing lead
-                  times. Help is allowed ({obs.policy.helpPolicy.maxHelpRequests} requests
-                  {obs.policy.helpPolicy.fatalBeyond ? ", beyond that is a policy failure" : ""}).
-                </p>
-              </Card>
-            ) : null}
-            {tab === "inbox" ? <InboxPanel obs={obs} act={act} /> : null}
-            {tab === "suppliers" ? <SuppliersPanel obs={obs} act={act} /> : null}
-            {tab === "orders" ? <OrdersPanel obs={obs} act={act} /> : null}
-            {tab === "deliveries" ? <DeliveriesPanel obs={obs} act={act} /> : null}
-            {tab === "invoices" ? <InvoicesPanel obs={obs} act={act} /> : null}
-            {tab === "ledger" ? (
-              <div className="space-y-6">
-                <ReconciliationVisualizer
-                  balances={balances}
-                  openingEquityMinor={openingEquityMinor}
-                  transactions={obs.ledger.txns}
-                  currency={obs.policy.currency}
-                />
-                <LedgerPanel obs={obs} act={act} />
+            {splitTab ? (
+              <div className="grid gap-6 xl:grid-cols-2">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5 text-xs font-semibold text-slate-600 dark:text-slate-400">
+                    <span>Primary: {TABS.find((t) => t.id === tab)?.label}</span>
+                  </div>
+                  {tab === "brief" ? (
+                    <Card title="Episode brief">
+                      <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">{obs.brief.situation}</p>
+                      <h3 className="mt-4 text-sm font-semibold">Objectives</h3>
+                      <ul className="mt-1 list-inside list-disc space-y-1 text-sm text-slate-700 dark:text-slate-300">
+                        {obs.brief.objectives.map((o) => (
+                          <li key={o}>{o}</li>
+                        ))}
+                      </ul>
+                      <h3 className="mt-4 text-sm font-semibold">Guidance</h3>
+                      <ul className="mt-1 list-inside list-disc space-y-1 text-sm text-slate-700 dark:text-slate-300">
+                        {obs.brief.guidance.map((g) => (
+                          <li key={g}>{g}</li>
+                        ))}
+                      </ul>
+                    </Card>
+                  ) : null}
+                  {tab === "inbox" ? <InboxPanel obs={obs} act={act} /> : null}
+                  {tab === "suppliers" ? <SuppliersPanel obs={obs} act={act} /> : null}
+                  {tab === "orders" ? <OrdersPanel obs={obs} act={act} /> : null}
+                  {tab === "deliveries" ? <DeliveriesPanel obs={obs} act={act} /> : null}
+                  {tab === "invoices" ? <InvoicesPanel obs={obs} act={act} /> : null}
+                  {tab === "ledger" ? (
+                    <div className="space-y-6">
+                      <ReconciliationVisualizer
+                        balances={balances}
+                        openingEquityMinor={openingEquityMinor}
+                        transactions={obs.ledger.txns}
+                        currency={obs.policy.currency}
+                      />
+                      <LedgerPanel obs={obs} act={act} />
+                    </div>
+                  ) : null}
+                  {tab === "tickets" ? <TicketsPanel obs={obs} act={act} /> : null}
+                  {tab === "sheets" ? <SheetsPanel obs={obs} act={act} /> : null}
+                  {tab === "notes" ? <NotesPanel obs={obs} act={act} /> : null}
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5 text-xs font-semibold text-slate-600 dark:text-slate-400">
+                    <div className="flex items-center gap-2">
+                      <span>Comparison:</span>
+                      <select
+                        value={splitTab}
+                        onChange={(e) => setSplitTab(e.target.value as TabId)}
+                        aria-label="Select comparison module"
+                        className="rounded border border-slate-300 bg-white px-2 py-0.5 text-xs text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                      >
+                        {TABS.map((t) => (
+                          <option key={t.id} value={t.id}>
+                            {t.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setSplitTab(null)}
+                      className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  {splitTab === "brief" ? (
+                    <Card title="Episode brief">
+                      <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">{obs.brief.situation}</p>
+                    </Card>
+                  ) : null}
+                  {splitTab === "inbox" ? <InboxPanel obs={obs} act={act} /> : null}
+                  {splitTab === "suppliers" ? <SuppliersPanel obs={obs} act={act} /> : null}
+                  {splitTab === "orders" ? <OrdersPanel obs={obs} act={act} /> : null}
+                  {splitTab === "deliveries" ? <DeliveriesPanel obs={obs} act={act} /> : null}
+                  {splitTab === "invoices" ? <InvoicesPanel obs={obs} act={act} /> : null}
+                  {splitTab === "ledger" ? (
+                    <div className="space-y-6">
+                      <ReconciliationVisualizer
+                        balances={balances}
+                        openingEquityMinor={openingEquityMinor}
+                        transactions={obs.ledger.txns}
+                        currency={obs.policy.currency}
+                      />
+                      <LedgerPanel obs={obs} act={act} />
+                    </div>
+                  ) : null}
+                  {splitTab === "tickets" ? <TicketsPanel obs={obs} act={act} /> : null}
+                  {splitTab === "sheets" ? <SheetsPanel obs={obs} act={act} /> : null}
+                  {splitTab === "notes" ? <NotesPanel obs={obs} act={act} /> : null}
+                </div>
               </div>
-            ) : null}
-            {tab === "tickets" ? <TicketsPanel obs={obs} act={act} /> : null}
-            {tab === "sheets" ? <SheetsPanel obs={obs} act={act} /> : null}
-            {tab === "notes" ? <NotesPanel obs={obs} act={act} /> : null}
+            ) : (
+              <>
+                {tab === "brief" ? (
+                  <Card title="Episode brief">
+                    <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">{obs.brief.situation}</p>
+                    <h3 className="mt-4 text-sm font-semibold">Objectives</h3>
+                    <ul className="mt-1 list-inside list-disc space-y-1 text-sm text-slate-700 dark:text-slate-300">
+                      {obs.brief.objectives.map((o) => (
+                        <li key={o}>{o}</li>
+                      ))}
+                    </ul>
+                    <h3 className="mt-4 text-sm font-semibold">Guidance</h3>
+                    <ul className="mt-1 list-inside list-disc space-y-1 text-sm text-slate-700 dark:text-slate-300">
+                      {obs.brief.guidance.map((g) => (
+                        <li key={g}>{g}</li>
+                      ))}
+                    </ul>
+                    <h3 className="mt-4 text-sm font-semibold">Checklist (what “done” involves)</h3>
+                    <ul className="mt-1 list-inside list-disc space-y-1 text-sm text-slate-700 dark:text-slate-300">
+                      {obs.publicChecklist.map((c) => (
+                        <li key={c}>{c}</li>
+                      ))}
+                    </ul>
+                    <h3 className="mt-4 text-sm font-semibold">Rules that bite</h3>
+                    <p className="text-sm text-slate-700 dark:text-slate-300">
+                      Orders above {formatMinor(obs.policy.approvalThresholdMinor, obs.policy.currency)} need
+                      manager approval before authorization. Never settle undelivered goods. Duplicated
+                      invoices must be flagged. Customer promises must be achievable from real sourcing lead
+                      times. Help is allowed ({obs.policy.helpPolicy.maxHelpRequests} requests
+                      {obs.policy.helpPolicy.fatalBeyond ? ", beyond that is a policy failure" : ""}).
+                    </p>
+                  </Card>
+                ) : null}
+                {tab === "inbox" ? <InboxPanel obs={obs} act={act} /> : null}
+                {tab === "suppliers" ? <SuppliersPanel obs={obs} act={act} /> : null}
+                {tab === "orders" ? <OrdersPanel obs={obs} act={act} /> : null}
+                {tab === "deliveries" ? <DeliveriesPanel obs={obs} act={act} /> : null}
+                {tab === "invoices" ? <InvoicesPanel obs={obs} act={act} /> : null}
+                {tab === "ledger" ? (
+                  <div className="space-y-6">
+                    <ReconciliationVisualizer
+                      balances={balances}
+                      openingEquityMinor={openingEquityMinor}
+                      transactions={obs.ledger.txns}
+                      currency={obs.policy.currency}
+                    />
+                    <LedgerPanel obs={obs} act={act} />
+                  </div>
+                ) : null}
+                {tab === "tickets" ? <TicketsPanel obs={obs} act={act} /> : null}
+                {tab === "sheets" ? <SheetsPanel obs={obs} act={act} /> : null}
+                {tab === "notes" ? <NotesPanel obs={obs} act={act} /> : null}
+              </>
+            )}
           </main>
 
           {/* Right Sidebar: Assistant, Progress, Outcome */}

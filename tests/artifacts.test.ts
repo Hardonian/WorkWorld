@@ -19,6 +19,9 @@ describe("safe formula evaluation", () => {
     expect(evaluateFormula(w, "B1/3")).toBe(5);
     expect(evaluateFormula(w, "MIN(A1:A3)")).toBe(2);
     expect(evaluateFormula(w, "MAX(A1:A3)")).toBe(10);
+    expect(evaluateFormula(w, "ROUND(12.3456, 2)")).toBe(12.35);
+    expect(evaluateFormula(w, "IF(A1, 100, 200)")).toBe(100);
+    expect(evaluateFormula(w, "IF(0, 100, 200)")).toBe(200);
   });
 
   it("rejects anything outside the bounded grammar", () => {

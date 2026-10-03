@@ -747,6 +747,7 @@ export function SheetsPanel({ obs, act }: PanelProps) {
   const wb = obs.workbooks[workbookId];
   const [draft, setDraft] = useState<Record<string, string>>({});
   const [newRef, setNewRef] = useState("");
+  const [selectedCell, setSelectedCell] = useState<string>("A1");
 
   if (!wb) {
     return <Empty>This episode has no spreadsheet artifact.</Empty>;
@@ -759,6 +760,15 @@ export function SheetsPanel({ obs, act }: PanelProps) {
     const [bc, br] = [b.replace(/[0-9]/g, ""), Number(b.replace(/[^0-9]/g, ""))];
     return ar - br || (ac < bc ? -1 : 1);
   });
+
+  const activeValue = draft[selectedCell] ?? renderCell(wb.cells[selectedCell]);
+
+  const handleInsertFunction = (fnName: string) => {
+    setDraft({
+      ...draft,
+      [selectedCell]: `=${fnName}()`,
+    });
+  };
 
   return (
     <Card
@@ -782,24 +792,67 @@ export function SheetsPanel({ obs, act }: PanelProps) {
         </Button>
       }
     >
-      <p className="mb-2 text-xs text-slate-500">
-        Formulas: =SUM(A1:A5), =AVG(...), =MIN(...), =MAX(...), arithmetic and cell refs. Type
-        &quot;=&quot; to start a formula. {wb.edits.length} edits recorded (history preserved).
-      </p>
+      {/* Formula Bar & Function Chips */}
+      <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/60 space-y-2">
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
+            {selectedCell}
+          </span>
+          <span className="text-slate-400 font-serif italic text-sm">fx</span>
+          <input
+            className="flex-1 rounded border border-slate-300 bg-white px-2.5 py-1 font-mono text-xs text-slate-800 outline-none focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
+            value={activeValue}
+            placeholder="Enter formula e.g. =SUM(A1:A5) or value"
+            onChange={(e) => setDraft({ ...draft, [selectedCell]: e.target.value })}
+            aria-label={`Formula bar for cell ${selectedCell}`}
+          />
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span>Formulas:</span>
+            {["SUM", "AVG", "MIN", "MAX", "ROUND", "IF"].map((fn) => (
+              <button
+                type="button"
+                key={fn}
+                onClick={() => handleInsertFunction(fn)}
+                className="rounded bg-white dark:bg-slate-800 px-1.5 py-0.5 font-mono text-[10px] font-medium border border-slate-200 dark:border-slate-700 hover:border-indigo-500 hover:text-indigo-600 transition-colors"
+              >
+                ={fn}
+              </button>
+            ))}
+          </div>
+          <span className="text-[10px]">{wb.edits.length} edits recorded</span>
+        </div>
+      </div>
+
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {refs.map((ref) => (
-          <li key={ref} className="flex items-center gap-2">
-            <span className="w-10 font-mono text-xs text-slate-500">{ref}</span>
-            <input
-              className={inputClass}
-              value={draft[ref] ?? renderCell(wb.cells[ref])}
-              onChange={(e) => setDraft({ ...draft, [ref]: e.target.value })}
-              aria-label={`Cell ${ref}`}
-            />
-          </li>
-        ))}
+        {refs.map((ref) => {
+          const isSelected = selectedCell === ref;
+          return (
+            <li
+              key={ref}
+              onClick={() => setSelectedCell(ref)}
+              className={`flex items-center gap-2 rounded-lg p-1.5 transition-colors cursor-pointer border ${
+                isSelected
+                  ? "border-indigo-500 bg-indigo-50/50 dark:border-indigo-500 dark:bg-indigo-950/30"
+                  : "border-transparent hover:bg-slate-50 dark:hover:bg-slate-800/40"
+              }`}
+            >
+              <span className={`w-10 font-mono text-xs font-semibold ${isSelected ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500"}`}>
+                {ref}
+              </span>
+              <input
+                className={`${inputClass} font-mono text-xs`}
+                value={draft[ref] ?? renderCell(wb.cells[ref])}
+                onFocus={() => setSelectedCell(ref)}
+                onChange={(e) => setDraft({ ...draft, [ref]: e.target.value })}
+                aria-label={`Cell ${ref}`}
+              />
+            </li>
+          );
+        })}
       </ul>
-      <div className="mt-2 flex flex-wrap items-end gap-2">
+      <div className="mt-4 flex flex-wrap items-end gap-2 border-t border-slate-200 dark:border-slate-800 pt-3">
         <Button
           onClick={() => {
             const cells = Object.entries(draft).map(([ref, raw]) => {

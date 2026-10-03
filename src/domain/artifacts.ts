@@ -91,13 +91,25 @@ function parseExpression(wb: Workbook, src: string, depth: number): number {
       return v;
     }
     if (/[A-Z]/.test(ch)) {
-      const m = /^(SUM|AVG|MIN|MAX)\(/.exec(src.slice(pos));
+      const m = /^(SUM|AVG|MIN|MAX|ROUND|IF)\(/.exec(src.slice(pos));
       if (m) {
         pos += m[0].length;
         const args = parseArgs();
         skipWs();
         if (peek() !== ")") throw new FormulaError("missing ) after function");
         pos++;
+        if (m[1] === "ROUND") {
+          const val = args[0]?.[0] ?? 0;
+          const decimals = args[1]?.[0] ?? 0;
+          const factor = Math.pow(10, Math.max(0, Math.min(6, decimals)));
+          return Math.round(val * factor) / factor;
+        }
+        if (m[1] === "IF") {
+          const cond = args[0]?.[0] ?? 0;
+          const thenVal = args[1]?.[0] ?? 0;
+          const elseVal = args[2]?.[0] ?? 0;
+          return cond !== 0 ? thenVal : elseVal;
+        }
         const flat = args.flat();
         if (flat.length === 0) throw new FormulaError("empty aggregate");
         switch (m[1]) {
