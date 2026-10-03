@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-02T19:30:14.128Z",
+  "generatedAt": "2026-10-03T01:01:19.396Z",
   "localReadiness": "local technical candidate: PASS",
-  "hostedReadiness": "hosted: VERIFIED against the hosted project (RLS suite green via WW_TEST_PG_URL; gsssdavzyorvhtdolvaj.supabase.co)",
+  "hostedReadiness": "hosted: blocked_external (no hosted configuration; B1)",
   "researchReadiness": "harness validation only — no live-model or human-study evidence",
   "commercialReadiness": "none — protocols only",
   "gates": [
@@ -12,8 +12,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T19:29:47.579Z",
-      "tail": "  8:10  warning  'existsSync' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars |  | ✖ 2 problems (0 errors, 2 warnings)"
+      "started": "2026-10-03T01:00:33.627Z",
+      "tail": "> workworld@0.1.0 lint | > eslint ."
     },
     {
       "id": "typecheck",
@@ -22,7 +22,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T19:29:50.480Z",
+      "started": "2026-10-03T01:00:45.436Z",
       "tail": "> workworld@0.1.0 typecheck | > tsc --noEmit"
     },
     {
@@ -32,8 +32,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T19:29:52.836Z",
-      "tail": "      Tests  90 passed (90) |    Start at  15:29:53 |    Duration  8.68s (tests 79%, transform 14%, import 7%)"
+      "started": "2026-10-03T01:00:52.241Z",
+      "tail": "\u001b[2m  Transform \u001b[22m \u001b[33mtransforming modules took 3.02s\u001b[39m\u001b[2m · 33% of tracked time, re-done on every run\u001b[22m | \u001b[2m            \u001b[22m \u001b[2mpersist transforms across runs with \u001b[22m\u001b[33mfsModuleCache: true\u001b[39m | \u001b[2m            \u001b[22m \u001b[2mlearn more: https://vitest.dev/guide/improving-performance#caching-between-reruns\u001b[22m"
     },
     {
       "id": "baseline",
@@ -42,7 +42,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T19:30:01.913Z",
+      "started": "2026-10-03T01:00:56.938Z",
       "tail": "C2 PASS T1 9/9 |  | baseline: 6/6 episodes pass (fixture actor, not a model)"
     },
     {
@@ -52,7 +52,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T19:30:02.266Z",
+      "started": "2026-10-03T01:00:58.602Z",
       "tail": "N6 OK  expected=[help_policy] actual=[help_policy] — indiscriminate requests for human help |  | negative controls: 6/6 detected for the right reasons"
     },
     {
@@ -62,7 +62,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T19:30:02.618Z",
+      "started": "2026-10-03T01:01:00.344Z",
       "tail": " | ○  (Static)   prerendered as static content | ƒ  (Dynamic)  server-rendered on demand"
     },
     {
@@ -72,7 +72,7 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T19:30:04.383Z",
+      "started": "2026-10-03T01:01:15.696Z",
       "tail": "> tsx scripts/validate-task-state.ts |  | TASK_STATE.json OK: 11 milestones, 2 external blockers; docs/TASK_STATE.schema.json refreshed"
     },
     {
@@ -82,18 +82,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-02T19:30:04.659Z",
+      "started": "2026-10-03T01:01:17.083Z",
       "tail": ""
-    },
-    {
-      "id": "hosted-rls",
-      "description": "RLS suite against the real hosted project",
-      "cmd": "npx vitest run tests/db",
-      "required": true,
-      "exitCode": 0,
-      "ok": true,
-      "started": "2026-10-02T19:30:05.172Z",
-      "tail": "      Tests  12 passed (12) |    Start at  15:30:05 |    Duration  8.56s (tests 99%)"
     }
   ]
 }
