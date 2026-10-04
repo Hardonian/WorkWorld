@@ -1,0 +1,27 @@
+# WorkWorld — Cloudflare deploy config (cost + latency).
+# See MIGRATION.md. This is config only — run the wrangler commands there to
+# actually create the R2 bucket / deploy. Never commit secrets here.
+
+name = "workworld"
+compatibility_date = "2026-01-01"
+main = ".open-next/worker.js"          # emitted by @opennextjs/cloudflare (SSR Next.js)
+assets = { directory = ".open-next/assets", binding = "ASSETS" }
+
+[vars]
+ENVIRONMENT = "production"
+
+# Exports / evidence artifacts -> R2 (ZERO egress). Big cost win for file deliverables.
+[[r2_buckets]]
+binding = "EXPORTS"
+bucket_name = "workworld-exports"
+
+# Optional: edge KV cache for read-heavy lookups (shields Postgres, cuts latency).
+# [[kv_namespaces]]
+# binding = "CACHE"
+# id = "<create with: npx wrangler kv namespace create CACHE>"
+
+# Postgres is the source of truth. If SSR runs at the edge, front it with Hyperdrive
+# (or use Neon/Supabase) so connections are pooled + fast:
+# [[hyperdrive]]
+# binding = "DB"
+# id = "<hyperdrive-config-id>"
