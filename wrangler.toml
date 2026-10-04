@@ -12,6 +12,9 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 ENVIRONMENT = "production"
+# Hosted-mode gate. Flipped only after the Postgres EventStore was VERIFIED end-to-end
+# against Supabase (real CRUD incl. digest round-trip) and the auth/session path is wired.
+WORKWORLD_HOSTED_STORE_WIRED = "true"
 
 # Postgres connection (WorkWorld is on Supabase). store-postgres.ts reads
 # process.env.WW_TEST_PG_URL — set it as a Worker secret (pipe from supabase.env,
@@ -20,10 +23,11 @@ ENVIRONMENT = "production"
 #     | wrangler secret put WW_TEST_PG_URL
 
 # Exports / evidence artifacts -> R2 (ZERO egress). Big cost win for file deliverables.
-# (Provision the bucket in the CF dashboard first — error 10042 until R2 is enabled.)
-[[r2_buckets]]
-binding = "EXPORTS"
-bucket_name = "workworld-exports"
+# Provision the bucket in the CF dashboard first (error 10042 until R2 is enabled), then
+# uncomment this binding and redeploy:
+# [[r2_buckets]]
+# binding = "EXPORTS"
+# bucket_name = "workworld-exports"
 
 # Recommended for production Postgres at the edge (pooled + cached, shields Supabase):
 # [[hyperdrive]]
