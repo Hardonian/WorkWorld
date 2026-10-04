@@ -1,0 +1,36 @@
+# WorkWorld — Cloudflare Worker (OpenNext). At the app root because the OpenNext
+# build looks for wrangler.toml here. See deploy/cloudflare/MIGRATION.md.
+# Never commit secrets (DB URL, service keys) here — use `wrangler secret put`.
+
+name = "workworld"
+compatibility_date = "2026-01-01"
+main = ".open-next/worker.js"          # emitted by opennextjs-cloudflare build
+assets = { directory = ".open-next/assets", binding = "ASSETS" }
+# pg (node-postgres) needs Node net/tls sockets at the edge (via pg-cloudflare's
+# CloudflareSocket / connect()) to reach Supabase Postgres:
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "production"
+
+# Postgres connection (WorkWorld is on Supabase). store-postgres.ts reads
+# process.env.WW_TEST_PG_URL — set it as a Worker secret (pipe from supabase.env,
+# never echo it):
+#   grep '^WW_TEST_PG_URL=' /home/scott/.hermes/secrets/supabase.env | cut -d= -f2- \
+#     | wrangler secret put WW_TEST_PG_URL
+
+# Exports / evidence artifacts -> R2 (ZERO egress). Big cost win for file deliverables.
+# (Provision the bucket in the CF dashboard first — error 10042 until R2 is enabled.)
+[[r2_buckets]]
+binding = "EXPORTS"
+bucket_name = "workworld-exports"
+
+# Recommended for production Postgres at the edge (pooled + cached, shields Supabase):
+# [[hyperdrive]]
+# binding = "DB"
+# id = "<npx wrangler hyperdrive create workworld-db --connection-string=$WW_TEST_PG_URL>"
+
+# Optional edge cache for read-heavy lookups:
+# [[kv_namespaces]]
+# binding = "CACHE"
+# id = "<npx wrangler kv namespace create CACHE>"

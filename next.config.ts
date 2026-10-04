@@ -5,6 +5,15 @@ const nextConfig: NextConfig = {
   output: "standalone",
   // Keep the server-only Postgres client out of client bundles via module boundaries.
   serverExternalPackages: ["pg"],
+  // pg (>=8.x) conditionally requires "pg-cloudflare" (its Cloudflare Workers socket
+  // shim) from lib/stream.js. esbuild's "workerd" export condition resolves that to
+  // pg-cloudflare/esm/index.mjs, but Next's output tracer only copies the CJS "dist/"
+  // subset of external packages — so the OpenNext bundle fails to resolve it. Force the
+  // full package (incl. esm/) into the output trace so the Worker bundle can resolve +
+  // inline CloudflareSocket for pg-on-Workers (with Hyperdrive).
+  outputFileTracingIncludes: {
+    "/**": ["./node_modules/pg-cloudflare/**/*"],
+  },
   poweredByHeader: false,
   async headers() {
     return [

@@ -28,16 +28,19 @@
     "benchmark:stress": "tsx scripts/stress-test.ts",
     "release-gate": "node scripts/release-gate.mjs",
     "validate:task-state": "tsx scripts/validate-task-state.ts",
-    "doctor": "tsx scripts/doctor.ts"
+    "doctor": "tsx scripts/doctor.ts",
+    "deploy:edge": "opennextjs-cloudflare build && wrangler deploy"
   },
   "dependencies": {
     "next": "16.3.8",
     "pg": "8.23.1",
+    "pg-cloudflare": "^1.4.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "zod": "4.6.5"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.8",
     "@playwright/test": "1.63.0",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "26.6.4",
