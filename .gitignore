@@ -32,3 +32,7 @@ Thumbs.db
 
 # zips are delivered separately; export dirs are tracked
 evidence-exports/*.zip
+
+# OpenNext build output + wrangler local state
+.open-next/
+.wrangler/
