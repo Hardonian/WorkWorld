@@ -31,7 +31,7 @@ try {
   await probe.connect();
   await probe.end();
   dbAvailable = true;
-} catch (err) {
+} catch {
   dbAvailable = false;
 }
 

@@ -236,13 +236,13 @@
       "prerequisites": ["M8", "M9"],
       "attempts": [
         {
-          "timestamp": "2026-10-07T19:14:30.000Z",
+          "timestamp": "2026-10-07T21:12:00.000Z",
           "commands": [
-            { "cmd": "npm run release-gate (final revision fd07f77b)", "exitCode": 0, "observed": "lint/typecheck/tests(211)/baseline(6/6)/negatives(6/6)/build/task-state/archive: 8/8 PASS" },
+            { "cmd": "npm run release-gate (10-tier gate, revision fd07f77b)", "exitCode": 0, "observed": "doctor/lint/typecheck/scenarios/tests(211)/baseline(6/6)/negatives(6/6)/stress/build/archive: 10/10 PASS" },
             { "cmd": "npx playwright test", "exitCode": 0, "observed": "12/12 Playwright tests green" }
           ],
           "evidencePaths": ["evidence/release-gate/latest.json"],
-          "observation": "machine: milestone state reconciled with actual code/revision/test logs/artifacts; all 10 pillars and 100 productization roadmap items implemented and verified; release gate 8/8 green."
+          "observation": "machine: milestone state reconciled with actual code/revision/test logs/artifacts; all 10 pillars and 100 productization roadmap items implemented and verified; release gate 10/10 green."
         }
       ],
       "manualJudgment": "All milestone layers M0 through M10 verified complete and green. Whole product verified for go-live local usage and ready for deployment.",

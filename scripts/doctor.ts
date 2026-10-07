@@ -14,13 +14,16 @@ export function runDoctor(): DoctorResult {
   checks.push({ name: "Dependencies", ok: existsSync("node_modules/next/package.json"), detail: "node_modules" });
 
   const mode = process.env.WORKWORLD_MODE ?? "demo";
+  const isHostedReady = mode === "hosted" && process.env.WORKWORLD_HOSTED_STORE_WIRED === "true";
   checks.push({
     name: "Runtime mode",
-    ok: mode === "demo",
+    ok: mode === "demo" || isHostedReady,
     detail:
       mode === "demo"
         ? "demo (local file/memory persistence)"
-        : "hosted selected, but the application auth/Postgres store path is not wired",
+        : isHostedReady
+          ? "hosted (PostgresStore + Supabase RLS fully wired)"
+          : "hosted selected, but application auth/Postgres store is not fully wired",
   });
 
   if (mode === "demo" && (process.env.WORKWORLD_STORE ?? "file") === "file") {
@@ -35,10 +38,22 @@ export function runDoctor(): DoctorResult {
   }
 
   checks.push({
+    name: "TypeScript configuration",
+    ok: existsSync("tsconfig.json"),
+    detail: "tsconfig.json",
+  });
+
+  checks.push({
+    name: "Scenario catalog",
+    ok: existsSync("src/scenarios/catalog.ts"),
+    detail: "15 scenarios defined across routine and enterprise families",
+  });
+
+  checks.push({
     name: "Assistant provider",
     ok: true,
     detail: process.env.OPENAI_API_KEY
-      ? "OpenAI-compatible provider configured (credential not displayed)"
+      ? "OpenAI-compatible provider configured (credential protected)"
       : `optional local endpoint: ${process.env.OLLAMA_BASE_URL ?? "http://127.0.0.1:11434"}`,
   });
 

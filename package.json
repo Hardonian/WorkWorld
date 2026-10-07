@@ -27,6 +27,8 @@
     "lint:scenarios": "tsx scripts/lint-scenarios.ts",
     "benchmark:stress": "tsx scripts/stress-test.ts",
     "release-gate": "node scripts/release-gate.mjs",
+    "release-gate:10": "node scripts/release-gate.mjs",
+    "verify:all": "npm run release-gate && npm run test:e2e",
     "validate:task-state": "tsx scripts/validate-task-state.ts",
     "doctor": "tsx scripts/doctor.ts",
     "deploy:edge": "opennextjs-cloudflare build && wrangler deploy"

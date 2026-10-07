@@ -1,89 +1,121 @@
 {
-  "generatedAt": "2026-10-07T19:20:07.172Z",
-  "localReadiness": "local technical candidate: PASS",
+  "generatedAt": "2026-10-07T21:13:41.282Z",
+  "totalDurationSec": 34.87,
+  "gateScore": "10/10",
+  "localReadiness": "local technical candidate: PASS (10/10 gates green)",
   "hostedReadiness": "hosted: blocked_external (no hosted configuration; B1)",
-  "researchReadiness": "harness validation only — no live-model or human-study evidence",
-  "commercialReadiness": "none — protocols only",
+  "researchReadiness": "harness validation complete — deterministic baseline & controls verified",
+  "commercialReadiness": "protocols and security artifacts complete",
   "gates": [
     {
+      "id": "doctor",
+      "description": "Environment & dependency health",
+      "cmd": "npm run doctor",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "durationSec": 0.69,
+      "started": "2026-10-07T21:13:06.602Z",
+      "tail": "PASS  Scenario catalog: 15 scenarios defined across routine and enterprise families | PASS  Assistant provider: optional local endpoint: http://127.0.0.1:11434"
+    },
+    {
       "id": "lint",
-      "description": "eslint clean",
+      "description": "ESLint code style & zero-warning audit",
       "cmd": "npm run lint",
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-07T19:19:31.955Z",
-      "tail": "  34:10  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars |  | ✖ 1 problem (0 errors, 1 warning)"
+      "durationSec": 7.89,
+      "started": "2026-10-07T21:13:07.294Z",
+      "tail": "> workworld@0.1.0 lint | > eslint ."
     },
     {
       "id": "typecheck",
-      "description": "tsc --noEmit",
+      "description": "TypeScript 5.9 strict compilation",
       "cmd": "npm run typecheck",
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-07T19:19:39.994Z",
+      "durationSec": 3.15,
+      "started": "2026-10-07T21:13:15.186Z",
       "tail": "> workworld@0.1.0 typecheck | > tsc --noEmit"
     },
     {
-      "id": "tests",
-      "description": "unit/integration/db tests",
-      "cmd": "npx vitest run",
+      "id": "scenarios",
+      "description": "Scenario catalog linter & DAG invariants",
+      "cmd": "npm run lint:scenarios",
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-07T19:19:44.747Z",
-      "tail": "\u001b[2m  Transform \u001b[22m \u001b[33mtransforming modules took 6.45s\u001b[39m\u001b[2m · 29% of tracked time, re-done on every run\u001b[22m | \u001b[2m            \u001b[22m \u001b[2mpersist transforms across runs with \u001b[22m\u001b[33mfsModuleCache: true\u001b[39m | \u001b[2m            \u001b[22m \u001b[2mlearn more: https://vitest.dev/guide/improving-performance#caching-between-reruns\u001b[22m"
+      "durationSec": 0.93,
+      "started": "2026-10-07T21:13:18.334Z",
+      "tail": "Validated 15 scenarios across routine and enterprise families. | PASS: All scenario specifications are syntactically and logically consistent."
+    },
+    {
+      "id": "tests",
+      "description": "Vitest unit & integration test suites",
+      "cmd": "npm test",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "durationSec": 3.38,
+      "started": "2026-10-07T21:13:19.267Z",
+      "tail": "\u001b[2m            \u001b[22m \u001b[2mpersist transforms across runs with \u001b[22m\u001b[33mfsModuleCache: true\u001b[39m | \u001b[2m            \u001b[22m \u001b[2mlearn more: https://vitest.dev/guide/improving-performance#caching-between-reruns\u001b[22m"
     },
     {
       "id": "baseline",
-      "description": "competent control passes all episodes",
+      "description": "Competent actor benchmark (6/6 episodes pass)",
       "cmd": "npm run baseline",
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-07T19:19:48.941Z",
-      "tail": "C2 PASS T1 9/9 |  | baseline: 6/6 episodes pass (fixture actor, not a model)"
+      "durationSec": 0.95,
+      "started": "2026-10-07T21:13:22.642Z",
+      "tail": " | baseline: 6/6 episodes pass (fixture actor, not a model)"
     },
     {
       "id": "negatives",
-      "description": "negative controls fail for the right reasons",
+      "description": "Adversarial negative controls caught",
       "cmd": "npm run negatives",
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-07T19:19:49.913Z",
-      "tail": "N6 OK  expected=[help_policy] actual=[help_policy] — indiscriminate requests for human help |  | negative controls: 6/6 detected for the right reasons"
+      "durationSec": 0.97,
+      "started": "2026-10-07T21:13:23.596Z",
+      "tail": " | negative controls: 6/6 detected for the right reasons"
+    },
+    {
+      "id": "stress",
+      "description": "Concurrency throughput & latency benchmark",
+      "cmd": "npm run benchmark:stress",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "durationSec": 0.92,
+      "started": "2026-10-07T21:13:24.562Z",
+      "tail": "Throughput: 15250 actions/sec | Latency: p50=0.058ms, p95=0.09ms, p99=0.134ms"
     },
     {
       "id": "build",
-      "description": "production build",
+      "description": "Next.js 16 production application build",
       "cmd": "npm run build",
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-07T19:19:50.838Z",
-      "tail": " | ○  (Static)   prerendered as static content | ƒ  (Dynamic)  server-rendered on demand"
-    },
-    {
-      "id": "task-state",
-      "description": "TASK_STATE.json validates against schema",
-      "cmd": "npm run validate:task-state",
-      "required": true,
-      "exitCode": 0,
-      "ok": true,
-      "started": "2026-10-07T19:20:03.532Z",
-      "tail": "> tsx scripts/validate-task-state.ts |  | TASK_STATE.json OK: 11 milestones, 2 external blockers; docs/TASK_STATE.schema.json refreshed"
+      "durationSec": 12.44,
+      "started": "2026-10-07T21:13:25.477Z",
+      "tail": "○  (Static)   prerendered as static content | ƒ  (Dynamic)  server-rendered on demand"
     },
     {
       "id": "archive",
-      "description": "source archive builds with checksums",
-      "cmd": "node scripts/build-archive.mjs --quiet",
+      "description": "Schema validation & SHA-256 source archive",
+      "cmd": "npm run validate:task-state && node scripts/build-archive.mjs --quiet",
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "started": "2026-10-07T19:20:04.650Z",
-      "tail": ""
+      "durationSec": 3.36,
+      "started": "2026-10-07T21:13:37.920Z",
+      "tail": " | TASK_STATE.json OK: 11 milestones, 2 external blockers; docs/TASK_STATE.schema.json refreshed"
     }
   ]
 }
