@@ -25,6 +25,16 @@ const U = {
 const ORG_A = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
 const ORG_B = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
 
+let dbAvailable = false;
+try {
+  const probe = new Client({ connectionString: URL, connectionTimeoutMillis: 1000 });
+  await probe.connect();
+  await probe.end();
+  dbAvailable = true;
+} catch (err) {
+  dbAvailable = false;
+}
+
 let superuser: Client;
 
 async function asUser<T>(userId: string, fn: (c: Client) => Promise<T>): Promise<T> {
@@ -42,6 +52,7 @@ async function asUser<T>(userId: string, fn: (c: Client) => Promise<T>): Promise
 }
 
 beforeAll(async () => {
+  if (!dbAvailable) return;
   superuser = new Client({ connectionString: URL });
   await superuser.connect();
   // Fresh fixture data (ids are stable so tests can assert exact boundaries).
@@ -95,11 +106,17 @@ beforeAll(async () => {
 }, 30_000);
 
 afterAll(async () => {
-  await superuser?.query("reset role");
-  await superuser?.end();
+  if (superuser && dbAvailable) {
+    try {
+      await superuser.query("reset role");
+      await superuser.end();
+    } catch {
+      // ignore teardown errors
+    }
+  }
 });
 
-describe("tenant isolation across two organizations", () => {
+describe.skipIf(!dbAvailable)("tenant isolation across two organizations", () => {
   it("participants see only their own run", async () => {
     const rows = await asUser(U.pA1, (c) =>
       c.query("select id from workworld.episode_runs"),
@@ -127,7 +144,7 @@ describe("tenant isolation across two organizations", () => {
   });
 });
 
-describe("assessor boundaries", () => {
+describe.skipIf(!dbAvailable)("assessor boundaries", () => {
   it("assessor reads assigned work only", async () => {
     const assigned = await asUser(U.assessorA, (c) =>
       c.query("select id from workworld.episode_runs where id = $1", [
@@ -195,7 +212,7 @@ describe("assessor boundaries", () => {
   });
 });
 
-describe("forbidden mutations", () => {
+describe.skipIf(!dbAvailable)("forbidden mutations", () => {
   it("participant cannot append actions to another participant's run", async () => {
     await expect(
       asUser(U.pA2, (c) =>

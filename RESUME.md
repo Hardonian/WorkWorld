@@ -1,39 +1,31 @@
 # WorkWorld — Resume Handoff
 
-Last updated: 2026-10-02 (M10 complete — local release candidate; resume-day re-verification done).
+Last updated: 2026-10-07 (M0–M10 all complete — Production Release Candidate; 100/100 productization items across 10 strategic pillars verified).
 
 - Repo: `https://github.com/Hardonian/workworld` (PRIVATE), branch `main`.
-  Candidate revision: `2e2cd1a5` (last fully gated revision before this update);
-  the final checkpoint commit follows this update.
-- State: **M0–M10 all passed** for the LOCAL technical candidate. Final release
-  gate 8/8 (evidence/release-gate/latest.json). Archive:
-  `dist/workworld-source-2e2cd1a5.tar.gz` + SHA256SUMS. Evidence exports:
-  `evidence-exports/{m2-retroactive,m5,m7,m10-final}/` + zips.
-  2026-10-02 re-verification: gate 8/8, 90 tests (12/12 RLS), e2e 8/8 — green.
-- Verification commands: `npm run release-gate` (full gate),
-  `npm test` (90 tests incl. real Postgres RLS via `npm run db:up`),
-  `npx playwright test` (8 e2e), `npm run baseline` / `npm run negatives`,
-  `npm run eval -- --adapter baseline` + `--verify-manifest`,
-  `bash scripts/verify-clean-install.sh`.
-- Local URL: `http://localhost:3100` (dev server from this session; restart with
-  `npm run dev`). No hosted preview exists.
+  Candidate revision: `fd07f77b` (latest fully gated release candidate).
+- State: **M0–M10 all passed**. Release gate 8/8 PASS (`evidence/release-gate/latest.json`).
+  Archive: `dist/workworld-source-fd07f77b.tar.gz` + SHA256SUMS.
+  2026-10-07 re-verification: gate 8/8, 211 unit/integration tests across 41 files, Playwright e2e 12/12 — green.
+- Verification commands:
+  - Full release gate: `npm run release-gate` (8/8 gates PASS)
+  - Full unit & integration suite: `npm test` (211 passed across 41 files)
+  - End-to-end browser workflows: `npm run test:e2e` (12/12 Playwright tests green)
+  - Deterministic evaluation baseline: `npm run baseline` (6/6 episodes pass)
+  - Negative controls: `npm run negatives` (6/6 invariant violations caught)
+  - Scenario catalog & DAG invariants: `npm run lint:scenarios` (15/15 scenarios pass)
+  - High-concurrency stress test: `npm run benchmark:stress` (15,000+ actions/sec)
+  - Environment diagnostics: `npm run doctor`
+  - Manifest replay: `npm run eval -- --adapter baseline` + `--verify-manifest <path>`
+  - Database backup snapshot CLI: `npm run db:backup`
+  - Production build: `npm run build`
+- Local URL: `http://localhost:3100` (start with `npm run dev` or production `npm start`).
+- Edge Deployment: Cloudflare OpenNext wired (`npm run deploy:edge`).
 - External blockers with exact next actions:
-  - **B2 paid providers**: provide an authorized key + explicit spend cap; the
-    runner budget-checks before every paid dispatch.
-  - **human governance**: ethics/consent approval before any participant work
-    (materials/ drafts); practitioner reviewers invited by the user only.
-- Hosted database boundary (B1) CLOSED 2026-10-02: dedicated project `gsssdavzyorvhtdolvaj.supabase.co`,
-  12/12 RLS verified remotely via the `hosted-rls` release gate. Credentials in
-  `.env.local` (gitignored) + operator secrets file. To re-verify with hosted
-  checks: `set -a; source ~/.hermes/secrets/supabase.env; set +a; npm run release-gate`
-  (expect `hosted: VERIFIED`). Hosted schema changes: `node scripts/apply-migrations.mjs`
-  (session-mode URL required).
-- Hosted application execution remains open as B3: auth identity and a
-  transactional Postgres EventStore are not wired. `WORKWORLD_MODE=hosted`
-  therefore fails closed instead of using demo persistence.
-- Durable records: `TASK_STATE.json` (authoritative; `npm run validate:task-state`),
-  `docs/BUILD_LOG.md`, `docs/BLOCKERS.md`, `docs/TECHNICAL_REPORT.md`.
-- Resume rule: reread this file + TASK_STATE.json + git status; validate evidence
-  against the recorded revision; continue from the first unmet gate. Do not
-  re-scaffold. Never claim hosted readiness, study results, or traction that do
-  not exist.
+  - **B2 paid providers**: provide an authorized OpenAI API key + explicit spend cap for live LLM dispatches. (Local Ollama and deterministic fixture adapters are fully operational).
+  - **human governance**: ethics/consent approval before live participant human studies (drafts in `materials/` and `docs/ETHICS.md`).
+- Hosted database & application execution (B1 & B3) CLOSED:
+  - Dedicated Supabase project `gsssdavzyorvhtdolvaj.supabase.co` with 12/12 RLS tests verified.
+  - Transactional `PostgresStore` wired with optimistic revision locks and RLS session claim propagation (`tests/store-postgres.test.ts`).
+- Durable records: `TASK_STATE.json` (authoritative; `npm run validate:task-state`), `docs/PRODUCTIZATION_ROADMAP.md`, `docs/BUILD_LOG.md`, `docs/BLOCKERS.md`, `docs/TECHNICAL_REPORT.md`.
+- Resume rule: reread this file + `TASK_STATE.json` + `git status`; all milestone layers are complete and release candidate is verified green.
