@@ -5,7 +5,7 @@
  * privileged symlinks, packaging the production output for Cloudflare Workers/Pages.
  */
 
-import { existsSync, mkdirSync, writeFileSync, copyFileSync, readdirSync, statSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { execSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -34,8 +34,8 @@ const workerSource = `/**
  * Deployed to Cloudflare Global Edge via OpenNext / Wrangler.
  */
 
-export default {
-  async fetch(request, env, ctx) {
+const edgeWorker = {
+  async fetch(request, env, _ctx) {
     const url = new URL(request.url);
 
     // Liveness / readiness probes at edge
@@ -79,6 +79,8 @@ export default {
     );
   }
 };
+
+export default edgeWorker;
 `;
 
 const workerFile = join(distEdge, "worker.js");

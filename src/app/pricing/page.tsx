@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ThemeToggle } from "../../components/ui/ThemeProvider.tsx";
 
 const PLANS = [
@@ -59,33 +60,41 @@ const PLANS = [
   },
 ];
 
+function redirectToStripe(url: string): void {
+  if (typeof window !== "undefined") {
+    window.location.assign(url);
+  }
+}
+
 export default function PricingPage() {
+  const router = useRouter();
   const [selectedSeats, setSelectedSeats] = useState(25);
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
 
   const handleCheckout = async (tier: string) => {
     if (tier === "community") {
-      window.location.href = "/workspace";
+      router.push("/workspace");
       return;
     }
 
     setLoadingTier(tier);
     try {
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
       const res = await fetch("/api/billing/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          orgId: `org_${Math.random().toString(36).slice(2, 8)}`,
+          orgId: "org_self_serve",
           tier,
           seatCount: selectedSeats,
-          successUrl: `${window.location.origin}/workspace?upgrade=success`,
-          cancelUrl: `${window.location.origin}/pricing`,
+          successUrl: `${origin}/workspace?upgrade=success`,
+          cancelUrl: `${origin}/pricing`,
         }),
       });
 
       const data = await res.json();
       if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
+        redirectToStripe(data.checkoutUrl);
       }
     } catch (err) {
       console.error("Checkout initiation failed:", err);

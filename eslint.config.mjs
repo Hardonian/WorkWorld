@@ -16,6 +16,9 @@ export default defineConfig([
   globalIgnores([
     "node_modules/**",
     ".next/**",
+    ".open-next/**",
+    ".wrangler/**",
+    "dist/**",
     ".kilo/**",
     "out/**",
     "eval-runs/**",

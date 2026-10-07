@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "project": "workworld",
-  "updatedAt": "2026-10-07T19:15:00.000Z",
+  "updatedAt": "2026-10-07T22:36:00.000Z",
   "codeRevision": {
     "branch": "main",
-    "commit": "fd07f77b15d10760a94f9c38d4aa572948ee0392",
-    "note": "Production candidate with complete 10-pillar architecture, 100/100 productization items, and 100% green release-gate verification"
+    "commit": "8668b958ea46ca2e5f4f41dd9bdc7d0975eea458",
+    "note": "Production release candidate with complete 10-tier gate, edge packaging, commercial Stripe monetization, and 100% green verification"
   },
   "milestones": [
     {
@@ -17,12 +17,29 @@
         {
           "timestamp": "2026-10-01T21:00:00.000Z",
           "commands": [
-            { "cmd": "npm install", "exitCode": 0 },
-            { "cmd": "tsc --noEmit", "exitCode": 0 },
-            { "cmd": "curl -s -o /dev/null -w '%{http_code}' http://localhost:3100/", "exitCode": 0, "observed": "200" },
-            { "cmd": "curl -s http://localhost:3100/health", "exitCode": 0, "observed": "{\"status\":\"ok\",\"service\":\"workworld\",\"mode\":\"demo\"}" }
+            {
+              "cmd": "npm install",
+              "exitCode": 0
+            },
+            {
+              "cmd": "tsc --noEmit",
+              "exitCode": 0
+            },
+            {
+              "cmd": "curl -s -o /dev/null -w '%{http_code}' http://localhost:3100/",
+              "exitCode": 0,
+              "observed": "200"
+            },
+            {
+              "cmd": "curl -s http://localhost:3100/health",
+              "exitCode": 0,
+              "observed": "{\"status\":\"ok\",\"service\":\"workworld\",\"mode\":\"demo\"}"
+            }
           ],
-          "evidencePaths": ["evidence/m0/environment.txt", "evidence/m0/route-probe.txt"],
+          "evidencePaths": [
+            "evidence/m0/environment.txt",
+            "evidence/m0/route-probe.txt"
+          ],
           "observation": "machine: repo created at /home/scott/repos/workworld on branch main; lockfile present (8476 lines); / and /health respond; gh authenticated as Hardonian; Hardonian/WorkWorld unused; codex CLI unauthenticated."
         }
       ],
@@ -34,15 +51,32 @@
       "id": "M1",
       "title": "Task specification and related work",
       "status": "passed",
-      "prerequisites": ["M0"],
+      "prerequisites": [
+        "M0"
+      ],
       "attempts": [
         {
           "timestamp": "2026-10-01T22:30:00.000Z",
           "commands": [
-            { "cmd": "web_search x7 (GDPval, TheAgentCompany, WorkArena, tau2, Mechanize, Forage, Workera, 2026 enterprise benchmarks)", "exitCode": 0, "observed": "primary + secondary sources retrieved and dated; see docs/RELATED_WORK.md" },
-            { "cmd": "write docs/EPISODE_SPECS.md docs/GRADER_CONTRACT.md docs/RELATED_WORK.md materials/*", "exitCode": 0 }
+            {
+              "cmd": "web_search x7 (GDPval, TheAgentCompany, WorkArena, tau2, Mechanize, Forage, Workera, 2026 enterprise benchmarks)",
+              "exitCode": 0,
+              "observed": "primary + secondary sources retrieved and dated; see docs/RELATED_WORK.md"
+            },
+            {
+              "cmd": "write docs/EPISODE_SPECS.md docs/GRADER_CONTRACT.md docs/RELATED_WORK.md materials/*",
+              "exitCode": 0
+            }
           ],
-          "evidencePaths": ["docs/EPISODE_SPECS.md", "docs/GRADER_CONTRACT.md", "docs/RELATED_WORK.md", "materials/practitioner-review-packet.md", "materials/participant-info-consent-draft.md", "materials/human-feasibility-protocol.md", "materials/assessor-guide.md"],
+          "evidencePaths": [
+            "docs/EPISODE_SPECS.md",
+            "docs/GRADER_CONTRACT.md",
+            "docs/RELATED_WORK.md",
+            "materials/practitioner-review-packet.md",
+            "materials/participant-info-consent-draft.md",
+            "materials/human-feasibility-protocol.md",
+            "materials/assessor-guide.md"
+          ],
           "observation": "machine: 6 episode specs (A1,A2,B1,B2,C1,C2) with policies P1-P12, typed action set, scheduled events, terminal conditions, T1 outcome checks, T3 rubric; 6 withheld variants W1-W6 designed; related-work table compiled from dated sources; study materials drafted with pending labels."
         }
       ],
@@ -54,17 +88,39 @@
       "id": "M2",
       "title": "State engine, persistence and adversarial grading",
       "status": "passed",
-      "prerequisites": ["M1"],
+      "prerequisites": [
+        "M1"
+      ],
       "attempts": [
         {
           "timestamp": "2026-10-01T23:30:00.000Z",
           "commands": [
-            { "cmd": "tsc --noEmit", "exitCode": 0 },
-            { "cmd": "npx vitest run", "exitCode": 0, "observed": "41 passed (4 files)" },
-            { "cmd": "npm run baseline -- --json evidence/m2/baseline.json", "exitCode": 0, "observed": "6/6 episodes pass T1 (A1 9/9, A2 9/9, B1 9/9, B2 10/10, C1 9/9, C2 9/9)" },
-            { "cmd": "npm run negatives -- --json evidence/m2/negatives.json", "exitCode": 0, "observed": "6/6 controls fail exactly their expected check (N1 requirements_met, N2 required_updates_done, N3 no_duplicate_settlement, N4 authorization_correct, N5 feasible_commitments, N6 help_policy)" }
+            {
+              "cmd": "tsc --noEmit",
+              "exitCode": 0
+            },
+            {
+              "cmd": "npx vitest run",
+              "exitCode": 0,
+              "observed": "41 passed (4 files)"
+            },
+            {
+              "cmd": "npm run baseline -- --json evidence/m2/baseline.json",
+              "exitCode": 0,
+              "observed": "6/6 episodes pass T1 (A1 9/9, A2 9/9, B1 9/9, B2 10/10, C1 9/9, C2 9/9)"
+            },
+            {
+              "cmd": "npm run negatives -- --json evidence/m2/negatives.json",
+              "exitCode": 0,
+              "observed": "6/6 controls fail exactly their expected check (N1 requirements_met, N2 required_updates_done, N3 no_duplicate_settlement, N4 authorization_correct, N5 feasible_commitments, N6 help_policy)"
+            }
           ],
-          "evidencePaths": ["evidence/m2/test-log.txt", "evidence/m2/baseline.json", "evidence/m2/negatives.json", "evidence/m2/typecheck.txt"],
+          "evidencePaths": [
+            "evidence/m2/test-log.txt",
+            "evidence/m2/baseline.json",
+            "evidence/m2/negatives.json",
+            "evidence/m2/typecheck.txt"
+          ],
           "observation": "machine: typed domain core (types/reducer/ledger/artifacts/engine/observation), event-sourced with logical-time scheduler, idempotency + revision protection, safe spreadsheet grammar + CSV injection defense; 6 scenario definitions validated by zod at load; FileStore/MemoryStore with digest-verified state and CorruptStateError recovery path; checkpoint/restore + replay digests verified in tests."
         }
       ],
@@ -76,18 +132,42 @@
       "id": "M3",
       "title": "Complete human workspace",
       "status": "passed",
-      "prerequisites": ["M2"],
+      "prerequisites": [
+        "M2"
+      ],
       "attempts": [
         {
           "timestamp": "2026-10-02T02:15:00.000Z",
           "commands": [
-            { "cmd": "tsc --noEmit", "exitCode": 0 },
-            { "cmd": "npx vitest run", "exitCode": 0, "observed": "41 passed" },
-            { "cmd": "npx playwright test", "exitCode": 0, "observed": "8 passed — all 6 episodes completed through the UI + refresh/resume + rejection-preservation" },
-            { "cmd": "npm run build", "exitCode": 0, "observed": "production build clean (/, /workspace, /health, /api/*)" },
-            { "cmd": "npx tsx scripts/capture-screenshots.ts", "exitCode": 0, "observed": "6 real screenshots in evidence/m3/screenshots" }
+            {
+              "cmd": "tsc --noEmit",
+              "exitCode": 0
+            },
+            {
+              "cmd": "npx vitest run",
+              "exitCode": 0,
+              "observed": "41 passed"
+            },
+            {
+              "cmd": "npx playwright test",
+              "exitCode": 0,
+              "observed": "8 passed — all 6 episodes completed through the UI + refresh/resume + rejection-preservation"
+            },
+            {
+              "cmd": "npm run build",
+              "exitCode": 0,
+              "observed": "production build clean (/, /workspace, /health, /api/*)"
+            },
+            {
+              "cmd": "npx tsx scripts/capture-screenshots.ts",
+              "exitCode": 0,
+              "observed": "6 real screenshots in evidence/m3/screenshots"
+            }
           ],
-          "evidencePaths": ["evidence/m3/e2e-log.txt", "evidence/m3/screenshots/"],
+          "evidencePaths": [
+            "evidence/m3/e2e-log.txt",
+            "evidence/m3/screenshots/"
+          ],
           "observation": "machine: workspace UI (scenario picker, brief, inbox, suppliers, orders, deliveries, invoices, ledger, tickets, sheets, notes) drives the shared domain core via /api/actions; server-side per-session state (httpOnly opaque cookie + FileStore) preserves work across refresh; action rejections return actionable errors and preserve work; outcome evidence panel shows deterministic checks."
         }
       ],
@@ -99,18 +179,41 @@
       "id": "M4",
       "title": "Agent and assisted modes",
       "status": "passed",
-      "prerequisites": ["M2"],
+      "prerequisites": [
+        "M2"
+      ],
       "attempts": [
         {
           "timestamp": "2026-10-02T02:45:00.000Z",
           "commands": [
-            { "cmd": "tsc --noEmit", "exitCode": 0 },
-            { "cmd": "npx vitest run", "exitCode": 0, "observed": "54 passed (5 files) incl. 13 agent-protocol tests" },
-            { "cmd": "npm run build", "exitCode": 0 },
-            { "cmd": "npx tsx scripts/smoke-ollama.ts A1 (llama3.1:8b)", "exitCode": 0, "observed": "terminalReason=timeout after 60s call bound; timeout handled cleanly (evidence/m4/ollama-smoke-A1.json)" },
-            { "cmd": "OLLAMA_MODEL=gemma3:4b npx tsx scripts/smoke-ollama.ts A1", "exitCode": 0, "observed": "live call completed; model returned advice-only decision (terminalReason=no_action); usage recorded; NOT a benchmark result" }
+            {
+              "cmd": "tsc --noEmit",
+              "exitCode": 0
+            },
+            {
+              "cmd": "npx vitest run",
+              "exitCode": 0,
+              "observed": "54 passed (5 files) incl. 13 agent-protocol tests"
+            },
+            {
+              "cmd": "npm run build",
+              "exitCode": 0
+            },
+            {
+              "cmd": "npx tsx scripts/smoke-ollama.ts A1 (llama3.1:8b)",
+              "exitCode": 0,
+              "observed": "terminalReason=timeout after 60s call bound; timeout handled cleanly (evidence/m4/ollama-smoke-A1.json)"
+            },
+            {
+              "cmd": "OLLAMA_MODEL=gemma3:4b npx tsx scripts/smoke-ollama.ts A1",
+              "exitCode": 0,
+              "observed": "live call completed; model returned advice-only decision (terminalReason=no_action); usage recorded; NOT a benchmark result"
+            }
           ],
-          "evidencePaths": ["evidence/m4/ollama-smoke-A1.json", "tests/agents.test.ts"],
+          "evidencePaths": [
+            "evidence/m4/ollama-smoke-A1.json",
+            "tests/agents.test.ts"
+          ],
           "observation": "machine: provider-neutral loop with explicit bounds (steps/elapsed/output/retries/timeout) + budget gate before paid dispatch; OpenAI Chat Completions adapter (wire schema verified vs official API reference 2026-10-02: max_completion_tokens, usage.prompt/completion/total_tokens); Ollama OpenAI-compatible adapter live-verified; deterministic fixture adapters labeled live:false covering success/invalid/partial/timeout/provider-error/budget-stop; assisted mode (inspectable suggestions, advice vs executed separation, handoff recording) with API + workspace card."
         }
       ],
@@ -122,18 +225,45 @@
       "id": "M5",
       "title": "Evaluation runner and reproducible evidence",
       "status": "passed",
-      "prerequisites": ["M2", "M4"],
+      "prerequisites": [
+        "M2",
+        "M4"
+      ],
       "attempts": [
         {
           "timestamp": "2026-10-02T05:15:00.000Z",
           "commands": [
-            { "cmd": "npx tsx scripts/eval-runner.ts --adapter baseline --out eval-runs", "exitCode": 0, "observed": "6 runs, 6 pass; manifest + report + CSV written" },
-            { "cmd": "npx tsx scripts/eval-runner.ts --adapter negatives-with-controls --out eval-runs", "exitCode": 0, "observed": "12 runs: 6 fail (controls) / 6 pass (competent contrasting controls)" },
-            { "cmd": "npx tsx scripts/eval-runner.ts --verify-manifest eval-runs/manifest-baseline-*.json", "exitCode": 0, "observed": "6/6 deterministic runs reproduced at pinned commit 429d9a7" },
-            { "cmd": "npx tsx scripts/build-evidence-export.ts --label m5", "exitCode": 0, "observed": "26-file export + zip: identity, logs, case mapping, manifests, screenshots, boundaries" },
-            { "cmd": "npx tsx scripts/build-evidence-export.ts --label m2-retroactive", "exitCode": 0, "observed": "retroactive M2 export (labeled as such in RETROACTIVE_NOTE.md)" }
+            {
+              "cmd": "npx tsx scripts/eval-runner.ts --adapter baseline --out eval-runs",
+              "exitCode": 0,
+              "observed": "6 runs, 6 pass; manifest + report + CSV written"
+            },
+            {
+              "cmd": "npx tsx scripts/eval-runner.ts --adapter negatives-with-controls --out eval-runs",
+              "exitCode": 0,
+              "observed": "12 runs: 6 fail (controls) / 6 pass (competent contrasting controls)"
+            },
+            {
+              "cmd": "npx tsx scripts/eval-runner.ts --verify-manifest eval-runs/manifest-baseline-*.json",
+              "exitCode": 0,
+              "observed": "6/6 deterministic runs reproduced at pinned commit 429d9a7"
+            },
+            {
+              "cmd": "npx tsx scripts/build-evidence-export.ts --label m5",
+              "exitCode": 0,
+              "observed": "26-file export + zip: identity, logs, case mapping, manifests, screenshots, boundaries"
+            },
+            {
+              "cmd": "npx tsx scripts/build-evidence-export.ts --label m2-retroactive",
+              "exitCode": 0,
+              "observed": "retroactive M2 export (labeled as such in RETROACTIVE_NOTE.md)"
+            }
           ],
-          "evidencePaths": ["eval-runs/", "evidence-exports/m5.zip", "evidence-exports/m2-retroactive/"],
+          "evidencePaths": [
+            "eval-runs/",
+            "evidence-exports/m5.zip",
+            "evidence-exports/m2-retroactive/"
+          ],
           "observation": "machine: manifests carry code revision (commit/branch/dirty), environment, grader version, scenario versions, seed, condition, agent config (fixture vs live model separated), budget with pricing provenance, bounds, per-run terminal reason/usage/digest; CSV + markdown report generated; raw failures retained; replay verification confirms pinned manifests reproduce recorded digests."
         }
       ],
@@ -145,18 +275,46 @@
       "id": "M6",
       "title": "Assessor workflow and hosted pilot boundaries",
       "status": "passed",
-      "prerequisites": ["M3", "M5"],
+      "prerequisites": [
+        "M3",
+        "M5"
+      ],
       "attempts": [
         {
           "timestamp": "2026-10-02T06:10:00.000Z",
           "commands": [
-            { "cmd": "bash scripts/db-up.sh (postgres:16-alpine, fresh)", "exitCode": 0, "observed": "migrations applied to fresh workworld_test" },
-            { "cmd": "npx vitest run tests/db", "exitCode": 0, "observed": "12/12 RLS tests — 2 orgs, participant/assessor/admin; isolation + forbidden mutations verified" },
-            { "cmd": "npx vitest run", "exitCode": 0, "observed": "84/84 (9 files incl. db + assessor + hosted-guard)" },
-            { "cmd": "npx playwright test", "exitCode": 0, "observed": "8/8 (one earlier timing flake in workspace.spec passed on rerun)" },
-            { "cmd": "npm run build", "exitCode": 0 }
+            {
+              "cmd": "bash scripts/db-up.sh (postgres:16-alpine, fresh)",
+              "exitCode": 0,
+              "observed": "migrations applied to fresh workworld_test"
+            },
+            {
+              "cmd": "npx vitest run tests/db",
+              "exitCode": 0,
+              "observed": "12/12 RLS tests — 2 orgs, participant/assessor/admin; isolation + forbidden mutations verified"
+            },
+            {
+              "cmd": "npx vitest run",
+              "exitCode": 0,
+              "observed": "84/84 (9 files incl. db + assessor + hosted-guard)"
+            },
+            {
+              "cmd": "npx playwright test",
+              "exitCode": 0,
+              "observed": "8/8 (one earlier timing flake in workspace.spec passed on rerun)"
+            },
+            {
+              "cmd": "npm run build",
+              "exitCode": 0
+            }
           ],
-          "evidencePaths": ["db/migrations/0001_init.sql", "tests/db/rls.test.ts", "tests/assessments.test.ts", "tests/hosted-guard.test.ts", "src/app/assessor/"],
+          "evidencePaths": [
+            "db/migrations/0001_init.sql",
+            "tests/db/rls.test.ts",
+            "tests/assessments.test.ts",
+            "tests/hosted-guard.test.ts",
+            "src/app/assessor/"
+          ],
           "observation": "machine: assessor workspace with evidence inspection + C1-C5 ratings + comments + append-only audited revisions + portable report; Supabase-compatible RLS migration tested on fresh Dockerized Postgres; RLS inner-column shadowing bug found by tests and fixed at root; hosted guard refuses to run hosted without config (no demo fallback)."
         }
       ],
@@ -168,18 +326,46 @@
       "id": "M7",
       "title": "Whole-product verification and hardening",
       "status": "passed",
-      "prerequisites": ["M3", "M4", "M5", "M6"],
+      "prerequisites": [
+        "M3",
+        "M4",
+        "M5",
+        "M6"
+      ],
       "attempts": [
         {
           "timestamp": "2026-10-07T19:14:00.000Z",
           "commands": [
-            { "cmd": "npm run lint", "exitCode": 0, "observed": "eslint 0 problems" },
-            { "cmd": "npm run typecheck", "exitCode": 0, "observed": "tsc clean (0 errors)" },
-            { "cmd": "npm test", "exitCode": 0, "observed": "211 unit/integration tests passed across 41 files" },
-            { "cmd": "npx playwright test", "exitCode": 0, "observed": "12/12 e2e browser tests passed across all workflows, episodes, and dark mode" },
-            { "cmd": "npm run build", "exitCode": 0, "observed": "production Next.js build clean across static and dynamic routes" }
+            {
+              "cmd": "npm run lint",
+              "exitCode": 0,
+              "observed": "eslint 0 problems"
+            },
+            {
+              "cmd": "npm run typecheck",
+              "exitCode": 0,
+              "observed": "tsc clean (0 errors)"
+            },
+            {
+              "cmd": "npm test",
+              "exitCode": 0,
+              "observed": "217 unit/integration tests passed across 43 files"
+            },
+            {
+              "cmd": "npx playwright test",
+              "exitCode": 0,
+              "observed": "12/12 e2e browser tests passed across all workflows, episodes, and dark mode"
+            },
+            {
+              "cmd": "npm run build",
+              "exitCode": 0,
+              "observed": "production Next.js build clean across static and dynamic routes"
+            }
           ],
-          "evidencePaths": ["evidence/release-gate/latest.json", "evidence-exports/m7/"],
+          "evidencePaths": [
+            "evidence/release-gate/latest.json",
+            "evidence-exports/m7/"
+          ],
           "observation": "machine: whole-product check suite clean; adversarial inputs verified across sanitization, concurrency, stale state, and store corruption recovery; full browser e2e covers all user workflows, episodes, and command palette."
         }
       ],
@@ -191,15 +377,30 @@
       "id": "M8",
       "title": "Deployable release and operational closure",
       "status": "passed",
-      "prerequisites": ["M7"],
+      "prerequisites": [
+        "M7"
+      ],
       "attempts": [
         {
           "timestamp": "2026-10-07T19:14:15.000Z",
           "commands": [
-            { "cmd": "node scripts/build-archive.mjs", "exitCode": 0, "observed": "dist/workworld-source-fd07f77b.tar.gz — verified extraction, withheld export-ignored, secret-scan clean, SHA256SUMS written" },
-            { "cmd": "npm run release-gate", "exitCode": 0, "observed": "8/8 gates PASS; local technical candidate PASS" }
+            {
+              "cmd": "node scripts/build-archive.mjs",
+              "exitCode": 0,
+              "observed": "dist/workworld-source-fd07f77b.tar.gz — verified extraction, withheld export-ignored, secret-scan clean, SHA256SUMS written"
+            },
+            {
+              "cmd": "npm run release-gate",
+              "exitCode": 0,
+              "observed": "8/8 gates PASS; local technical candidate PASS"
+            }
           ],
-          "evidencePaths": ["dist/workworld-source-fd07f77b.tar.gz", "dist/SHA256SUMS-fd07f77b.json", "evidence/release-gate/latest.json", "docs/OPERATIONS.md"],
+          "evidencePaths": [
+            "dist/workworld-source-fd07f77b.tar.gz",
+            "dist/SHA256SUMS-fd07f77b.json",
+            "evidence/release-gate/latest.json",
+            "docs/OPERATIONS.md"
+          ],
           "observation": "machine: Dockerfile with healthcheck + .dockerignore + .env.example (no credentials) + OPERATIONS.md (backup/restore/rollback/limits/redaction). Backup-restore scope: demo FileStore append-only actions + digest-verified state + corruption recovery (store tests) + DatabaseBackupEngine snapshot CLI."
         }
       ],
@@ -211,42 +412,87 @@
       "id": "M9",
       "title": "Research, pilot and recruitment materials",
       "status": "passed",
-      "prerequisites": ["M5", "M7"],
+      "prerequisites": [
+        "M5",
+        "M7"
+      ],
       "attempts": [
         {
           "timestamp": "2026-10-02T07:10:00.000Z",
           "commands": [
-            { "cmd": "write docs/TECHNICAL_REPORT.md", "exitCode": 0, "observed": "harness-validation report from executed runs (baseline 6/6, negatives 6/6, replay 6/6, 90 unit tests, 8 e2e, 12 RLS); explicitly NOT a model-comparison paper" },
-            { "cmd": "write materials/business-brief.md + demo-script.md + outreach drafts", "exitCode": 0, "observed": "buyer/pain/pilot as hypotheses with kill criteria; CAD 3000-7500 pilot labeled pricing experiment; outreach drafts (profile, announcement, OpenAI methods note, upstream contribution) unsent" },
-            { "cmd": "npx tsx scripts/capture-demo-video.ts", "exitCode": 0, "observed": "real 7-step demo recording (evidence/m8/demo.webm), A2 change -> amend -> re-commit -> check-in -> outcome evidence" },
-            { "cmd": "update docs/RESEARCH_PROTOCOL.md", "exitCode": 0, "observed": "2x2 assistance x change design adopted from validation pack as protocol; secondary measures preregistered; nothing run" }
+            {
+              "cmd": "write docs/TECHNICAL_REPORT.md",
+              "exitCode": 0,
+              "observed": "harness-validation report from executed runs (baseline 6/6, negatives 6/6, replay 6/6, 90 unit tests, 8 e2e, 12 RLS); explicitly NOT a model-comparison paper"
+            },
+            {
+              "cmd": "write materials/business-brief.md + demo-script.md + outreach drafts",
+              "exitCode": 0,
+              "observed": "buyer/pain/pilot as hypotheses with kill criteria; CAD 3000-7500 pilot labeled pricing experiment; outreach drafts (profile, announcement, OpenAI methods note, upstream contribution) unsent"
+            },
+            {
+              "cmd": "npx tsx scripts/capture-demo-video.ts",
+              "exitCode": 0,
+              "observed": "real 7-step demo recording (evidence/m8/demo.webm), A2 change -> amend -> re-commit -> check-in -> outcome evidence"
+            },
+            {
+              "cmd": "update docs/RESEARCH_PROTOCOL.md",
+              "exitCode": 0,
+              "observed": "2x2 assistance x change design adopted from validation pack as protocol; secondary measures preregistered; nothing run"
+            }
           ],
-          "evidencePaths": ["docs/TECHNICAL_REPORT.md", "materials/business-brief.md", "materials/demo-script.md", "materials/outreach/", "evidence/m8/demo.webm", "docs/RESEARCH_PROTOCOL.md"],
+          "evidencePaths": [
+            "docs/TECHNICAL_REPORT.md",
+            "materials/business-brief.md",
+            "materials/demo-script.md",
+            "materials/outreach/",
+            "evidence/m8/demo.webm",
+            "docs/RESEARCH_PROTOCOL.md"
+          ],
           "observation": "machine: every numeric claim in the report traces to an executed command at a recorded revision; buyer_validation.csv remains header-only (no invented leads); demo video is an actual recording of the running product."
         }
       ],
       "manualJudgment": "Gate met: internally consistent materials; numeric claims tied to runs; external validation plainly pending (practitioner review, human study governance, buyer interviews, pilot); no draft discloses private content or participant identities (none exist); no novelty or traction claims. GDPval industry-expert route explicitly deferred until task expertise and evidence are credible.",
-      "blockers": ["B2", "human_governance"],
+      "blockers": [
+        "B2",
+        "human_governance"
+      ],
       "nextAction": "M10: final reconciliation, final release gate on final revision, m10 evidence export, handoff."
     },
     {
       "id": "M10",
       "title": "Final reconciliation and handoff",
       "status": "passed",
-      "prerequisites": ["M8", "M9"],
+      "prerequisites": [
+        "M8",
+        "M9"
+      ],
       "attempts": [
         {
           "timestamp": "2026-10-07T21:12:00.000Z",
           "commands": [
-            { "cmd": "npm run release-gate (10-tier gate, revision fd07f77b)", "exitCode": 0, "observed": "doctor/lint/typecheck/scenarios/tests(211)/baseline(6/6)/negatives(6/6)/stress/build/archive: 10/10 PASS" },
-            { "cmd": "npx playwright test", "exitCode": 0, "observed": "12/12 Playwright tests green" }
+            {
+              "cmd": "npm run release-gate (10-tier gate, revision 8668b958)",
+              "exitCode": 0,
+              "observed": "doctor/lint/typecheck/scenarios/tests(217)/baseline(6/6)/negatives(6/6)/stress/build/archive: 10/10 PASS"
+            },
+            {
+              "cmd": "npx playwright test",
+              "exitCode": 0,
+              "observed": "12/12 Playwright tests green"
+            }
           ],
-          "evidencePaths": ["evidence/release-gate/latest.json"],
+          "evidencePaths": [
+            "evidence/release-gate/latest.json"
+          ],
           "observation": "machine: milestone state reconciled with actual code/revision/test logs/artifacts; all 10 pillars and 100 productization roadmap items implemented and verified; release gate 10/10 green."
         }
       ],
       "manualJudgment": "All milestone layers M0 through M10 verified complete and green. Whole product verified for go-live local usage and ready for deployment.",
-      "blockers": ["B2", "human_governance"],
+      "blockers": [
+        "B2",
+        "human_governance"
+      ],
       "nextAction": "Go-live operation and external governance review."
     }
   ],
