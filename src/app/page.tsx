@@ -42,6 +42,9 @@ export default function Home() {
             <Link href="/leaderboard" className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               Leaderboard
             </Link>
+            <Link href="/pricing" className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+              Pricing
+            </Link>
             <Link href="/docs" className="text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
               Docs &amp; API
             </Link>

@@ -115,6 +115,12 @@ export default function ValidationStatusPage() {
           </div>
           <div className="flex items-center gap-4">
             <Link
+              href="/pricing"
+              className="text-xs font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+            >
+              Plans & Pricing
+            </Link>
+            <Link
               href="/workspace"
               className="text-xs font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
             >
