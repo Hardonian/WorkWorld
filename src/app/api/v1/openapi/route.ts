@@ -111,6 +111,46 @@ export async function GET() {
           },
         },
       },
+      "/billing/plans": {
+        get: {
+          summary: "List commercial subscription plan tiers and pricing",
+          responses: {
+            "200": { description: "Available subscription tiers (community, academic, enterprise)" },
+          },
+        },
+      },
+      "/billing/checkout": {
+        post: {
+          summary: "Create a Stripe Checkout Session for tiered seat licenses",
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    orgId: { type: "string" },
+                    tier: { type: "string", enum: ["community", "academic", "enterprise"] },
+                    seatCount: { type: "integer", minimum: 1 },
+                  },
+                  required: ["orgId", "tier", "seatCount"],
+                },
+              },
+            },
+          },
+          responses: {
+            "200": { description: "Stripe checkout session redirect URL and monthly pricing" },
+          },
+        },
+      },
+      "/webhooks/stripe": {
+        post: {
+          summary: "Inbound Stripe webhook for subscription lifecycle events",
+          responses: {
+            "200": { description: "Webhook event processed and organization entitlement updated" },
+          },
+        },
+      },
     },
   };
 

@@ -174,3 +174,6 @@ export class CommercialBillingService {
     }
   }
 }
+
+export const billingService = new CommercialBillingService();
+
