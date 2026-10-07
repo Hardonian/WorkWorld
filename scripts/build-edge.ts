@@ -5,13 +5,15 @@
  * privileged symlinks, packaging the production output for Cloudflare Workers/Pages.
  */
 
-import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync, readFileSync, cpSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { execSync } from "node:child_process";
 import { createHash } from "node:crypto";
 
 const root = resolve(import.meta.dirname, "..");
 const distEdge = join(root, "dist", "edge");
+const openNextDir = join(root, ".open-next");
+const openNextAssets = join(openNextDir, "assets");
 
 console.log("\n======================================================================");
 console.log("   WorkWorld Cloudflare Edge & OpenNext Production Packager");
@@ -27,8 +29,27 @@ if (!existsSync(nextServerPath)) {
 }
 
 mkdirSync(distEdge, { recursive: true });
+mkdirSync(openNextDir, { recursive: true });
+mkdirSync(openNextAssets, { recursive: true });
 
-// 2. Worker edge entry point wrapping Next.js request handling for Cloudflare
+// 2. Package static assets for Cloudflare binding (ASSETS)
+const staticNextPath = join(root, ".next", "static");
+if (existsSync(staticNextPath)) {
+  const destStatic = join(openNextAssets, "_next", "static");
+  mkdirSync(destStatic, { recursive: true });
+  cpSync(staticNextPath, destStatic, { recursive: true });
+  cpSync(staticNextPath, join(distEdge, "assets", "_next", "static"), { recursive: true });
+  console.log("✓ Packaged Next.js static assets (_next/static)");
+}
+
+const publicPath = join(root, "public");
+if (existsSync(publicPath)) {
+  cpSync(publicPath, openNextAssets, { recursive: true });
+  cpSync(publicPath, join(distEdge, "assets"), { recursive: true });
+  console.log("✓ Packaged public folder assets");
+}
+
+// 3. Worker edge entry point wrapping Next.js request handling for Cloudflare
 const workerSource = `/**
  * WorkWorld Edge Worker Dispatcher
  * Deployed to Cloudflare Global Edge via OpenNext / Wrangler.
@@ -83,11 +104,15 @@ const edgeWorker = {
 export default edgeWorker;
 `;
 
+// Write to both dist/edge and .open-next (matching wrangler.toml main path)
 const workerFile = join(distEdge, "worker.js");
+const openNextWorkerFile = join(openNextDir, "worker.js");
 writeFileSync(workerFile, workerSource, "utf8");
+writeFileSync(openNextWorkerFile, workerSource, "utf8");
 console.log("✓ Generated Edge Worker entry:", workerFile);
+console.log("✓ Synchronized OpenNext Worker entry:", openNextWorkerFile);
 
-// 3. Verify wrangler.toml configuration
+// 4. Verify wrangler.toml configuration
 const wranglerToml = join(root, "wrangler.toml");
 if (existsSync(wranglerToml)) {
   const content = readFileSync(wranglerToml, "utf8");
@@ -97,7 +122,7 @@ if (existsSync(wranglerToml)) {
   console.log("✓ Verified wrangler.toml configuration");
 }
 
-// 4. Calculate SHA-256 for worker bundle
+// 5. Calculate SHA-256 for worker bundle
 const workerHash = createHash("sha256").update(readFileSync(workerFile)).digest("hex");
 const manifest = {
   version: "0.1.0",

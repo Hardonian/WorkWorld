@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-07T22:37:56.435Z",
-  "totalDurationSec": 36.65,
+  "generatedAt": "2026-10-07T23:11:21.111Z",
+  "totalDurationSec": 60.66,
   "gateScore": "10/10",
   "localReadiness": "local technical candidate: PASS (10/10 gates green)",
   "hostedReadiness": "hosted: blocked_external (no hosted configuration; B1)",
@@ -14,8 +14,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 0.68,
-      "started": "2026-10-07T22:37:19.988Z",
+      "durationSec": 1.32,
+      "started": "2026-10-07T23:10:20.786Z",
       "tail": "PASS  Scenario catalog: 15 scenarios defined across routine and enterprise families | PASS  Assistant provider: optional local endpoint: http://127.0.0.1:11434"
     },
     {
@@ -25,8 +25,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 7.88,
-      "started": "2026-10-07T22:37:20.667Z",
+      "durationSec": 12.31,
+      "started": "2026-10-07T23:10:22.114Z",
       "tail": "> workworld@0.1.0 lint | > eslint ."
     },
     {
@@ -36,8 +36,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 4.63,
-      "started": "2026-10-07T22:37:28.546Z",
+      "durationSec": 5.01,
+      "started": "2026-10-07T23:10:34.427Z",
       "tail": "> workworld@0.1.0 typecheck | > tsc --noEmit"
     },
     {
@@ -47,8 +47,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 0.9,
-      "started": "2026-10-07T22:37:33.181Z",
+      "durationSec": 2.3,
+      "started": "2026-10-07T23:10:39.443Z",
       "tail": "Validated 15 scenarios across routine and enterprise families. | PASS: All scenario specifications are syntactically and logically consistent."
     },
     {
@@ -58,8 +58,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 3.21,
-      "started": "2026-10-07T22:37:34.076Z",
+      "durationSec": 6.42,
+      "started": "2026-10-07T23:10:41.741Z",
       "tail": "\u001b[2m            \u001b[22m \u001b[2mpersist transforms across runs with \u001b[22m\u001b[33mfsModuleCache: true\u001b[39m | \u001b[2m            \u001b[22m \u001b[2mlearn more: https://vitest.dev/guide/improving-performance#caching-between-reruns\u001b[22m"
     },
     {
@@ -69,8 +69,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 0.92,
-      "started": "2026-10-07T22:37:37.290Z",
+      "durationSec": 2.09,
+      "started": "2026-10-07T23:10:48.158Z",
       "tail": " | baseline: 6/6 episodes pass (fixture actor, not a model)"
     },
     {
@@ -80,8 +80,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 0.91,
-      "started": "2026-10-07T22:37:38.213Z",
+      "durationSec": 1.78,
+      "started": "2026-10-07T23:10:50.250Z",
       "tail": " | negative controls: 6/6 detected for the right reasons"
     },
     {
@@ -91,9 +91,9 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 0.96,
-      "started": "2026-10-07T22:37:39.122Z",
-      "tail": "Throughput: 15168 actions/sec | Latency: p50=0.059ms, p95=0.09ms, p99=0.128ms"
+      "durationSec": 1.82,
+      "started": "2026-10-07T23:10:52.028Z",
+      "tail": "Throughput: 7157 actions/sec | Latency: p50=0.118ms, p95=0.226ms, p99=0.304ms"
     },
     {
       "id": "build",
@@ -102,8 +102,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 12.85,
-      "started": "2026-10-07T22:37:40.085Z",
+      "durationSec": 22.3,
+      "started": "2026-10-07T23:10:53.852Z",
       "tail": "○  (Static)   prerendered as static content | ƒ  (Dynamic)  server-rendered on demand"
     },
     {
@@ -113,8 +113,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 3.5,
-      "started": "2026-10-07T22:37:52.936Z",
+      "durationSec": 4.96,
+      "started": "2026-10-07T23:11:16.156Z",
       "tail": " | TASK_STATE.json OK: 11 milestones, 2 external blockers; docs/TASK_STATE.schema.json refreshed"
     }
   ]
