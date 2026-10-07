@@ -22,42 +22,36 @@ The complete technical release verification is unified into a 10-gate audit (`np
 | **04** | **Scenario DSL & DAG** | `npm run lint:scenarios` | 15/15 scenarios syntactically & logically consistent |
 | **05** | **Unit & Integration** | `npm test` | 217 passed across 43 test files (12 RLS skipped when offline) |
 | **06** | **Evaluation Baseline** | `npm run baseline` | 6/6 public episodes pass all T1 fatal checks (A1–C2) |
-| **07** | **Adversarial Controls**| `npm run negatives` | 6/6 negative controls caught for exact expected failure causes |
+| **07** | **Adversarial Controls** | `npm run negatives` | 6/6 negative controls caught for exact expected failure causes |
 | **08** | **Concurrency SLA** | `npm run benchmark:stress` | 15,000+ actions/sec throughput; p95 latency < 0.1ms |
 | **09** | **Production Bundle** | `npm run build` | Next.js 16 Turbopack optimized bundle (static + dynamic routes) |
-| **10** | **Cryptographic Archive**| `npm run release-gate` | `TASK_STATE.json` Zod validation + git archive + SHA-256 sums |
+| **10** | **Cryptographic Archive** | `npm run release-gate` | `TASK_STATE.json` Zod validation + git archive + SHA-256 sums |
 
 ### Quick Verification Commands
 
-- **One-Command Full Audit (10/10 Gates)**:
-  ```bash
-  npm run release-gate
-  ```
-- **End-to-End Browser Workflows (12/12 Tests)**:
-  ```bash
-  npm run test:e2e
-  ```
-- **All-In-One Release Verification (Gates + Browser E2E)**:
-  ```bash
-  npm run verify:all
-  ```
-- **Cloudflare Edge Packaging**:
-  ```bash
-  npm run build:edge
-  ```
-- **Live Edge Deployment**:
-  ```bash
-  npm run deploy:edge
-  ```
-- **Deterministic Manifest Replay Verification**:
-  ```bash
-  npm run eval -- --adapter baseline
-  npm run eval -- --verify-manifest eval-runs/manifest-baseline-*.json
-  ```
-- **Point-in-Time Database Backup Snapshot**:
-  ```bash
-  npm run db:backup
-  ```
+```bash
+# One-Command Full Audit (10/10 Gates)
+npm run release-gate
+
+# End-to-End Browser Workflows (12/12 Tests)
+npm run test:e2e
+
+# All-In-One Release Verification (Gates + Browser E2E)
+npm run verify:all
+
+# Cloudflare Edge Packaging
+npm run build:edge
+
+# Live Edge Deployment
+npm run deploy:edge
+
+# Deterministic Manifest Replay Verification
+npm run eval -- --adapter baseline
+npm run eval -- --verify-manifest eval-runs/manifest-baseline-*.json
+
+# Point-in-Time Database Backup Snapshot
+npm run db:backup
+```
 
 ---
 
