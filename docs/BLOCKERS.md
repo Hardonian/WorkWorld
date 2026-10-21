@@ -14,29 +14,34 @@ Precise blockers, failed attempts, alternatives, and what unblocks them.
   different already-paid provider. The runner already enforces a budget check
   before every paid dispatch.
 
-## Closed
+## B3. Hosted application path — IMPLEMENTED, END-TO-END VERIFICATION PENDING
+- What: authenticated application traffic using the hosted Postgres/Supabase
+  episode and assessment tables end to end.
+- Current evidence: `PostgresStore` implements the EventStore contract with
+  optimistic concurrency, RLS session claims, and digest verification. Unit
+  tests do not substitute for a real browser session, a provisioned membership,
+  and a live database boundary.
+- Unblock: provision the controlled test tenant, authenticate a real test user,
+  exercise start/resume/action/replay under RLS, then retain the resulting
+  release-gate evidence before enabling `WORKWORLD_HOSTED_STORE_WIRED=true` in
+  a production deployment.
 
-### B3. Hosted application path — CLOSED 2026-10-03 (implemented & verified)
-- What: authenticated application traffic using the hosted Postgres/Supabase episode and assessment tables end to end.
-- Resolution: `PostgresStore` implemented in `src/server/store-postgres.ts` implementing `EventStore` interface. Wires transactional operations (`workworld.episode_runs`, `workworld.run_actions`, `workworld.assessments`) with optimistic concurrency (`expectedRevision`), RLS session claims propagation, and cryptographic digest verification. Unit suite `tests/store-postgres.test.ts` passes 100%. Activation is controlled via `WORKWORLD_HOSTED_STORE_WIRED=true` and `WORKWORLD_MODE=hosted`.
-
-
-### B1. Hosted Supabase database boundary — CLOSED 2026-10-02 (verified)
-- What: verification against a real hosted Supabase/Postgres project at the database/RLS boundary.
-- Resolution: dedicated hosted project `gsssdavzyorvhtdolvaj.supabase.co`
-  provisioned (separate from any other application's project). Migrations applied
-  via `scripts/apply-migrations.mjs` over a session-mode connection (transaction
-  pooler is refused by the script — `set role`/`set_config` session state is
-  required). Verification: `npm run db:test` against the hosted project — 12/12
-  RLS tests (two organizations, participant/assessor/admin roles, forbidden
-  mutations) PASS. Release gate now runs this as the machine-checked
-  `hosted-rls` gate and reports `hosted: VERIFIED`
-  (evidence/release-gate/latest.json). Credentials live only in
-  `.env.local` (gitignored) and the operator secrets file; the gate redacts
-  credentials from all evidence output.
-- Remaining hosted caveats: no production operating history; backup/restore on
-  hosted uses managed Supabase tooling (not exercised); app-level hosted smoke
-  beyond the RLS boundary is unchanged from the M6 scope.
+## B1. Hosted Supabase database boundary — EXTERNALLY BLOCKED (current launch)
+- What: verification against a real hosted Supabase/Postgres project at the
+  database/RLS boundary for the current release candidate.
+- Current state: the latest release evidence reports
+  `hosted: blocked_external (no hosted configuration; B1)`. No Supabase URL,
+  database connection, or production signing configuration is available in the
+  current environment.
+- Historical note: a dedicated tenant may have been tested on 2026-10-02. That
+  observation is useful background, but it is not current evidence and must not
+  be represented as a live production approval.
+- Unblock: an owner supplies a non-production session-mode Postgres URL as
+  `WW_TEST_PG_URL`, all hosted runtime values in the hosting platform, and runs
+  `npm run release-gate -- --require-hosted`. The gate preserves redacted
+  evidence and fails if either the RLS suite or runtime configuration is absent.
+- Remaining hosted caveats: backup/restore, object storage/KMS, and app-level
+  authenticated smoke testing remain operator-owned launch work.
 
 ## Closed (previously)
 

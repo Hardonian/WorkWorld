@@ -16,7 +16,7 @@ export default function CertifyPage() {
           <section>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-400">Certification workspace</p>
             <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">Know the operating envelope before production.</h1>
-            <p className="mt-5 text-lg leading-relaxed text-slate-600 dark:text-slate-400">Run the same fixed suites, budget limits, safety checks, and evidence protocol behind the public Index—without publishing your configuration or artifacts.</p>
+            <p className="mt-5 text-lg leading-relaxed text-slate-600 dark:text-slate-400">Run the same fixed suites, budget limits, safety checks, and evidence protocol behind the public Index—without publishing your configuration or artifacts. Hosted workspaces require a signed-in account before a preflight can be prepared.</p>
             <ol className="mt-8 space-y-5 border-l border-slate-200 pl-5 text-sm dark:border-slate-800">
               <li><strong>1. Define the boundary.</strong><br /><span className="text-slate-500 dark:text-slate-400">Name the adapter, fix the suite version, and cap spend before the first action.</span></li>
               <li><strong>2. Run in your environment.</strong><br /><span className="text-slate-500 dark:text-slate-400">Keep credentials in your controlled runner. WorkWorld records only the declared policy and evidence you choose to submit.</span></li>
