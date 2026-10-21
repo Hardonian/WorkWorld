@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-07T23:11:21.111Z",
-  "totalDurationSec": 60.66,
-  "gateScore": "10/10",
-  "localReadiness": "local technical candidate: PASS (10/10 gates green)",
+  "generatedAt": "2026-10-21T02:20:31.398Z",
+  "totalDurationSec": 100.92,
+  "gateScore": "11/11",
+  "localReadiness": "local technical candidate: PASS (11/11 gates green)",
   "hostedReadiness": "hosted: blocked_external (no hosted configuration; B1)",
   "researchReadiness": "harness validation complete — deterministic baseline & controls verified",
   "commercialReadiness": "protocols and security artifacts complete",
@@ -14,8 +14,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 1.32,
-      "started": "2026-10-07T23:10:20.786Z",
+      "durationSec": 1.68,
+      "started": "2026-10-21T02:18:50.823Z",
       "tail": "PASS  Scenario catalog: 15 scenarios defined across routine and enterprise families | PASS  Assistant provider: optional local endpoint: http://127.0.0.1:11434"
     },
     {
@@ -25,8 +25,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 12.31,
-      "started": "2026-10-07T23:10:22.114Z",
+      "durationSec": 12.99,
+      "started": "2026-10-21T02:18:52.507Z",
       "tail": "> workworld@0.1.0 lint | > eslint ."
     },
     {
@@ -36,8 +36,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 5.01,
-      "started": "2026-10-07T23:10:34.427Z",
+      "durationSec": 10.02,
+      "started": "2026-10-21T02:19:05.496Z",
       "tail": "> workworld@0.1.0 typecheck | > tsc --noEmit"
     },
     {
@@ -47,8 +47,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 2.3,
-      "started": "2026-10-07T23:10:39.443Z",
+      "durationSec": 1.47,
+      "started": "2026-10-21T02:19:15.514Z",
       "tail": "Validated 15 scenarios across routine and enterprise families. | PASS: All scenario specifications are syntactically and logically consistent."
     },
     {
@@ -58,9 +58,9 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 6.42,
-      "started": "2026-10-07T23:10:41.741Z",
-      "tail": "\u001b[2m            \u001b[22m \u001b[2mpersist transforms across runs with \u001b[22m\u001b[33mfsModuleCache: true\u001b[39m | \u001b[2m            \u001b[22m \u001b[2mlearn more: https://vitest.dev/guide/improving-performance#caching-between-reruns\u001b[22m"
+      "durationSec": 4.26,
+      "started": "2026-10-21T02:19:16.987Z",
+      "tail": "             persist transforms across runs with fsModuleCache: true |              learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns"
     },
     {
       "id": "baseline",
@@ -69,8 +69,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 2.09,
-      "started": "2026-10-07T23:10:48.158Z",
+      "durationSec": 1.6,
+      "started": "2026-10-21T02:19:21.249Z",
       "tail": " | baseline: 6/6 episodes pass (fixture actor, not a model)"
     },
     {
@@ -80,8 +80,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 1.78,
-      "started": "2026-10-07T23:10:50.250Z",
+      "durationSec": 1.49,
+      "started": "2026-10-21T02:19:22.845Z",
       "tail": " | negative controls: 6/6 detected for the right reasons"
     },
     {
@@ -91,9 +91,9 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 1.82,
-      "started": "2026-10-07T23:10:52.028Z",
-      "tail": "Throughput: 7157 actions/sec | Latency: p50=0.118ms, p95=0.226ms, p99=0.304ms"
+      "durationSec": 1.66,
+      "started": "2026-10-21T02:19:24.331Z",
+      "tail": "Throughput: 7491 actions/sec | Latency: p50=0.114ms, p95=0.213ms, p99=0.267ms"
     },
     {
       "id": "build",
@@ -102,9 +102,20 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 22.3,
-      "started": "2026-10-07T23:10:53.852Z",
+      "durationSec": 20.11,
+      "started": "2026-10-21T02:19:25.991Z",
       "tail": "○  (Static)   prerendered as static content | ƒ  (Dynamic)  server-rendered on demand"
+    },
+    {
+      "id": "e2e",
+      "description": "Playwright public, workspace, API, and launch-readiness flows",
+      "cmd": "npm run test:e2e",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "durationSec": 40.73,
+      "started": "2026-10-21T02:19:46.096Z",
+      "tail": " |   15 passed (39.1s)"
     },
     {
       "id": "archive",
@@ -113,8 +124,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 4.96,
-      "started": "2026-10-07T23:11:16.156Z",
+      "durationSec": 4.57,
+      "started": "2026-10-21T02:20:26.825Z",
       "tail": " | TASK_STATE.json OK: 11 milestones, 2 external blockers; docs/TASK_STATE.schema.json refreshed"
     }
   ]

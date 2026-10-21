@@ -4,14 +4,22 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../workspace/ui.tsx";
 
-export default function StartButton({ scenarioId, label }: { scenarioId: string; label?: string }) {
+export default function StartButton({
+  scenarioId,
+  label,
+  ariaLabel,
+}: {
+  scenarioId: string;
+  label?: string;
+  ariaLabel?: string;
+}) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   return (
     <div>
       <Button
-        ariaLabel={`Start episode ${scenarioId}`}
+        ariaLabel={ariaLabel ?? `Start episode ${scenarioId}`}
         disabled={busy}
         onClick={async () => {
           setBusy(true);

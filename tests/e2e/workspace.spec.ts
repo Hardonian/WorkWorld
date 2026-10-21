@@ -80,9 +80,9 @@ test("fresh session shows the episode picker; workspace without session degrades
   await expect(page.getByRole("heading", { name: "No active episode" })).toBeVisible();
   await page.getByRole("link", { name: "Choose an episode" }).click();
   await expect(page.getByRole("heading", { name: "Can this agent do the work?" })).toBeVisible();
-  // All six episodes are offered.
+  // All six public benchmark episodes are offered.
   for (const id of ["A1", "A2", "B1", "B2", "C1", "C2"]) {
-    await expect(page.getByText(`${id} ·`, { exact: false }).first()).toBeVisible();
+    await expect(page.getByRole("button", { name: `Run benchmark episode ${id}` })).toBeVisible();
   }
 });
 
