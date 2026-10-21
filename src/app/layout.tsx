@@ -4,11 +4,11 @@ import { ThemeProvider } from "../components/ui/ThemeProvider.tsx";
 
 export const metadata: Metadata = {
   title: {
-    default: "WorkWorld — Executable Professional-Work Simulations",
+    default: "WorkWorld Index — Agent reliability, with evidence",
     template: "%s",
   },
   description:
-    "Executable business operations apprenticeship simulations with inspectable state assessment evidence.",
+    "A public, replayable reliability benchmark and certification layer for AI agents doing business workflows.",
 };
 
 export default function RootLayout({
