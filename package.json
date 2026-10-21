@@ -35,6 +35,8 @@
     "deploy:edge": "tsx scripts/build-edge.ts && wrangler deploy"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.118.0",
     "next": "16.3.8",
     "pg": "8.23.1",
     "pg-cloudflare": "^1.4.1",

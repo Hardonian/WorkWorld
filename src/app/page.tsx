@@ -29,6 +29,7 @@ export default function Home() {
           <nav className="hidden items-center gap-6 text-sm font-semibold text-slate-600 md:flex dark:text-slate-300">
             <a href="#method" className="hover:text-indigo-600">Method</a>
             <Link href="/leaderboard" className="hover:text-indigo-600">Leaderboard</Link>
+            <Link href="/roi" className="hover:text-indigo-600">ROI model</Link>
             <Link href="/certify" className="hover:text-indigo-600">Certify your agent</Link>
             <ThemeToggle />
           </nav>

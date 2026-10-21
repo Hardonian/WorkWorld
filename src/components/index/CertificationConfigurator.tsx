@@ -11,7 +11,9 @@ const defaultManifest = {
 
 export function CertificationConfigurator() {
   const [manifest, setManifest] = useState(defaultManifest);
-  const [prepared, setPrepared] = useState(false);
+  const [receipt, setReceipt] = useState<{ id: string; configurationDigest: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [preparing, setPreparing] = useState(false);
 
   const update = (field: keyof typeof defaultManifest, value: string) =>
     setManifest((current) => ({ ...current, [field]: value }));
@@ -35,6 +37,26 @@ export function CertificationConfigurator() {
     link.download = "workworld-index-preflight.json";
     link.click();
     URL.revokeObjectURL(url);
+  };
+
+  const prepare = async () => {
+    setPreparing(true);
+    setError(null);
+    try {
+      const adapter = ({ "OpenAI-compatible": "openai-compatible", "Anthropic Messages": "anthropic-messages", "Local Ollama": "ollama", "Custom MCP agent": "custom-mcp" } as const)[manifest.endpointType];
+      const response = await fetch("/api/index/certifications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agentName: manifest.agent, adapter, maxBudgetUsd: manifest.budget, contact: manifest.contact }),
+      });
+      const payload = await response.json() as { preflight?: { id: string; configurationDigest: string }; error?: string };
+      if (!response.ok || !payload.preflight) throw new Error(payload.error ?? "Preflight could not be prepared.");
+      setReceipt(payload.preflight);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Preflight could not be prepared.");
+    } finally {
+      setPreparing(false);
+    }
   };
 
   return (
@@ -68,10 +90,11 @@ export function CertificationConfigurator() {
       </div>
 
       <div className="mt-6 flex flex-wrap gap-3">
-        <button type="button" onClick={() => setPrepared(true)} className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700">Prepare private run</button>
+        <button type="button" disabled={preparing} onClick={prepare} className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60">{preparing ? "Preparing…" : "Prepare private run"}</button>
         <button type="button" onClick={download} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800">Download preflight JSON</button>
       </div>
-      {prepared ? <p role="status" className="mt-4 rounded-xl bg-indigo-50 p-3 text-sm text-indigo-900 dark:bg-indigo-950/50 dark:text-indigo-100">Preflight prepared. Your exported manifest excludes credentials, prompts, and business data; connect it to the runner when your private environment is ready.</p> : null}
+      {receipt ? <p role="status" className="mt-4 rounded-xl bg-indigo-50 p-3 text-sm text-indigo-900 dark:bg-indigo-950/50 dark:text-indigo-100">Preflight prepared: <span className="font-mono text-xs">{receipt.id}</span>. Configuration digest <span className="font-mono text-xs">{receipt.configurationDigest.slice(0, 16)}…</span>; credentials, prompts, and business data were not collected.</p> : null}
+      {error ? <p role="alert" className="mt-4 rounded-xl bg-rose-50 p-3 text-sm text-rose-900 dark:bg-rose-950/40 dark:text-rose-100">{error}</p> : null}
     </section>
   );
 }
