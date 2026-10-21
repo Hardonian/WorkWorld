@@ -9,8 +9,9 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { Client } from "pg";
 
+const explicitDatabaseUrl = process.env.WW_TEST_PG_URL;
 const URL =
-  process.env.WW_TEST_PG_URL ??
+  explicitDatabaseUrl ??
   "postgres://postgres:postgres@127.0.0.1:54329/workworld_test";
 
 const U = {
@@ -33,6 +34,14 @@ try {
   dbAvailable = true;
 } catch {
   dbAvailable = false;
+}
+
+// Local development may legitimately run without Docker. A caller that
+// explicitly supplies a database URL, however, is requesting a real boundary
+// check; treating an unreachable target as skipped would create false hosted
+// release evidence.
+if (explicitDatabaseUrl && !dbAvailable) {
+  throw new Error("WW_TEST_PG_URL was provided but the database is unreachable; refusing to skip RLS tests.");
 }
 
 let superuser: Client;

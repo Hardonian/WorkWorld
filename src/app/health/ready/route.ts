@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getStore } from "../../../server/store.ts";
+import { PostgresStore } from "../../../server/store-postgres.ts";
 import { hostedModeAvailable } from "../../../server/session.ts";
 
 export const dynamic = "force-dynamic";
@@ -14,10 +15,11 @@ export async function GET() {
         { status: 503, headers: { "Cache-Control": "no-store" } },
       );
     }
-    // Hosted mode is configured + wired: verify the store actually answers before
-    // reporting ready (never claim ready on an unreachable EventStore).
+    // Do not instantiate an unscoped EventStore just to probe readiness. A
+    // hosted request store requires a verified end-user identity; this probe
+    // only verifies database reachability and reads no tenant data.
     try {
-      await getStore().listRuns();
+      await PostgresStore.checkConnection(process.env.DATABASE_URL);
       return NextResponse.json(
         { status: "ready", service: "workworld", mode, store: "postgres" },
         { headers: { "Cache-Control": "no-store" } },

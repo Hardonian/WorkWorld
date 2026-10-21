@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-10-21T02:40:31.763Z",
-  "totalDurationSec": 108.29,
+  "generatedAt": "2026-10-21T02:51:02.951Z",
+  "totalDurationSec": 103.68,
   "gateScore": "11/11",
   "localReadiness": "local technical candidate: PASS (11/11 gates green)",
   "hostedReadiness": "hosted: blocked_external (no hosted configuration; B1)",
   "researchReadiness": "harness validation complete — deterministic baseline & controls verified",
-  "commercialReadiness": "protocols and security artifacts complete",
+  "commercialReadiness": "commercial evidence: externally unverified — protocols and security artifacts exist, but no pilots, customers, or revenue results are recorded",
   "gates": [
     {
       "id": "doctor",
@@ -14,8 +14,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 1.13,
-      "started": "2026-10-21T02:38:43.768Z",
+      "durationSec": 1.1,
+      "started": "2026-10-21T02:49:19.568Z",
       "tail": "PASS  Scenario catalog: 15 scenarios defined across routine and enterprise families | PASS  Assistant provider: optional local endpoint: http://127.0.0.1:11434"
     },
     {
@@ -26,7 +26,7 @@
       "exitCode": 0,
       "ok": true,
       "durationSec": 14.22,
-      "started": "2026-10-21T02:38:44.900Z",
+      "started": "2026-10-21T02:49:20.671Z",
       "tail": "> workworld@0.1.0 lint | > eslint ."
     },
     {
@@ -36,8 +36,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 10.85,
-      "started": "2026-10-21T02:38:59.120Z",
+      "durationSec": 6.87,
+      "started": "2026-10-21T02:49:34.889Z",
       "tail": "> workworld@0.1.0 typecheck | > tsc --noEmit"
     },
     {
@@ -47,8 +47,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 1.7,
-      "started": "2026-10-21T02:39:09.974Z",
+      "durationSec": 1.51,
+      "started": "2026-10-21T02:49:41.762Z",
       "tail": "Validated 15 scenarios across routine and enterprise families. | PASS: All scenario specifications are syntactically and logically consistent."
     },
     {
@@ -58,8 +58,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 4.25,
-      "started": "2026-10-21T02:39:11.676Z",
+      "durationSec": 4.56,
+      "started": "2026-10-21T02:49:43.277Z",
       "tail": "             persist transforms across runs with fsModuleCache: true |              learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns"
     },
     {
@@ -69,8 +69,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 1.64,
-      "started": "2026-10-21T02:39:15.928Z",
+      "durationSec": 1.63,
+      "started": "2026-10-21T02:49:47.834Z",
       "tail": " | baseline: 6/6 episodes pass (fixture actor, not a model)"
     },
     {
@@ -81,7 +81,7 @@
       "exitCode": 0,
       "ok": true,
       "durationSec": 1.58,
-      "started": "2026-10-21T02:39:17.571Z",
+      "started": "2026-10-21T02:49:49.464Z",
       "tail": " | negative controls: 6/6 detected for the right reasons"
     },
     {
@@ -91,9 +91,9 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 1.53,
-      "started": "2026-10-21T02:39:19.148Z",
-      "tail": "Throughput: 9093 actions/sec | Latency: p50=0.094ms, p95=0.191ms, p99=0.258ms"
+      "durationSec": 1.51,
+      "started": "2026-10-21T02:49:51.047Z",
+      "tail": "Throughput: 9158 actions/sec | Latency: p50=0.096ms, p95=0.175ms, p99=0.238ms"
     },
     {
       "id": "build",
@@ -102,8 +102,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 21.85,
-      "started": "2026-10-21T02:39:20.679Z",
+      "durationSec": 21.84,
+      "started": "2026-10-21T02:49:52.560Z",
       "tail": "○  (Static)   prerendered as static content | ƒ  (Dynamic)  server-rendered on demand"
     },
     {
@@ -113,9 +113,9 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 45.11,
-      "started": "2026-10-21T02:39:42.526Z",
-      "tail": " |   16 passed (43.3s)"
+      "durationSec": 43.88,
+      "started": "2026-10-21T02:50:14.400Z",
+      "tail": " |   16 passed (42.1s)"
     },
     {
       "id": "archive",
@@ -124,8 +124,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 4.13,
-      "started": "2026-10-21T02:40:27.635Z",
+      "durationSec": 4.67,
+      "started": "2026-10-21T02:50:58.280Z",
       "tail": " | TASK_STATE.json OK: 11 milestones, 2 external blockers; docs/TASK_STATE.schema.json refreshed"
     }
   ]

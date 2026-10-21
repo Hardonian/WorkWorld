@@ -211,8 +211,13 @@ export function makeStore(kind: "memory" | "file" | "postgres", dataDir?: string
 
 let defaultStoreInstance: EventStore | null = null;
 export function getStore(): EventStore {
+  if (process.env.WORKWORLD_MODE === "hosted") {
+    throw new Error(
+      "hosted EventStore must be bound to a verified request identity; use createAuthenticatedPostgresStore",
+    );
+  }
   if (!defaultStoreInstance) {
-    if (process.env.WORKWORLD_MODE === "hosted" || process.env.WORKWORLD_STORE === "postgres") {
+    if (process.env.WORKWORLD_STORE === "postgres") {
       defaultStoreInstance = new PostgresStore();
     } else {
       const kind = (process.env.WORKWORLD_STORE ?? "file") as "memory" | "file";
@@ -221,4 +226,3 @@ export function getStore(): EventStore {
   }
   return defaultStoreInstance;
 }
-

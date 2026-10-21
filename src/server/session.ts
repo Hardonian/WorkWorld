@@ -11,14 +11,15 @@ import type { Action, EpisodeState, Transition } from "../domain/types.ts";
 import type { ActorKind } from "../domain/types.ts";
 import { getScenario } from "../scenarios/catalog.ts";
 import type { Observation } from "../domain/observation.ts";
-import { getStore, STORE_SCHEMA_VERSION } from "./store.ts";
+import { getStore, type EventStore, STORE_SCHEMA_VERSION } from "./store.ts";
+import { createAuthenticatedPostgresStore } from "./store-postgres.ts";
+import { getHostedIdentity, supabasePublicConfig } from "./supabase-auth.ts";
 import { sanitizeActionInput } from "./actions.ts";
 
 const COOKIE = "ww_session";
 const RUN_TTL_MS = 1000 * 60 * 60 * 24 * 7;
 
 const runTails = new Map<string, Promise<void>>();
-const store = getStore;
 
 export interface SessionInfo {
   runId: string;
@@ -52,7 +53,12 @@ export function hostedModeAvailable(): { available: boolean; reason: string } {
   if ((process.env.WORKWORLD_MODE ?? "demo") !== "hosted") {
     return { available: false, reason: "hosted mode not selected (WORKWORLD_MODE=demo)" };
   }
-  const missing = ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"].filter((k) => !process.env[k]);
+  const publicConfig = supabasePublicConfig();
+  const missing = [
+    !publicConfig?.url ? "SUPABASE_URL" : null,
+    !publicConfig?.publishableKey ? "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY" : null,
+    !process.env.DATABASE_URL ? "DATABASE_URL" : null,
+  ].filter((key): key is string => key !== null);
   if (missing.length > 0) {
     return {
       available: false,
@@ -62,7 +68,7 @@ export function hostedModeAvailable(): { available: boolean; reason: string } {
   if (process.env.WORKWORLD_HOSTED_STORE_WIRED === "true") {
     return {
       available: true,
-      reason: "hosted PostgreSQL store and authentication path fully wired and verified",
+      reason: "hosted PostgreSQL store and authentication path configured and enabled; authenticated storage verification remains required",
     };
   }
   return {
@@ -70,6 +76,24 @@ export function hostedModeAvailable(): { available: boolean; reason: string } {
     reason:
       "hosted database policies are provisioned, but application authentication and the Postgres EventStore adapter are not wired; hosted execution is disabled — no fallback to demo data",
   };
+}
+
+/**
+ * Demo/local requests retain their configured local store. Hosted requests are
+ * always scoped to a verified Supabase cookie session; no default tenant can
+ * be reached through this path.
+ */
+async function storeForRequest(): Promise<EventStore> {
+  if ((process.env.WORKWORLD_MODE ?? "demo") !== "hosted") return getStore();
+
+  const hosted = hostedModeAvailable();
+  if (!hosted.available) throw new Error(hosted.reason);
+
+  const identity = await getHostedIdentity();
+  if (!identity) {
+    throw new Error("hosted execution requires an authenticated Supabase session; no fallback to demo data");
+  }
+  return createAuthenticatedPostgresStore(identity.userId);
 }
 
 export async function startSession(
@@ -95,9 +119,10 @@ export async function startSession(
     createdAt: new Date().toISOString(),
     storeSchemaVersion: STORE_SCHEMA_VERSION,
   };
-  await store().createRun(meta);
+  const eventStore = await storeForRequest();
+  await eventStore.createRun(meta);
   const engine = EpisodeEngine.reset(scenario, { runId, seed: meta.seed, condition });
-  await store().saveState(runId, engine.getState());
+  await eventStore.saveState(runId, engine.getState());
   return { observation: engine.observe(), runId };
 }
 
@@ -109,9 +134,11 @@ export async function loadEngine(): Promise<{ engine: EpisodeEngine; runId: stri
 
 async function loadEngineForRun(
   runId: string,
+  eventStore?: EventStore,
 ): Promise<{ engine: EpisodeEngine; runId: string } | null> {
   try {
-    const state = await store().loadState(runId);
+    const activeStore = eventStore ?? await storeForRequest();
+    const state = await activeStore.loadState(runId);
     const scenario = getScenario(state.scenarioId);
     return { engine: EpisodeEngine.fromState(scenario, state), runId };
   } catch {
@@ -154,7 +181,8 @@ export async function applyActionForRun(
 ): Promise<{ transition: Transition; observation: Observation } | { error: string; code: string }> {
 
   return withRunLock(runId, async () => {
-    const loaded = await loadEngineForRun(runId);
+    const eventStore = await storeForRequest();
+    const loaded = await loadEngineForRun(runId, eventStore);
     if (!loaded) return noSession();
     const { engine } = loaded;
     let action: Action;
@@ -196,8 +224,8 @@ export async function applyActionForRun(
       role: "participant" as const,
     };
     const transition = engine.step(action, actor);
-    await store().appendAction(runId, { action, actor });
-    await store().saveState(runId, engine.getState());
+    await eventStore.appendAction(runId, { action, actor });
+    await eventStore.saveState(runId, engine.getState());
     return { transition, observation: engine.observe() };
   });
 }
@@ -229,7 +257,8 @@ export async function applyBatchActionsForRun(
   | { error: string; code: string }
 > {
   return withRunLock(runId, async () => {
-    const loaded = await loadEngineForRun(runId);
+    const eventStore = await storeForRequest();
+    const loaded = await loadEngineForRun(runId, eventStore);
     if (!loaded) return noSession();
     const { engine } = loaded;
 
@@ -276,7 +305,7 @@ export async function applyBatchActionsForRun(
       };
 
       const transition = engine.step(action, actor);
-      await store().appendAction(runId, { action, actor });
+      await eventStore.appendAction(runId, { action, actor });
 
       results.push({
         actionId: action.actionId,
@@ -289,7 +318,7 @@ export async function applyBatchActionsForRun(
       }
     }
 
-    await store().saveState(runId, engine.getState());
+    await eventStore.saveState(runId, engine.getState());
     return { results, observation: engine.observe() };
   });
 }

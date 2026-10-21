@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "algorithm": "sha256",
+  "migrations": [
+    {
+      "file": "0001_init.sql",
+      "sha256": "bce9e2c01dc5da65e27d24b80a19256ba47f66655cc2ee830d0b450a84af56b8"
+    },
+    {
+      "file": "0002_readiness_indexes.sql",
+      "sha256": "2ef067a2017bf1dd0a2e40b8e881eaaf63e721f62e4a899d4b637eb89aec853e"
+    },
+    {
+      "file": "0003_harden_helper_permissions.sql",
+      "sha256": "52ca84d56037c9f6cf79b2738bd28217dfec0167311167fc9b9df13d9ea89896"
+    },
+    {
+      "file": "0004_index_certification.sql",
+      "sha256": "8f61126e6a4723c3d82a37e2ff4edbdcd36cae826d4826e2f6f7a9d3e00fbc62"
+    }
+  ]
+}

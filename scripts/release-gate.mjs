@@ -2,7 +2,7 @@
 /**
  * WorkWorld 11-Gate Unified Release Audit
  * 
- * Verifies all 10 core technical layers required for production release candidate
+ * Verifies all 11 core technical layers required for a local production candidate
  * and go-live operational stability.
  * Exits 0 only when all 11/11 required gates pass cleanly with current evidence.
  */
@@ -86,8 +86,8 @@ function gate(id, description, cmd, required = true) {
       tail: redact(`${err.stdout ?? ""} ${err.stderr ?? ""}`.trim().split("\n").slice(-2).join(" | ")),
     });
     console.log(`${required ? c.red + c.bold + "FAIL" : c.yellow + c.bold + "WARN"}${c.reset} ${c.gray}(${elapsedSec}s)${c.reset}`);
-    if (err.stderr) console.error(`${c.red}[${id} stderr]:${c.reset} ${err.stderr.toString().trim()}`);
-    if (err.stdout) console.error(`${c.gray}[${id} stdout]:${c.reset} ${err.stdout.toString().trim()}`);
+    if (err.stderr) console.error(`${c.red}[${id} stderr]:${c.reset} ${redact(err.stderr.toString().trim())}`);
+    if (err.stdout) console.error(`${c.gray}[${id} stdout]:${c.reset} ${redact(err.stdout.toString().trim())}`);
   }
 }
 

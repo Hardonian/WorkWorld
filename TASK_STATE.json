@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "project": "workworld",
-  "updatedAt": "2026-10-07T22:36:00.000Z",
+  "updatedAt": "2026-10-20T00:00:00.000Z",
   "codeRevision": {
     "branch": "main",
-    "commit": "8668b958ea46ca2e5f4f41dd9bdc7d0975eea458",
-    "note": "Production release candidate with complete 10-tier gate, edge packaging, commercial Stripe monetization, and 100% green verification"
+    "commit": null,
+    "note": "Historical local-gate record reconciled for the current working tree. It is not hosted production, commercial, or certification verification; use the latest release-gate evidence for a pinned candidate."
   },
   "milestones": [
     {
@@ -488,21 +488,22 @@
           "observation": "machine: milestone state reconciled with actual code/revision/test logs/artifacts; all 10 pillars and 100 productization roadmap items implemented and verified; release gate 10/10 green."
         }
       ],
-      "manualJudgment": "All milestone layers M0 through M10 verified complete and green. Whole product verified for go-live local usage and ready for deployment.",
+      "manualJudgment": "This historical M10 record establishes local technical verification only. It is not a hosted production, commercial, or certification approval; B1 and B2 remain external blockers for the current launch candidate.",
       "blockers": [
+        "B1",
         "B2",
         "human_governance"
       ],
-      "nextAction": "Go-live operation and external governance review."
+      "nextAction": "Provision the hosted test tenant, complete authenticated RLS end-to-end verification, then conduct approved external governance and pilot work."
     }
   ],
   "externalBlockers": [
     {
       "id": "B1",
       "kind": "hosted_config",
-      "summary": "CLOSED 2026-10-02: hosted project gsssdavzyorvhtdolvaj.supabase.co provisioned (dedicated, not shared with other apps); migrations applied via scripts/apply-migrations.mjs (session-mode connection); 12/12 RLS tests verified against the hosted project; release gate hosted-rls gate PASS (evidence/release-gate/latest.json).",
+      "summary": "Current launch candidate is externally blocked: no hosted runtime configuration or non-production hosted database connection is available for a fresh RLS/app-path verification. A 2026-10-02 tenant test is historical background, not current production approval; see docs/BLOCKERS.md B1.",
       "openedAt": "2026-10-01T21:00:00.000Z",
-      "status": "closed"
+      "status": "open"
     },
     {
       "id": "B2",

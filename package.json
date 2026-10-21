@@ -31,6 +31,8 @@
     "verify:all": "npm run release-gate && npm run test:e2e",
     "validate:task-state": "tsx scripts/validate-task-state.ts",
     "doctor": "tsx scripts/doctor.ts",
+    "hosted:check": "node scripts/hosted-readiness.mjs",
+    "hosted:check:strict": "node scripts/hosted-readiness.mjs --strict",
     "build:edge": "tsx scripts/build-edge.ts",
     "deploy:edge": "tsx scripts/build-edge.ts && wrangler deploy"
   },
