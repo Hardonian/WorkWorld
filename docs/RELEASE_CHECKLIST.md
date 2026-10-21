@@ -29,11 +29,13 @@ candidate. It reports `hosted: blocked_external` when no hosted configuration
 is available; a historical tenant test is not a current production approval.
 
 - [ ] Hosted runtime configuration present and reachable: URL, browser
-      publishable key, server database URL, service-role key, signing key, and
-      explicit hosted-mode flags.
+      publishable key, server database URL, signing key, and explicit hosted-mode
+      flags. A service-role key is optional for isolated administrative jobs and
+      must not be used for RLS-bound request paths.
 - [ ] RLS suite passes against a supplied non-production hosted tenant
       (`WW_TEST_PG_URL`; run `npm run release-gate -- --require-hosted`).
-- [ ] Service-role key absent from client bundle, logs, and exported evidence.
+- [ ] Any optional service-role key is absent from client bundles, logs, and
+      exported evidence.
 - [ ] Authenticated browser-to-Postgres episode flow is exercised end to end
       with a real user, membership, and RLS claims.
 

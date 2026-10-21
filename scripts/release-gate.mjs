@@ -134,7 +134,6 @@ const hostedRuntimeMissing = [
   !hostedUrl && "NEXT_PUBLIC_SUPABASE_URL (or SUPABASE_URL)",
   !hostedPublicKey && "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (or SUPABASE_ANON_KEY)",
   !process.env.DATABASE_URL && "DATABASE_URL",
-  !process.env.SUPABASE_SERVICE_ROLE_KEY && "SUPABASE_SERVICE_ROLE_KEY",
   !(process.env.WORKWORLD_CERTIFICATION_SIGNING_KEY?.length >= 32) && "32+-character WORKWORLD_CERTIFICATION_SIGNING_KEY",
   process.env.WORKWORLD_MODE !== "hosted" && "WORKWORLD_MODE=hosted",
   process.env.WORKWORLD_HOSTED_STORE_WIRED !== "true" && "WORKWORLD_HOSTED_STORE_WIRED=true",
