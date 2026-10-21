@@ -8,7 +8,7 @@ import { test, expect, type Page } from "@playwright/test";
 
 async function startA1(page: Page) {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /Executable professional-work simulations/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Can this agent do the work?" })).toBeVisible();
   await page.getByRole("button", { name: "Start episode A1" }).click();
   await expect(page.getByRole("heading", { name: /Day 0/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Week-14 restock/ })).toBeVisible();
@@ -79,7 +79,7 @@ test("fresh session shows the episode picker; workspace without session degrades
   await page.goto("/workspace");
   await expect(page.getByRole("heading", { name: "No active episode" })).toBeVisible();
   await page.getByRole("link", { name: "Choose an episode" }).click();
-  await expect(page.getByRole("heading", { name: /Executable professional-work simulations/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Can this agent do the work?" })).toBeVisible();
   // All six episodes are offered.
   for (const id of ["A1", "A2", "B1", "B2", "C1", "C2"]) {
     await expect(page.getByText(`${id} ·`, { exact: false }).first()).toBeVisible();

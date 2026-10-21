@@ -13,5 +13,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ run
       command: "npm run eval -- --adapter baseline --scenarios A1,A2,B1,B2,C1,C2 --seeds 42",
       note: "The command reproduces the scripted baseline control. Public model comparison rows are added only after their full manifests are published.",
     },
-  }, { headers: { "Content-Disposition": `attachment; filename=workworld-index-${run.id}.json` } });
+  }, {
+    headers: {
+      "Cache-Control": "public, max-age=300, s-maxage=900",
+      "Content-Disposition": `attachment; filename=workworld-index-${run.id}.json`,
+    },
+  });
 }

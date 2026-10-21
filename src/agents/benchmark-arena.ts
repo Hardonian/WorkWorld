@@ -1,13 +1,28 @@
 /**
- * WorkWorld Bench & Public Model Arena (Game Changer #7).
- * Automated comparative benchmarking harness and Elo rating engine for frontier AI models.
- * Pure TypeScript — no React imports.
+ * Evidence-gated pairwise comparison engine for WorkWorld Index.
+ *
+ * This module deliberately has no seeded models, estimated performance, or
+ * generated timestamps. A configuration may enter a battle only after its
+ * published, verified live-agent evidence is registered.
  */
+
+export type BenchmarkProvider = "anthropic" | "openai" | "google" | "deepseek" | "meta" | "other";
+
+export interface PublishedEvidence {
+  manifestId: string;
+  replayId: string;
+  suiteVersion: string;
+  resultKind: "live-agent";
+  verified: true;
+  publishedAt: string;
+}
 
 export interface ModelProfile {
   modelId: string;
-  provider: "anthropic" | "openai" | "google" | "deepseek" | "meta";
+  provider: BenchmarkProvider;
   displayName: string;
+  configurationDigest: string;
+  evidence: PublishedEvidence;
   eloRating: number;
   episodesEvaluated: number;
   passRatePct: number;
@@ -22,140 +37,138 @@ export interface ArenaMatch {
   scenarioId: string;
   modelA: string;
   modelB: string;
+  evidenceA: string;
+  evidenceB: string;
   winner: "modelA" | "modelB" | "tie";
   scoreA: number;
   scoreB: number;
-  timestamp: string;
+  recordedAt: string;
 }
 
+export interface RegisterModelInput extends Omit<ModelProfile, "eloRating" | "episodesEvaluated"> {
+  initialElo?: number;
+}
+
+export interface RecordMatchInput {
+  scenarioId: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+  modelAId: string;
+  modelBId: string;
+  scoreA: number;
+  scoreB: number;
+  recordedAt: string;
+}
+
+const INITIAL_ELO = 1200;
+const K_FACTOR = 32;
+
+function cloneProfile(profile: ModelProfile): ModelProfile {
+  return { ...profile, evidence: { ...profile.evidence } };
+}
+
+function assertFiniteInRange(value: number, name: string, min: number, max: number): void {
+  if (!Number.isFinite(value) || value < min || value > max) {
+    throw new Error(`${name} must be a finite number between ${min} and ${max}`);
+  }
+}
+
+function assertIsoTimestamp(value: string, name: string): void {
+  if (!Number.isFinite(Date.parse(value))) throw new Error(`${name} must be an ISO-8601 timestamp`);
+}
+
+function assertEntrant(input: RegisterModelInput): void {
+  if (!/^[a-z0-9][a-z0-9._:-]{2,127}$/i.test(input.modelId)) {
+    throw new Error("modelId must be a stable identifier of 3–128 safe characters");
+  }
+  if (input.displayName.trim().length < 2) throw new Error("displayName must be at least 2 characters");
+  if (!/^[a-f0-9]{16,128}$/i.test(input.configurationDigest)) {
+    throw new Error("configurationDigest must be a hex digest (16–128 characters)");
+  }
+  if (!input.evidence.verified || input.evidence.resultKind !== "live-agent") {
+    throw new Error("only verified live-agent evidence can enter an arena battle");
+  }
+  if (!input.evidence.manifestId || !input.evidence.replayId || !input.evidence.suiteVersion) {
+    throw new Error("evidence must include manifestId, replayId, and suiteVersion");
+  }
+  assertIsoTimestamp(input.evidence.publishedAt, "evidence.publishedAt");
+  assertFiniteInRange(input.passRatePct, "passRatePct", 0, 100);
+  assertFiniteInRange(input.policyAdherencePct, "policyAdherencePct", 0, 100);
+  assertFiniteInRange(input.actionEfficiencyPct, "actionEfficiencyPct", 0, 100);
+  assertFiniteInRange(input.avgTokensPerEpisode, "avgTokensPerEpisode", 0, Number.MAX_SAFE_INTEGER);
+  assertFiniteInRange(input.costPerCorrectSettlementUsd, "costPerCorrectSettlementUsd", 0, Number.MAX_SAFE_INTEGER);
+  assertFiniteInRange(input.initialElo ?? INITIAL_ELO, "initialElo", 100, 3000);
+}
+
+/**
+ * Pairwise Elo ratings are a discovery aid, never a substitute for the run
+ * cards. The engine forces each entrant to carry immutable evidence IDs.
+ */
 export class BenchmarkArena {
-  private models: Map<string, ModelProfile> = new Map();
+  private models = new Map<string, ModelProfile>();
   private matches: ArenaMatch[] = [];
 
-  constructor() {
-    this.seedDefaultLeaderboard();
-  }
-
-  private seedDefaultLeaderboard(): void {
-    const defaults: ModelProfile[] = [
-      {
-        modelId: "claude-3-7-sonnet",
-        provider: "anthropic",
-        displayName: "Claude 3.7 Sonnet (Thinking)",
-        eloRating: 1420,
-        episodesEvaluated: 120,
-        passRatePct: 98.3,
-        policyAdherencePct: 99.1,
-        avgTokensPerEpisode: 4200,
-        costPerCorrectSettlementUsd: 0.042,
-        actionEfficiencyPct: 94.5,
-      },
-      {
-        modelId: "gpt-4o",
-        provider: "openai",
-        displayName: "GPT-4o (Omni 2024-11)",
-        eloRating: 1385,
-        episodesEvaluated: 120,
-        passRatePct: 94.2,
-        policyAdherencePct: 96.5,
-        avgTokensPerEpisode: 3800,
-        costPerCorrectSettlementUsd: 0.038,
-        actionEfficiencyPct: 91.2,
-      },
-      {
-        modelId: "gemini-2-0-flash",
-        provider: "google",
-        displayName: "Gemini 2.0 Flash",
-        eloRating: 1350,
-        episodesEvaluated: 120,
-        passRatePct: 91.7,
-        policyAdherencePct: 94.8,
-        avgTokensPerEpisode: 3500,
-        costPerCorrectSettlementUsd: 0.012,
-        actionEfficiencyPct: 88.0,
-      },
-      {
-        modelId: "deepseek-v3",
-        provider: "deepseek",
-        displayName: "DeepSeek V3 (671B)",
-        eloRating: 1365,
-        episodesEvaluated: 120,
-        passRatePct: 93.1,
-        policyAdherencePct: 95.0,
-        avgTokensPerEpisode: 4100,
-        costPerCorrectSettlementUsd: 0.009,
-        actionEfficiencyPct: 89.4,
-      },
-    ];
-
-    for (const m of defaults) {
-      this.models.set(m.modelId, m);
-    }
+  registerModel(input: RegisterModelInput): ModelProfile {
+    assertEntrant(input);
+    if (this.models.has(input.modelId)) throw new Error(`model ${input.modelId} is already registered`);
+    const profile: ModelProfile = {
+      ...input,
+      evidence: { ...input.evidence },
+      eloRating: input.initialElo ?? INITIAL_ELO,
+      episodesEvaluated: 0,
+    };
+    delete (profile as Partial<RegisterModelInput>).initialElo;
+    this.models.set(profile.modelId, profile);
+    return cloneProfile(profile);
   }
 
   getLeaderboard(): ModelProfile[] {
-    return Array.from(this.models.values()).sort((a, b) => b.eloRating - a.eloRating);
+    return Array.from(this.models.values())
+      .sort((a, b) => b.eloRating - a.eloRating || a.modelId.localeCompare(b.modelId))
+      .map(cloneProfile);
   }
 
   getModel(modelId: string): ModelProfile | undefined {
-    return this.models.get(modelId);
+    const profile = this.models.get(modelId);
+    return profile ? cloneProfile(profile) : undefined;
   }
 
-  /**
-   * Computes Elo rating change after a pairwise Arena battle.
-   * Standard K-factor = 32.
-   */
-  recordMatch(
-    scenarioId: string,
-    modelAId: string,
-    modelBId: string,
-    scoreA: number,
-    scoreB: number
-  ): ArenaMatch {
-    const modelA = this.models.get(modelAId);
-    const modelB = this.models.get(modelBId);
-    if (!modelA || !modelB) throw new Error("Models not registered in arena");
+  recordMatch(input: RecordMatchInput): ArenaMatch {
+    if (input.modelAId === input.modelBId) throw new Error("a configuration cannot battle itself");
+    const modelA = this.models.get(input.modelAId);
+    const modelB = this.models.get(input.modelBId);
+    if (!modelA || !modelB) throw new Error("both models must be registered with verified evidence");
+    if (modelA.evidence.suiteVersion !== modelB.evidence.suiteVersion) {
+      throw new Error("models must use the same suiteVersion for a fair battle");
+    }
+    assertFiniteInRange(input.scoreA, "scoreA", 0, 100);
+    assertFiniteInRange(input.scoreB, "scoreB", 0, 100);
+    assertIsoTimestamp(input.recordedAt, "recordedAt");
 
     const expectedA = 1 / (1 + Math.pow(10, (modelB.eloRating - modelA.eloRating) / 400));
     const expectedB = 1 - expectedA;
-
-    let actualA = 0.5;
-    let actualB = 0.5;
-    let winner: ArenaMatch["winner"] = "tie";
-
-    if (scoreA > scoreB) {
-      actualA = 1.0;
-      actualB = 0.0;
-      winner = "modelA";
-    } else if (scoreB > scoreA) {
-      actualA = 0.0;
-      actualB = 1.0;
-      winner = "modelB";
-    }
-
-    const K = 32;
-    modelA.eloRating = Math.round(modelA.eloRating + K * (actualA - expectedA));
-    modelB.eloRating = Math.round(modelB.eloRating + K * (actualB - expectedB));
-
+    const actualA = input.scoreA === input.scoreB ? 0.5 : input.scoreA > input.scoreB ? 1 : 0;
+    const actualB = 1 - actualA;
+    modelA.eloRating = Math.round(modelA.eloRating + K_FACTOR * (actualA - expectedA));
+    modelB.eloRating = Math.round(modelB.eloRating + K_FACTOR * (actualB - expectedB));
     modelA.episodesEvaluated += 1;
     modelB.episodesEvaluated += 1;
 
     const match: ArenaMatch = {
-      matchId: `MATCH-${Date.now().toString(36).toUpperCase()}`,
-      scenarioId,
-      modelA: modelAId,
-      modelB: modelBId,
-      winner,
-      scoreA,
-      scoreB,
-      timestamp: new Date().toISOString(),
+      matchId: `MATCH-${String(this.matches.length + 1).padStart(6, "0")}`,
+      scenarioId: input.scenarioId,
+      modelA: modelA.modelId,
+      modelB: modelB.modelId,
+      evidenceA: modelA.evidence.manifestId,
+      evidenceB: modelB.evidence.manifestId,
+      winner: input.scoreA === input.scoreB ? "tie" : input.scoreA > input.scoreB ? "modelA" : "modelB",
+      scoreA: input.scoreA,
+      scoreB: input.scoreB,
+      recordedAt: input.recordedAt,
     };
-
     this.matches.push(match);
-    return match;
+    return { ...match };
   }
 
   getRecentMatches(): ArenaMatch[] {
-    return [...this.matches].reverse().slice(0, 50);
+    return this.matches.slice().reverse().map((match) => ({ ...match }));
   }
 }

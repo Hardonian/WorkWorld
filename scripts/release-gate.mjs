@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * WorkWorld 10-Gate Unified Release Audit
+ * WorkWorld 11-Gate Unified Release Audit
  * 
  * Verifies all 10 core technical layers required for production release candidate
  * and go-live operational stability.
- * Exits 0 only when all 10/10 required gates pass cleanly with current evidence.
+ * Exits 0 only when all 11/11 required gates pass cleanly with current evidence.
  */
 import { execSync } from "node:child_process";
 import { writeFileSync, mkdirSync } from "node:fs";
@@ -35,7 +35,7 @@ function redact(s) {
 }
 
 let gateIndex = 0;
-const TOTAL_REQUIRED_GATES = 10;
+const TOTAL_REQUIRED_GATES = 11;
 
 function gate(id, description, cmd, required = true) {
   gateIndex += required ? 1 : 0;
@@ -81,7 +81,7 @@ function gate(id, description, cmd, required = true) {
 }
 
 console.log(`\n${c.bold}======================================================================${c.reset}`);
-console.log(`${c.bold}   WorkWorld Production Release Gate — 10-Tier Verification Suite${c.reset}`);
+console.log(`${c.bold}   WorkWorld Production Release Gate — 11-Tier Verification Suite${c.reset}`);
 console.log(`${c.bold}======================================================================${c.reset}\n`);
 
 // Attempt test Postgres if Docker is available
@@ -107,6 +107,7 @@ gate("baseline", "Competent actor benchmark (6/6 episodes pass)", "npm run basel
 gate("negatives", "Adversarial negative controls caught", "npm run negatives");
 gate("stress", "Concurrency throughput & latency benchmark", "npm run benchmark:stress");
 gate("build", "Next.js 16 production application build", "npm run build");
+gate("e2e", "Playwright public, workspace, API, and launch-readiness flows", "npm run test:e2e");
 gate("archive", "Schema validation & SHA-256 source archive", "npm run validate:task-state && node scripts/build-archive.mjs --quiet");
 
 // Optional Hosted Boundary Verification

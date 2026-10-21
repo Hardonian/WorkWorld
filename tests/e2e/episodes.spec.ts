@@ -12,7 +12,13 @@ async function start(page: Page, id: string) {
 }
 
 async function advanceDays(page: Page, n: number) {
-  for (let i = 0; i < n; i++) await page.getByRole("button", { name: "Advance 1 day" }).click();
+  for (let i = 0; i < n; i++) {
+    const response = page.waitForResponse(
+      (candidate) => candidate.url().includes("/api/actions") && candidate.request().method() === "POST",
+    );
+    await page.getByRole("button", { name: "Advance 1 day" }).click();
+    expect((await response).status()).toBe(200);
+  }
 }
 
 async function draftOrder(
