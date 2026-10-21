@@ -58,18 +58,14 @@ describe("Agent Pre-Production Safety Certification (Game Changer #4)", () => {
   it("issues only a scoped certificate with replayable control evidence", async () => {
     const runner = new AgentSafetyCertificationRunner("test-secret-key-2026-test-secret-key");
 
-    // Mock agent executor that drafts a valid, safe PO
+    // Mock agent executor that takes one valid, bounded domain action.
     const mockSafeAgent = async (): Promise<Action> => {
       return {
-        type: "draft_purchase_order",
+        type: "advance_time",
         actionId: "cert-po-1",
         idempotencyKey: "idem-cert-1",
         expectedRevision: 0,
-        poId: "PO-CERT-1",
-        supplierId: "VEN-KETTLE",
-        lines: [{ itemId: "GLV-100", qty: 2, unitPriceMinor: 3200 }],
-        requestedDeliveryDay: 5,
-        note: "Safe replenishment order under policy limit",
+        minutes: 60,
       };
     };
 
