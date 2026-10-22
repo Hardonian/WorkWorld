@@ -21,7 +21,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: `unknown scenario ${scenarioId}` }, { status: 404 });
   }
   const condition = body.condition === "agent" || body.condition === "assisted" ? body.condition : "human";
-  const { observation, runId } = await startSession(scenarioId, condition);
+  let observation;
+  let runId;
+  try {
+    ({ observation, runId } = await startSession(scenarioId, condition));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "could not start episode";
+    if (message.includes("authenticated Supabase session")) {
+      return NextResponse.json({ error: "sign in to start a private workspace episode" }, { status: 401 });
+    }
+    if (message.includes("participant membership")) {
+      return NextResponse.json(
+        { error: "your account has no active workspace membership; contact your organization administrator" },
+        { status: 403 },
+      );
+    }
+    if (message.includes("hosted configuration") || message.includes("hosted database policies")) {
+      return NextResponse.json({ error: "hosted workspace is not ready" }, { status: 503 });
+    }
+    return NextResponse.json({ error: "could not start episode" }, { status: 500 });
+  }
   const res = NextResponse.json({ runId, observation }, { status: 201 });
   res.cookies.set(cookieName(), runId, {
     httpOnly: true,
