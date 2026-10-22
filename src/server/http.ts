@@ -11,6 +11,17 @@ export class RequestError extends Error {
   }
 }
 
+export function apiBoundary<T extends Request>(handler: (request: T) => Promise<Response>) {
+  return async (request: T): Promise<Response> => {
+    try { return await handler(request); }
+    catch (error) { return requestErrorResponse(error); }
+  };
+}
+
+export function integrationUnavailable(integration: string): NextResponse {
+  return NextResponse.json({ error: `${integration} is not enabled for hosted use.`, code: "INTEGRATION_UNAVAILABLE" }, { status: 503, headers: { "Cache-Control": "no-store" } });
+}
+
 /** Reject cross-site state changes even if a browser or proxy relaxes cookie policy. */
 export function assertSameOrigin(request: Request): void {
   if (request.headers.get("sec-fetch-site") === "cross-site") {
@@ -60,5 +71,15 @@ export function requestErrorResponse(error: unknown): NextResponse {
       { status: error.status, headers: { "Cache-Control": "no-store" } },
     );
   }
-  throw error;
+  if (error instanceof Error && error.name === "OrganizationMembershipRequiredError") {
+    return NextResponse.json({ error: "Your account needs a participant membership. Contact your workspace administrator.", code: "MEMBERSHIP_REQUIRED" }, { status: 403, headers: { "Cache-Control": "no-store" } });
+  }
+  const databaseCode = typeof error === "object" && error !== null && "code" in error ? String(error.code) : "";
+  if (databaseCode === "42501") return NextResponse.json({ error: "Your membership does not permit this operation.", code: "FORBIDDEN" }, { status: 403, headers: { "Cache-Control": "no-store" } });
+  if (["22P02", "23514"].includes(databaseCode)) return NextResponse.json({ error: "The supplied data is invalid.", code: "PAYLOAD_INVALID" }, { status: 400, headers: { "Cache-Control": "no-store" } });
+  if (databaseCode === "23505") return NextResponse.json({ error: "The record has changed. Reload and try again.", code: "WRITE_CONFLICT" }, { status: 409, headers: { "Cache-Control": "no-store" } });
+  // Retain an operational signal without logging database URLs or payloads.
+  const incidentId = crypto.randomUUID();
+  console.error("WorkWorld request failed", { incidentId, kind: error instanceof Error ? error.name : "UnknownError" });
+  return NextResponse.json({ error: "The service is temporarily unavailable. Please try again.", code: "SERVICE_UNAVAILABLE", incidentId }, { status: 503, headers: { "Cache-Control": "no-store", "Retry-After": "10" } });
 }

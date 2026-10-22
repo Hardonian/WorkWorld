@@ -1,3 +1,4 @@
+import { apiBoundary } from "../../../server/http.ts";
 import { NextResponse, type NextRequest } from "next/server";
 import { applyActionInput } from "../../../server/session.ts";
 import { readJsonObject, requestErrorResponse } from "../../../server/http.ts";
@@ -9,7 +10,7 @@ export const dynamic = "force-dynamic";
  * 409 domain rejection (policy/permission/state), 404 no session. Work is
  * preserved across rejections (state saved after every step).
  */
-export async function POST(req: NextRequest) {
+async function post(req: NextRequest) {
   let body: Record<string, unknown>;
   try {
     body = await readJsonObject(req);
@@ -33,3 +34,5 @@ export async function POST(req: NextRequest) {
     { status: transition.ok ? 200 : 409 },
   );
 }
+
+export const POST = apiBoundary(post);

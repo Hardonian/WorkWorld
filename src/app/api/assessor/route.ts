@@ -1,3 +1,5 @@
+import { hostedAssessmentStore, loadHostedAssessment, appendHostedAssessment } from "../../../server/hosted-assessments.ts";
+import { apiBoundary } from "../../../server/http.ts";
 import { NextResponse, type NextRequest } from "next/server";
 import { appendRevision, loadAssessment, listAssessedRuns, portableReport, validateRatings } from "../../../server/assessments.ts";
 import { makeStore } from "../../../server/store.ts";
@@ -12,9 +14,12 @@ function store() {
 }
 
 /** GET /api/assessor — list runs with evidence summaries. */
-export async function GET() {
-  const runs = await store().listRuns();
-  const assessed = listAssessedRuns();
+async function get() {
+  const activeStore = process.env.WORKWORLD_MODE === "hosted" ? await hostedAssessmentStore() : store();
+  const runs = await activeStore.listRuns();
+  const assessed = process.env.WORKWORLD_MODE === "hosted"
+    ? await (await hostedAssessmentStore()).withClient(async (client) => (await client.query<{ run_id: string }>("select distinct run_id from workworld.assessments")).rows.map((row) => row.run_id))
+    : listAssessedRuns();
   return NextResponse.json({
     runs: runs.map((r) => ({
       runId: r.runId,
@@ -27,7 +32,7 @@ export async function GET() {
 }
 
 /** POST /api/assessor — record an attributable rubric revision. */
-export async function POST(req: NextRequest) {
+async function post(req: NextRequest) {
   let body: Record<string, unknown>;
   try {
     body = await readJsonObject(req);
@@ -36,7 +41,7 @@ export async function POST(req: NextRequest) {
   }
   const runId = String(body.runId ?? "");
   const assessor = String(body.assessor ?? "").slice(0, 200);
-  if (!assessor) {
+  if (!assessor && process.env.WORKWORLD_MODE !== "hosted") {
     return NextResponse.json(
       { error: "assessor identity is required — judgments are attributable" },
       { status: 400 },
@@ -46,6 +51,10 @@ export async function POST(req: NextRequest) {
     validateRatings(body.ratings);
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 400 });
+  }
+  if (process.env.WORKWORLD_MODE === "hosted") {
+    const revisionCount = await appendHostedAssessment(await hostedAssessmentStore(), runId, validateRatings(body.ratings), String(body.comment ?? "").slice(0, 4000));
+    return NextResponse.json({ ok: true, revisionCount }, { status: 201 });
   }
   try {
     const doc = appendRevision(runId, {
@@ -61,17 +70,19 @@ export async function POST(req: NextRequest) {
 }
 
 /** PATCH /api/assessor?action=report — portable report for one run. */
-export async function PATCH(req: NextRequest) {
+async function patch(req: NextRequest) {
   const url = new URL(req.url);
   if (url.searchParams.get("action") !== "report") {
     return NextResponse.json({ error: "unknown action" }, { status: 400 });
   }
   const runId = url.searchParams.get("runId") ?? "";
   try {
-    const state = await store().loadState(runId);
+    const activeStore = process.env.WORKWORLD_MODE === "hosted" ? await hostedAssessmentStore() : store();
+    const state = await activeStore.loadState(runId);
     const scenario = getScenario(state.scenarioId);
     const report = gradeEpisode(state, scenario);
-    const portable = portableReport(runId, {
+    const assessment = process.env.WORKWORLD_MODE === "hosted" ? await loadHostedAssessment(await hostedAssessmentStore(), runId) : loadAssessment(runId);
+    const portable = process.env.WORKWORLD_MODE === "hosted" ? { runId, deterministic: { outcome: report.outcome, checks: report.checks }, humanRubric: { latest: assessment.revisions.at(-1) ?? null, revisionCount: assessment.revisions.length } } : portableReport(runId, {
       scenarioId: state.scenarioId,
       scenarioVersion: state.scenarioVersion,
       deterministicOutcome: report.outcome,
@@ -79,7 +90,7 @@ export async function PATCH(req: NextRequest) {
     });
     return NextResponse.json({
       report: portable,
-      assessment: loadAssessment(runId),
+      assessment,
       evidence: {
         actionLog: state.actionLog.map((a) => ({
           type: a.type,
@@ -95,6 +106,13 @@ export async function PATCH(req: NextRequest) {
       },
     });
   } catch (e) {
+    if (process.env.WORKWORLD_MODE === "hosted") return requestErrorResponse(e);
     return NextResponse.json({ error: (e as Error).message }, { status: 404 });
   }
 }
+
+export const GET = apiBoundary(get);
+
+export const POST = apiBoundary(post);
+
+export const PATCH = apiBoundary(patch);

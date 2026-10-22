@@ -178,4 +178,24 @@ describe("PostgresStore Architecture & Interface (Tier 1, Blocker B3)", () => {
     const store = new PostgresStore();
     await expect(store.close()).resolves.not.toThrow();
   });
+
+  it("preserves action serialization, actor identity, and outcome across JSONB reordering", async () => {
+    let persisted: Record<string, unknown> = {};
+    const store = new StubbedPostgresStore({}, async (text, values) => {
+      if (text.includes("next_seq")) return { rows: [{ next_seq: "0" }], rowCount: 1 };
+      if (text.includes("insert into workworld.run_actions")) {
+        const parsed = JSON.parse(String(values?.[2]));
+        persisted = { action_json: Object.fromEntries(Object.entries(parsed).sort(([a], [b]) => a.localeCompare(b))), actor_kind: values?.[3], outcome: values?.[4] };
+      }
+      if (text.includes("select action_json")) return { rows: [persisted], rowCount: 1 };
+      return { rows: [], rowCount: 1 };
+    });
+    const action = { text: "preserve payload ordering", type: "add_work_note" as const, actionId: "a", idempotencyKey: "k", expectedRevision: 0 };
+    const actor = { id: USER_ID, kind: "human" as const, role: "participant" as const };
+    await store.appendAction(RUN_META.runId, { action, actor, outcome: "rejected" });
+    const [loaded] = await store.loadActions(RUN_META.runId);
+    expect(JSON.stringify(loaded?.action)).toBe(JSON.stringify(action));
+    expect(loaded?.actor).toEqual(actor);
+    expect(loaded?.outcome).toBe("rejected");
+  });
 });

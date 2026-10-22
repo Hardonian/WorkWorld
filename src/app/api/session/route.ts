@@ -1,3 +1,4 @@
+import { apiBoundary } from "../../../server/http.ts";
 import { NextResponse } from "next/server";
 import { currentObservation, currentState } from "../../../server/session.ts";
 import { gradeEpisode } from "../../../grading/report.ts";
@@ -8,7 +9,7 @@ import type { NextRequest } from "next/server";
 export const dynamic = "force-dynamic";
 
 /** Current session observation (or null when no active episode). */
-export async function GET() {
+async function get() {
   const observation = await currentObservation();
   if (!observation) {
     return NextResponse.json({ observation: null }, { status: 200 });
@@ -17,7 +18,7 @@ export async function GET() {
 }
 
 /** Assessment report for the current run (deterministic checks). */
-export async function POST(req: NextRequest) {
+async function post(req: NextRequest) {
   try {
     assertSameOrigin(req);
   } catch (error) {
@@ -31,3 +32,7 @@ export async function POST(req: NextRequest) {
   const report = gradeEpisode(state, scenario);
   return NextResponse.json({ report }, { status: 200 });
 }
+
+export const GET = apiBoundary(get);
+
+export const POST = apiBoundary(post);

@@ -1,8 +1,10 @@
+import { integrationUnavailable } from "../../../../server/http.ts";
 import { createTelemetryEvent, formatSseMessage } from "../../../../agents/telemetry-stream.ts";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
+  if (process.env.WORKWORLD_MODE === "hosted") return integrationUnavailable("This integration");
   const url = new URL(req.url);
   const runId = url.searchParams.get("runId") || "demo-run";
 

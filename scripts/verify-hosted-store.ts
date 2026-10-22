@@ -1,0 +1,36 @@
+import assert from "node:assert/strict";
+import {readFile,writeFile,mkdir} from "node:fs/promises";
+import {randomUUID} from "node:crypto";
+import {PostgresStore} from "../src/server/store-postgres.ts";
+import {EpisodeEngine} from "../src/domain/engine.ts";
+import {getScenario} from "../src/scenarios/catalog.ts";
+import {prepareCertificationPreflight} from "../src/server/certification-preflight.ts";
+const env=process.env;
+if (!env.DATABASE_URL || !env.WORKWORLD_QA_FIXTURE_FILE) throw new Error("Set DATABASE_URL and WORKWORLD_QA_FIXTURE_FILE for isolated, operator-provisioned synthetic fixtures.");
+const ids=JSON.parse(await readFile(env.WORKWORLD_QA_FIXTURE_FILE!,"utf8"));
+const a=new PostgresStore({connectionString:env.DATABASE_URL,requireAuthenticatedIdentity:true,jwtClaims:{sub:ids.userA}});
+const a2=new PostgresStore({connectionString:env.DATABASE_URL,requireAuthenticatedIdentity:true,jwtClaims:{sub:ids.userA}});
+const b=new PostgresStore({connectionString:env.DATABASE_URL,requireAuthenticatedIdentity:true,jwtClaims:{sub:ids.userB}});
+const assessor=new PostgresStore({connectionString:env.DATABASE_URL,requireAuthenticatedIdentity:true,jwtClaims:{sub:ids.assessor}});
+const checks:string[]=[];
+try{
+ const scenario=getScenario("A1");const initial=EpisodeEngine.reset(scenario,{runId:ids.run,seed:42,condition:"human"}).getState();
+ await a.withRunTransaction(null,async()=>{await a.createRun({runId:ids.run,scenarioId:"A1",scenarioVersion:scenario.version,condition:"human",seed:42,createdAt:new Date().toISOString(),storeSchemaVersion:1});await a.saveState(ids.run,initial);});
+ assert.equal((await a.loadState(ids.run)).runId,ids.run);checks.push("authenticated durable create and resume");
+ await assert.rejects(()=>b.loadState(ids.run));assert.equal((await b.listRuns()).length,0);checks.push("cross-tenant run and listing denied");
+ const actor={id:ids.userA,kind:"human" as const,role:"participant" as const};
+ await Promise.all([a,a2].map((store,index)=>store.withRunTransaction(ids.run,async()=>{const state=await store.loadState(ids.run);const engine=EpisodeEngine.fromState(scenario,state);const action={type:"add_work_note" as const,text:"concurrent note "+index,actionId:randomUUID(),idempotencyKey:randomUUID(),expectedRevision:engine.observe().revision};const transition=engine.step(action,actor);assert.equal(transition.ok,true);await store.appendAction(ids.run,{action,actor});await store.saveState(ids.run,engine.getState());})));
+ assert.equal((await a.loadState(ids.run)).workNotes.length,2);assert.equal((await a.loadActions(ids.run)).length,2);checks.push("separate workers serialize mutations without lost updates");
+ await assert.rejects(()=>a.withRunTransaction(ids.run,async()=>{const state=await a.loadState(ids.run);const engine=EpisodeEngine.fromState(scenario,state);const action={type:"add_work_note" as const,text:"must roll back",actionId:randomUUID(),idempotencyKey:randomUUID(),expectedRevision:engine.observe().revision};engine.step(action,actor);await a.appendAction(ids.run,{action,actor});await a.saveState(ids.run,engine.getState());throw Error("injected failure");}));
+ assert.equal((await a.loadState(ids.run)).workNotes.length,2);assert.equal((await a.loadActions(ids.run)).length,2);checks.push("action and state rollback together on failure");
+ await a.withClient(async c=>{await assert.rejects(()=>c.query("insert into workworld.memberships(org_id,user_id,role) values($1,$2,'admin')",[ids.orgA,ids.userB]));});checks.push("participant role escalation denied");
+ const preflight=prepareCertificationPreflight({agentName:"Synthetic QA",adapter:"ollama",maxBudgetUsd:0});await a.saveCertificationPreflight(preflight);
+ const certificationId=preflight.id.replace("preflight_","");
+ const hidden=await b.withClient(c=>c.query("select id from workworld.certification_preflights where id=$1",[certificationId]));assert.equal(hidden.rowCount,0);checks.push("certification metadata is durable and tenant isolated");
+ await assert.rejects(()=>a.withClient(c=>c.query("update workworld.certification_preflights set org_id=$1 where id=$2",[ids.orgB,certificationId])));checks.push("certification tenant reassignment denied");
+ await assessor.withRunTransaction(ids.run,async()=>assessor.withClient(c=>c.query("insert into workworld.assessments(run_id,assessor_id,revision,ratings,comment) values($1,$2,1,'[]','synthetic QA judgment')",[ids.run,ids.assessor])));
+ const assessments=await assessor.withClient(c=>c.query("select id from workworld.assessments where run_id=$1",[ids.run]));assert.equal(assessments.rowCount,1);checks.push("assigned assessor persists judgment under RLS");
+ const hiddenAssessments=await b.withClient(c=>c.query("select id from workworld.assessments where run_id=$1",[ids.run]));assert.equal(hiddenAssessments.rowCount,0);checks.push("assessment cross-tenant read denied");
+ const probe=new PostgresStore({connectionString:env.DATABASE_URL});await probe.withClient(async c=>{const r=await c.query("select current_user, current_setting('request.jwt.claims',true) as claims");assert.equal(r.rows[0].current_user,"workworld_runtime");assert.ok(!r.rows[0].claims);});await probe.close();checks.push("pooled identity and claims cleared after operations");
+ await mkdir("evidence/hosted",{recursive:true});await writeFile("evidence/hosted/runtime-validation.json",JSON.stringify({time:new Date().toISOString(),scope:"live Supabase Postgres adapter and RLS; synthetic identities, not Auth browser verification",passed:true,checks},null,2)+"\n");console.log(JSON.stringify({passed:true,checks}));
+}finally{await Promise.all([a,a2,b,assessor].map(s=>s.close()));}

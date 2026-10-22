@@ -1,0 +1,13 @@
+.git/
+.vercel/
+.env
+.env.*
+node_modules/
+.next/
+.open-next/
+.wrangler/
+var/
+dist/
+test-results/
+playwright-report/
+evidence-exports/

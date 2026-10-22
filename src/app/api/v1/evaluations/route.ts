@@ -1,3 +1,4 @@
+import { integrationUnavailable } from "../../../../server/http.ts";
 import { NextResponse } from "next/server";
 import { getScenario } from "../../../../scenarios/catalog.ts";
 import { gradeEpisode } from "../../../../grading/report.ts";
@@ -6,6 +7,7 @@ import { currentStateForRun } from "../../../../server/session.ts";
 import { readJsonObject, RequestError, requestErrorResponse } from "../../../../server/http.ts";
 
 export async function POST(request: Request) {
+  if (process.env.WORKWORLD_MODE === "hosted") return integrationUnavailable("This integration");
   const ip = request.headers.get("x-forwarded-for") || "local";
   const rate = globalApiRateLimiter.check(ip);
   if (!rate.allowed) {

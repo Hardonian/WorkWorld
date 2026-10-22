@@ -1,3 +1,4 @@
+import { apiBoundary } from "../../../server/http.ts";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { supabasePublicConfig } from "../../../server/supabase-auth.ts";
@@ -5,7 +6,7 @@ import { supabasePublicConfig } from "../../../server/supabase-auth.ts";
 export const dynamic = "force-dynamic";
 
 /** Exchanges the Supabase PKCE magic-link token for cookie-backed SSR session state. */
-export async function GET(request: NextRequest) {
+async function get(request: NextRequest) {
   const config = supabasePublicConfig();
   if (!config) return NextResponse.redirect(new URL("/sign-in?error=configuration", request.url));
 
@@ -28,3 +29,5 @@ export async function GET(request: NextRequest) {
   if (error) response = NextResponse.redirect(new URL("/sign-in?error=expired_link", request.url));
   return response;
 }
+
+export const GET = apiBoundary(get);

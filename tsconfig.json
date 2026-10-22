@@ -39,6 +39,7 @@
   ],
   "exclude": [
     "node_modules",
+    ".vercel",
     "dist",
     ".next"
   ]
