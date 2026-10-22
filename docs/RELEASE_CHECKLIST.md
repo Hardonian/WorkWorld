@@ -25,8 +25,9 @@ technical gates pass cleanly with **current** evidence). Manual gates are review
 ## Machine-checked (required for HOSTED release — separately reported)
 
 The current `evidence/release-gate/latest.json` is the authority for a launch
-candidate. It reports `hosted: blocked_external` when no hosted configuration
-is available; a historical tenant test is not a current production approval.
+candidate. A release-gate run without local hosted variables reports that its
+hosted boundary is not verified from that shell; inspect deployment evidence
+separately. A historical tenant test is not a current production approval.
 
 - [ ] Hosted runtime configuration present and reachable: URL, browser
       publishable key, server database URL, signing key, and explicit hosted-mode

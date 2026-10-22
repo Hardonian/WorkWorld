@@ -501,7 +501,7 @@
     {
       "id": "B1",
       "kind": "hosted_config",
-      "summary": "Current launch candidate is externally blocked: no hosted runtime configuration or non-production hosted database connection is available for a fresh RLS/app-path verification. A 2026-10-02 tenant test is historical background, not current production approval; see docs/BLOCKERS.md B1.",
+      "summary": "The Vercel production project is connected and deployed with hosted runtime configuration, but EventStore activation remains disabled pending a fresh non-production RLS suite and authenticated provisioned-member app-path verification. A 2026-10-02 tenant test is historical background, not current production approval; see docs/BLOCKERS.md B1.",
       "openedAt": "2026-10-01T21:00:00.000Z",
       "status": "open"
     },

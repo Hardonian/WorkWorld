@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-10-22T01:42:29.689Z",
-  "totalDurationSec": 101.08,
+  "generatedAt": "2026-10-22T02:00:19.612Z",
+  "totalDurationSec": 76.69,
   "gateScore": "11/11",
   "localReadiness": "local technical candidate: PASS (11/11 gates green)",
-  "hostedReadiness": "hosted: blocked_external (no hosted configuration; B1)",
+  "hostedReadiness": "hosted: not verified from this shell (no local hosted configuration; inspect deployment evidence)",
   "researchReadiness": "harness validation complete — deterministic baseline & controls verified",
   "commercialReadiness": "commercial evidence: externally unverified — protocols and security artifacts exist, but no pilots, customers, or revenue results are recorded",
   "gates": [
@@ -14,8 +14,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 1.19,
-      "started": "2026-10-22T01:40:48.850Z",
+      "durationSec": 0.7,
+      "started": "2026-10-22T01:59:03.136Z",
       "tail": "PASS  Scenario catalog: 15 scenarios defined across routine and enterprise families | PASS  Assistant provider: optional local endpoint: http://127.0.0.1:11434"
     },
     {
@@ -25,8 +25,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 12.46,
-      "started": "2026-10-22T01:40:50.044Z",
+      "durationSec": 8.71,
+      "started": "2026-10-22T01:59:03.842Z",
       "tail": "> workworld@0.1.0 lint | > eslint ."
     },
     {
@@ -36,8 +36,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 6.18,
-      "started": "2026-10-22T01:41:02.503Z",
+      "durationSec": 4.57,
+      "started": "2026-10-22T01:59:12.552Z",
       "tail": "> workworld@0.1.0 typecheck | > tsc --noEmit"
     },
     {
@@ -47,8 +47,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 2.61,
-      "started": "2026-10-22T01:41:08.686Z",
+      "durationSec": 0.98,
+      "started": "2026-10-22T01:59:17.118Z",
       "tail": "Validated 15 scenarios across routine and enterprise families. | PASS: All scenario specifications are syntactically and logically consistent."
     },
     {
@@ -58,9 +58,9 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 8.11,
-      "started": "2026-10-22T01:41:11.295Z",
-      "tail": "   Start at  21:41:15 |    Duration  3.60s (import 76%, transform 17%, worker 4%, tests 2%)"
+      "durationSec": 3.5,
+      "started": "2026-10-22T01:59:18.103Z",
+      "tail": "             persist transforms across runs with fsModuleCache: true |              learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns"
     },
     {
       "id": "baseline",
@@ -69,8 +69,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 1.23,
-      "started": "2026-10-22T01:41:19.408Z",
+      "durationSec": 0.95,
+      "started": "2026-10-22T01:59:21.599Z",
       "tail": " | baseline: 6/6 episodes pass (fixture actor, not a model)"
     },
     {
@@ -80,8 +80,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 1.06,
-      "started": "2026-10-22T01:41:20.633Z",
+      "durationSec": 1.19,
+      "started": "2026-10-22T01:59:22.549Z",
       "tail": " | negative controls: 6/6 detected for the right reasons"
     },
     {
@@ -91,9 +91,9 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 1.09,
-      "started": "2026-10-22T01:41:21.694Z",
-      "tail": "Throughput: 13800 actions/sec | Latency: p50=0.061ms, p95=0.128ms, p99=0.287ms"
+      "durationSec": 0.96,
+      "started": "2026-10-22T01:59:23.741Z",
+      "tail": "Throughput: 14612 actions/sec | Latency: p50=0.059ms, p95=0.101ms, p99=0.244ms"
     },
     {
       "id": "build",
@@ -102,8 +102,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 27.56,
-      "started": "2026-10-22T01:41:22.784Z",
+      "durationSec": 17.36,
+      "started": "2026-10-22T01:59:24.700Z",
       "tail": "○  (Static)   prerendered as static content | ƒ  (Dynamic)  server-rendered on demand"
     },
     {
@@ -113,9 +113,9 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 35.97,
-      "started": "2026-10-22T01:41:50.340Z",
-      "tail": " |   16 passed (34.8s)"
+      "durationSec": 34.54,
+      "started": "2026-10-22T01:59:42.056Z",
+      "tail": " |   17 passed (33.2s)"
     },
     {
       "id": "archive",
@@ -124,8 +124,8 @@
       "required": true,
       "exitCode": 0,
       "ok": true,
-      "durationSec": 3.38,
-      "started": "2026-10-22T01:42:26.305Z",
+      "durationSec": 3.01,
+      "started": "2026-10-22T02:00:16.600Z",
       "tail": " | TASK_STATE.json OK: 11 milestones, 2 external blockers; docs/TASK_STATE.schema.json refreshed"
     }
   ]

@@ -26,20 +26,23 @@ Precise blockers, failed attempts, alternatives, and what unblocks them.
   release-gate evidence before enabling `WORKWORLD_HOSTED_STORE_WIRED=true` in
   a production deployment.
 
-## B1. Hosted Supabase database boundary — EXTERNALLY BLOCKED (current launch)
+## B1. Hosted Supabase database boundary — VERIFICATION PENDING (current launch)
 - What: verification against a real hosted Supabase/Postgres project at the
   database/RLS boundary for the current release candidate.
-- Current state: the latest release evidence reports
-  `hosted: blocked_external (no hosted configuration; B1)`. No Supabase URL,
-  database connection, or production signing configuration is available in the
-  current environment.
+- Current state: the Vercel production project is connected and deployed with
+  the required hosted runtime variable names. Public health, security headers,
+  and the invitation-only sign-in surface are live. Hosted EventStore activation
+  remains deliberately disabled because the current deployment has not yet
+  completed the non-production RLS suite or an authenticated, provisioned-member
+  episode flow.
 - Historical note: a dedicated tenant may have been tested on 2026-10-02. That
   observation is useful background, but it is not current evidence and must not
   be represented as a live production approval.
-- Unblock: an owner supplies a non-production session-mode Postgres URL as
-  `WW_TEST_PG_URL`, all hosted runtime values in the hosting platform, and runs
-  `npm run release-gate -- --require-hosted`. The gate preserves redacted
-  evidence and fails if either the RLS suite or runtime configuration is absent.
+- Unblock: supply a non-production session-mode Postgres URL as `WW_TEST_PG_URL`,
+  run `npm run release-gate -- --require-hosted`, provision a test user and
+  membership, then verify start/resume/action/replay under the hosted flag. The
+  gate preserves redacted evidence and fails if either the RLS suite or runtime
+  configuration is absent.
 - Remaining hosted caveats: backup/restore, object storage/KMS, and app-level
   authenticated smoke testing remain operator-owned launch work.
 

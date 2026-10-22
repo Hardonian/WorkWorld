@@ -176,7 +176,7 @@ const summary = {
       ? `hosted: database boundary verified (${hostedHost}); runtime configuration incomplete: ${hostedRuntimeMissing.join(", ")}`
       : hostedUrl
         ? `hosted: configuration incomplete or database boundary unverified (${hostedHost}; missing: ${hostedRuntimeMissing.join(", ") || "WW_TEST_PG_URL verification"})`
-        : "hosted: blocked_external (no hosted configuration; B1)",
+        : "hosted: not verified from this shell (no local hosted configuration; inspect deployment evidence)",
   researchReadiness: "harness validation complete — deterministic baseline & controls verified",
   commercialReadiness: "commercial evidence: externally unverified — protocols and security artifacts exist, but no pilots, customers, or revenue results are recorded",
   gates: results,
