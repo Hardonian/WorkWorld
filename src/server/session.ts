@@ -75,7 +75,7 @@ export function hostedModeAvailable(): { available: boolean; reason: string } {
   return {
     available: false,
     reason:
-      "hosted database policies are provisioned, but application authentication and the Postgres EventStore adapter are not wired; hosted execution is disabled — no fallback to demo data",
+      "hosted execution is awaiting authenticated acceptance and activation; hosted execution is disabled — no fallback to demo data",
   };
 }
 

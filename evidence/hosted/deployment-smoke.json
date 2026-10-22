@@ -1,0 +1,66 @@
+{
+  "time": "2026-10-22T01:54:39.260Z",
+  "url": "https://workworld-mauve.vercel.app",
+  "activation": false,
+  "checks": [
+    {
+      "route": "/health",
+      "status": 200,
+      "location": null,
+      "body": {
+        "status": "ok",
+        "service": "workworld",
+        "mode": "hosted",
+        "time": "2026-10-22T01:54:38.287Z"
+      }
+    },
+    {
+      "route": "/health/ready",
+      "status": 503,
+      "location": null,
+      "body": {
+        "status": "not_ready",
+        "service": "workworld",
+        "mode": "hosted",
+        "reason": "hosted database policies are provisioned, but application authentication and the Postgres EventStore adapter are not wired; hosted execution is disabled — no fallback to demo data"
+      }
+    },
+    {
+      "route": "/workspace",
+      "status": 307,
+      "location": "/login"
+    },
+    {
+      "route": "/login",
+      "status": 200,
+      "location": null
+    },
+    {
+      "route": "/api/episodes",
+      "status": 401,
+      "location": null,
+      "body": {
+        "error": "Sign in to continue.",
+        "code": "AUTH_REQUIRED"
+      }
+    },
+    {
+      "route": "/api/billing/checkout",
+      "status": 503,
+      "location": null,
+      "body": {
+        "error": "This integration is not enabled for hosted use.",
+        "code": "INTEGRATION_UNAVAILABLE"
+      }
+    },
+    {
+      "route": "/api/assessor",
+      "status": 401,
+      "location": null,
+      "body": {
+        "error": "Sign in to continue.",
+        "code": "AUTH_REQUIRED"
+      }
+    }
+  ]
+}

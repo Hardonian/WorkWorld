@@ -34,7 +34,10 @@ export default function StartButton({
               router.push("/workspace");
               return;
             }
-            if (res.status === 401) { router.push("/login"); return; }
+            if (res.status === 401) {
+              router.push("/sign-in");
+              return;
+            }
             const data = (await res.json().catch(() => null)) as { error?: string } | null;
             setError(data?.error ?? "Could not start this episode.");
           } catch {

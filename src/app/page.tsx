@@ -31,6 +31,7 @@ export default function Home() {
             <Link href="/leaderboard" className="hover:text-indigo-600">Leaderboard</Link>
             <Link href="/roi" className="hover:text-indigo-600">ROI model</Link>
             <Link href="/certify" className="hover:text-indigo-600">Certify your agent</Link>
+            <Link href="/sign-in" className="hover:text-indigo-600">Sign in</Link>
             <ThemeToggle />
           </nav>
           <Link href="/certify" className="rounded-xl bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700 dark:bg-indigo-400 dark:text-slate-950 md:hidden">Certify</Link>

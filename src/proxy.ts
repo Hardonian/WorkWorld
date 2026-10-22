@@ -30,7 +30,7 @@ export async function proxy(request: NextRequest) {
     const { data, error } = await client.auth.getClaims();
     if (policy === "authenticated" && (error || !data?.claims?.sub)) {
       if (request.nextUrl.pathname.startsWith("/api/")) return NextResponse.json({ error: "Sign in to continue.", code: "AUTH_REQUIRED" }, { status: 401, headers: { "Cache-Control": "no-store" } });
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(new URL("/sign-in", request.url));
     }
   } catch {
     if (policy === "authenticated") return integrationUnavailable("Authentication");

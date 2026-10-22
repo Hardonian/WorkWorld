@@ -6,7 +6,7 @@ This repository is locally release-gated. A hosted production launch remains an 
 
 1. Create the Supabase project and set `NEXT_PUBLIC_SUPABASE_URL` plus `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in the hosting platform—not in Git. `SUPABASE_URL` and `SUPABASE_ANON_KEY` remain backwards-compatible runtime fallbacks, but new deployments should use the publishable variables.
 2. Set the server-only `DATABASE_URL` and a 32+-character `WORKWORLD_CERTIFICATION_SIGNING_KEY` in the hosting platform. A `SUPABASE_SERVICE_ROLE_KEY` is optional for isolated administrative jobs; never use it on RLS-bound request paths.
-3. Configure approved Auth providers and redirect URLs. The app uses cookie-backed SSR sessions and a Next.js `proxy.ts` refresh boundary; protect private routes by checking verified claims server-side.
+3. Configure approved Auth providers and redirect URLs. For invitation-only email sign-in, set the Supabase Site URL to the production domain and allow `https://<domain>/auth/confirm` as an Auth redirect URL. The app uses cookie-backed SSR sessions and a Next.js `proxy.ts` refresh boundary; protect private routes by checking verified claims server-side.
 4. Apply migrations in order, including `0004_index_certification.sql`. The new certification tables live in the private `workworld` schema, retain metadata and artifact digests only, and have RLS enabled.
 
 Before contacting any external service, run the local-only configuration and migration check:

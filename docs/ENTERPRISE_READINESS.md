@@ -14,7 +14,7 @@ WorkWorld has a provisioned Supabase database and a GitHub-linked Vercel project
 
 ## Code and security completed
 
-- Cookie-backed sign-in, sign-out, and authorization-code callback; private routes require verified claims.
+- Cookie-backed password and invitation-only magic-link sign-in, sign-out, and authorization-code callback; private routes require verified claims.
 - Request-scoped identities, transaction-local Postgres roles and claims, bounded connection pools, timeouts, and safe connection disposal after failed rollback.
 - Run creation and mutations commit state and action evidence together. Database locks serialize different application workers.
 - Durable, RLS-scoped assessment revisions and certification preflights replace hosted local-file or ephemeral success paths. Hosted assessor attribution comes from the verified user rather than a submitted name.
@@ -29,7 +29,7 @@ WorkWorld has a provisioned Supabase database and a GitHub-linked Vercel project
 
 `evidence/hosted/runtime-validation.json` records 12 checks against the real Supabase project: durable create/resume, cross-tenant denial, concurrent workers, atomic rollback, blocked role escalation, certification isolation, immutable certification scope, assessor persistence and isolation, cleared pooled claims, exact replay, and rejected-action evidence. These used synthetic SQL identities, not a real Supabase Auth browser session.
 
-The local suite passed 244 tests and 16 Playwright journeys before the final release gate. Local database tests require a disposable database; never point `tests/db/rls.test.ts` at a shared project because its historical fixture setup deletes table contents. CI supplies a fresh service. The optional Cloudflare build was not validated for this Vercel deployment.
+The local suite passed 244 tests and 17 Playwright journeys before the final release gate. Local database tests require a disposable database; never point `tests/db/rls.test.ts` at a shared project because its historical fixture setup deletes table contents. CI supplies a fresh service. The optional Cloudflare build was not validated for this Vercel deployment.
 
 The two isolated QA organizations and three synthetic profiles created during live verification require cleanup. Supabase rejected the cleanup calls with `Invalid or expired requestState`; no broad deletion was attempted. Existing `Org A` / `Org B` fixtures were left untouched. The exact cleanup statements are in `deploy/supabase/cleanup-session-qa.sql`.
 
@@ -37,7 +37,7 @@ The two isolated QA organizations and three synthetic profiles created during li
 
 | Gate | Concrete action and evidence needed |
 |---|---|
-| Auth enrollment | Invite or create the intended operator/test accounts in Supabase Auth; confirm the email; configure the deployed Site URL and exact `/auth/callback` redirect. Email authentication is enabled and email confirmation is required. No real Auth users were present during review. |
+| Auth enrollment | Invite or create the intended operator/test accounts in Supabase Auth; confirm the email; configure the deployed Site URL and exact `/auth/callback` and `/auth/confirm` redirects; configure the magic-link email template to supply the token hash expected by `/auth/confirm`. Email authentication is enabled and email confirmation is required. No real Auth users were present during review. |
 | Participant and assessor memberships | Use `npm run member:provision` with a server-only operator database connection. The script defaults to rollback; `--apply` commits. It requires an existing confirmed Auth user. Assign assessors to runs through the tenant's controlled administration process. |
 | Authenticated hosted browser acceptance | Sign in, create a run, reload, act, check report/replay, record an assigned assessor revision, and verify another tenant cannot access it. Preserve the evidence, then enable `WORKWORLD_HOSTED_STORE_WIRED=true` and redeploy. |
 | Supabase Auth policy | An owner must review public signup, redirect allowlists, SMTP delivery, password/MFA requirements, and any SSO provider. The connected database tools do not expose Auth administration; the local Supabase CLI has no management token. Public signup is currently enabled, but it grants no WorkWorld membership. |
