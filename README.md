@@ -1,79 +1,118 @@
 # WorkWorld
 
-> I am building WorkWorld to test whether people and AI agents complete business
-> workflows correctly when requirements change. The first slice models purchasing,
-> reconciliation and customer/project recovery. The evaluation is designed to
-> distinguish a convincing report from correct operational state, with separate
-> measurement of human oversight and assessment effort. Practitioner validation
-> and comparative results are still pending.
+> **Stateful work simulations. Inspectable evidence. Honest release gates.**
 
-Executable professional-work simulations: a persistent small-business operations
-environment (inbox, suppliers, purchase orders, deliveries, invoices, ledger,
-tickets, spreadsheet artifacts) where humans, AI agents, and humans using AI
-work under the same goals and policy — graded on **business state**, not the
-polish of the report.
+[Open the live candidate](https://workworld-mauve.vercel.app) · [Explore the architecture](docs/ARCHITECTURE.md) · [Review enterprise readiness](docs/ENTERPRISE_READINESS.md)
 
-## Status (readiness states are kept distinct)
+WorkWorld is an evidence-first environment for testing how people and AI agents
+handle operational work when the situation changes. It simulates the details
+that make work real—orders, deliveries, invoices, inventory, reconciliations,
+customer commitments, policy constraints, and recoveries—and grades the
+**resulting business state**, not the polish of a narrative.
 
-| Dimension | State |
-|-----------|-------|
-| Local technical candidate | verified automated suite (including real Postgres RLS), 8 original browser e2e journeys, lint/typecheck/build gate |
-| Hosted candidate | Supabase and Vercel provisioned; transactional RLS persistence and replay verified live. Authenticated enrollment and activation remain gated; see docs/ENTERPRISE_READINESS.md |
-| Research evidence | **harness validation only** — no live-model comparison, no human study |
-| Commercial evidence | **none** — protocols only; no customers, pilots, or revenue |
+## Why WorkWorld
 
-Episodes are authored and code-reviewed but **practitioner-unvalidated**. Nothing
-here is verified skill, employability, accreditation, or hiring suitability.
+Most workflow demos reward a plausible answer. WorkWorld asks whether the work
+was actually completed, safely and repeatably.
 
-## Quick start (credentials-free, synthetic data)
+| Instead of | WorkWorld verifies |
+| --- | --- |
+| A polished status update | A valid state transition with the required evidence |
+| A one-shot benchmark prompt | A persistent episode with scheduled changes and recovery paths |
+| An opaque score | Deterministic checks, state digests, action history, and replay |
+| A permissive demo environment | Typed actions, policy controls, idempotency, and tenant-aware persistence |
+
+## What you can explore
+
+- **Run realistic episodes** — purchasing, reconciliation, and project/customer recovery workflows.
+- **Operate from a single workspace** — inbox, suppliers, POs, inventory, ledger, artifacts, and audit trail stay in sync.
+- **Evaluate agents fairly** — human, assisted, and agent conditions use the same `EpisodeEngine` and grading contract.
+- **Inspect the evidence** — replay runs, examine policy failures, export artifacts, and separate fatal state errors from human judgment.
+- **Certify a bounded configuration** — prepare private, scoped evidence without exporting prompts, credentials, or customer data.
+
+## Start locally
 
 ```bash
 npm ci
-npm run dev          # http://localhost:3100
+npm run dev
 ```
 
-- `/` — pick an episode (guided start: "Week-14 restock")
-- `/workspace` — the learner workspace (per-session state survives refresh)
-- `/assessor` — evidence inspection + attributable rubric judgments
-- `/health` — health endpoint
+Open [http://localhost:3100](http://localhost:3100), choose an episode, and
+work through the changing operational state.
 
-## Verification
+| Route | Purpose |
+| --- | --- |
+| `/` | Public Index and episode entry points |
+| `/workspace` | Stateful simulation workspace |
+| `/assessor` | Evidence inspection and attributable assessments |
+| `/certify` | Private certification preflight |
+| `/health` | Runtime health signal |
+
+## Prove the candidate
+
+Run the same checks used to create the local technical candidate:
 
 ```bash
-npm run lint           # eslint (0 problems)
-npm run typecheck      # tsc --noEmit
-npm test               # vitest: domain, grading, agents, assessments, sanitize, x-cases
-npm run db:up && npm run db:test   # real Postgres RLS tests (Docker)
-npm run baseline       # competent scripted control: 6/6 episodes pass
-npm run negatives      # 6 negative controls fail for the right reasons
-npm run eval -- --adapter baseline            # run manifests + report
-npm run eval -- --verify-manifest eval-runs/manifest-<id>.json   # replay check
-npx playwright test    # browser workflows (needs dev server or auto-start)
-npm run release-gate   # full gate; nonzero exit on missing evidence
+npm run release-gate       # lint, types, scenarios, tests, baseline, stress, build, e2e, archive
+npm run test:e2e           # browser journeys
+npm run db:up && npm run db:test  # disposable local PostgreSQL RLS suite
+npm audit --omit=dev       # production dependency audit
 ```
 
-## Evaluation interface
+The release gate is intentionally honest about scope: a green local candidate
+does not automatically mean hosted enterprise acceptance. See the
+[release checklist](docs/RELEASE_CHECKLIST.md) and
+[enterprise readiness record](docs/ENTERPRISE_READINESS.md) for the current
+verification boundary.
 
-`EpisodeEngine`: `reset / observe / step / checkpoint / restore / replay`, with
-`gradeEpisode` for deterministic assessment. Fixture adapters are labeled
-`kind: "fixture", live: false` — they validate the harness and are **not model
-results**. Live adapters: OpenAI Chat Completions and an OpenAI-compatible local
-endpoint (Ollama). Paid trials require an explicit budget (docs/BLOCKERS.md B2).
+## Architecture in one minute
 
-## Documentation
+```text
+Scenario → EpisodeEngine → typed actions → business state → deterministic checks
+                          ↘ evidence log + artifacts ↗ replay + assessment
+```
 
-- [Hosted infrastructure, verification, and remaining enterprise gates](docs/ENTERPRISE_READINESS.md)
+- `src/domain/` — pure TypeScript simulation engine, policies, invariants, and artifacts
+- `src/scenarios/` — versioned, schema-validated episode definitions
+- `src/grading/` — deterministic checks, negative controls, reports, and replay
+- `src/agents/` — provider-neutral agent loop with bounded budgets and fixtures
+- `src/server/` — sessions, RLS-aware Postgres storage, certification, and API boundaries
+- `src/app/` — Next.js workspace, public Index, assessor, and operational surfaces
+- `db/` — Supabase-compatible migrations and row-level security policies
 
-- `docs/PROJECT_BRIEF.md` · `docs/ARCHITECTURE.md` · `docs/EPISODE_SPECS.md`
-- `docs/GRADER_CONTRACT.md` (checks, categories, claim limits)
-- `docs/RELATED_WORK.md` (GDPval, WorkArena++, TheAgentCompany, τ²-bench,
-  EnterpriseOps-Gym, OccuBench, Mechanize, Forage, Workera — with source dates)
-- `docs/validation-pack/` (independent acceptance cases + CASE_MAPPING.md)
-- `docs/OPERATIONS.md` (startup, backup/restore, rollback, limits)
-- `docs/RELEASE_CHECKLIST.md` · `TASK_STATE.json` (authoritative milestone state)
+Read the full [architecture guide](docs/ARCHITECTURE.md) or the
+[grader contract](docs/GRADER_CONTRACT.md) for the details.
 
-## Privacy and claims
+## Hosted deployment, deliberately gated
 
-All company data is synthetic. No participant data exists. Exports are redacted
-operational evidence. Withheld evaluation variants live outside the public
-archive; this is **not** a claim of contamination resistance.
+The Vercel and Supabase foundations are provisioned, and the public candidate is
+live. Hosted participant workloads remain disabled until Auth enrollment,
+membership provisioning, redirect policy, and an authenticated browser
+acceptance walkthrough are complete. This is a safety control—not a silent
+fallback to demo data.
+
+Follow the [hosted launch runbook](docs/HOSTED_LAUNCH.md) and
+[enterprise readiness checklist](docs/ENTERPRISE_READINESS.md) before enabling
+`WORKWORLD_HOSTED_STORE_WIRED=true`.
+
+## Trust, privacy, and claims
+
+- All bundled business data is synthetic; no participant or customer data is included.
+- Deterministic fixtures validate the harness—they are **not** live-model results.
+- No claim is made about employability, accreditation, hiring suitability, commercial traction, or production safety without matching evidence.
+- Withheld evaluation material stays out of public archives and agent-facing fixtures.
+
+## Documentation map
+
+| Looking for | Read |
+| --- | --- |
+| Product scope and episodes | [Project brief](docs/PROJECT_BRIEF.md) · [Episode specs](docs/EPISODE_SPECS.md) |
+| Evaluation and research limits | [Grader contract](docs/GRADER_CONTRACT.md) · [Technical report](docs/TECHNICAL_REPORT.md) · [Research protocol](docs/RESEARCH_PROTOCOL.md) |
+| Operations and deployment | [Operations](docs/OPERATIONS.md) · [Hosted launch](docs/HOSTED_LAUNCH.md) · [Release checklist](docs/RELEASE_CHECKLIST.md) |
+| Security and enterprise posture | [Enterprise readiness](docs/ENTERPRISE_READINESS.md) · [Blockers](docs/BLOCKERS.md) · [SOC 2 notes](docs/SOC2_COMPLIANCE.md) |
+| Validation artifacts | [Validation pack](docs/validation-pack/README.md) · [`TASK_STATE.json`](TASK_STATE.json) |
+
+---
+
+Built for teams that need more than a confident answer: they need a result they
+can inspect, replay, and trust within a clearly stated operating boundary.
