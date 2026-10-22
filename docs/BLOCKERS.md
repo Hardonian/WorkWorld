@@ -14,18 +14,9 @@ Precise blockers, failed attempts, alternatives, and what unblocks them.
   different already-paid provider. The runner already enforces a budget check
   before every paid dispatch.
 
-## B3. Hosted application path — IMPLEMENTED, END-TO-END VERIFICATION PENDING
-- What: authenticated application traffic using the hosted Postgres/Supabase
-  episode and assessment tables end to end.
-- Current evidence: `PostgresStore` implements the EventStore contract with
-  optimistic concurrency, RLS session claims, and digest verification. Unit
-  tests do not substitute for a real browser session, a provisioned membership,
-  and a live database boundary.
-- Unblock: provision the controlled test tenant, authenticate a real test user,
-  exercise start/resume/action/replay under RLS, then retain the resulting
-  release-gate evidence before enabling `WORKWORLD_HOSTED_STORE_WIRED=true` in
-  a production deployment.
+## B3. Hosted acceptance — ACCOUNT ENROLLMENT AND BROWSER VERIFICATION PENDING
 
+<<<<<<< HEAD
 ## B1. Hosted Supabase database boundary — VERIFICATION PENDING (current launch)
 - What: verification against a real hosted Supabase/Postgres project at the
   database/RLS boundary for the current release candidate.
@@ -45,6 +36,15 @@ Precise blockers, failed attempts, alternatives, and what unblocks them.
   configuration is absent.
 - Remaining hosted caveats: backup/restore, object storage/KMS, and app-level
   authenticated smoke testing remain operator-owned launch work.
+=======
+Supabase and Vercel are provisioned and production variables are configured. Twelve current live Postgres adapter/RLS checks pass, including concurrency, rollback, and exact replay. Cookie sign-in and durable assessment/certification paths are implemented. The activation flag remains false until confirmed Auth accounts, memberships, redirect configuration, and an authenticated browser walkthrough are complete.
+
+## B1. Infrastructure — PROVISIONED; FULL ENTERPRISE LAUNCH REMAINS GATED
+
+The current Supabase database is reachable over verified TLS through a dedicated RLS-bound runtime role. Missing certification and security migrations are applied. Vercel is linked to GitHub, with production credentials excluded from previews. This closes the former missing-infrastructure prerequisite; it does not close Auth enrollment, storage/retention, recovery, commercial billing, or enterprise integration work.
+
+See [ENTERPRISE_READINESS.md](ENTERPRISE_READINESS.md) for evidence, exact remaining gates, and the pending cleanup of session QA fixtures after Supabase's cleanup confirmation error.
+>>>>>>> 09b4eacea222943b909332f791122bb92d906dca
 
 ## Closed (previously)
 

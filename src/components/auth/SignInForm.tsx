@@ -20,6 +20,7 @@ export default function SignInForm() {
 
     setStatus("sending");
     setMessage("");
+    try {
     const { error } = await client.auth.signInWithOtp({
       email,
       options: {
@@ -29,11 +30,15 @@ export default function SignInForm() {
     });
     if (error) {
       setStatus("error");
-      setMessage(error.message);
+      setMessage("Unable to send a link. Check your invitation or try again later.");
       return;
     }
     setStatus("sent");
     setMessage("Check your email for a single-use sign-in link.");
+    } catch {
+      setStatus("error");
+      setMessage("Could not reach the sign-in service. Please try again.");
+    }
   }
 
   return (
@@ -68,6 +73,7 @@ export default function SignInForm() {
             {status === "sending" ? "Sending…" : status === "sent" ? "Link sent" : "Email me a sign-in link"}
           </button>
         </form>
+        <Link href="/login" className="mt-4 block text-sm text-indigo-600">Use a password instead</Link>
         {message ? (
           <p className={`mt-4 text-sm ${status === "error" ? "text-rose-700 dark:text-rose-300" : "text-emerald-700 dark:text-emerald-300"}`} role="status">
             {message}

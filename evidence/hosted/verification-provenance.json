@@ -1,0 +1,26 @@
+{
+  "ci": {
+    "url": "https://github.com/Hardonian/WorkWorld/actions/runs/39708739701",
+    "head": "a761e074b0840ecf14b4f9ecfe0001c50d4ec5fe",
+    "conclusion": "success",
+    "gateScore": "11/11",
+    "database": "disposable PostgreSQL 17"
+  },
+  "local": {
+    "testsPassed": 244,
+    "browserJourneysPassed": 17,
+    "browserDurationSeconds": 35.4,
+    "browserCommand": "npm run test:e2e",
+    "isolatedOrigin": "http://localhost:3219",
+    "note": "Earlier rerun failures are retained in local-port-collision.json. The harness now owns a separate server and uses the same hostname as Next.js request origins."
+  },
+  "liveSupabase": {
+    "checksPassed": 12,
+    "scope": "synthetic SQL identities; Auth browser acceptance remains pending"
+  },
+  "deployment": {
+    "url": "https://workworld-mauve.vercel.app",
+    "smokeChecksPassed": 8,
+    "hostedActivation": false
+  }
+}

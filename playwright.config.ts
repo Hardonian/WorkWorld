@@ -8,13 +8,14 @@ export default defineConfig({
   // cross-test timing race observed once (recorded in docs/BUILD_LOG.md M7).
   workers: 1,
   use: {
-    baseURL: "http://localhost:3100",
+    baseURL: "http://localhost:3219",
     trace: process.env.CI ? "retain-on-failure" : "off",
   },
   webServer: {
-    command: "npm run dev",
-    url: "http://localhost:3100",
-    reuseExistingServer: true,
+    command: "node node_modules/next/dist/bin/next dev -p 3219 -H 127.0.0.1",
+    url: "http://localhost:3219",
+    // Never attach to a different checkout's development server.
+    reuseExistingServer: false,
     timeout: 120_000,
   },
 });

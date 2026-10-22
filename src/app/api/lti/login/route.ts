@@ -1,6 +1,8 @@
+import { integrationUnavailable } from "../../../../server/http.ts";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
+  if (process.env.WORKWORLD_MODE === "hosted") return integrationUnavailable("This integration");
   const { searchParams } = new URL(request.url);
   const iss = searchParams.get("iss");
   const loginHint = searchParams.get("login_hint");

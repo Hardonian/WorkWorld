@@ -1,3 +1,4 @@
+import { integrationUnavailable } from "../../../../server/http.ts";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { billingService, type SubscriptionTier } from "../../../../server/billing.ts";
@@ -13,6 +14,7 @@ const CheckoutRequestSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  if (process.env.WORKWORLD_MODE === "hosted") return integrationUnavailable("This integration");
   try {
     const body = await req.json();
     const parsed = CheckoutRequestSchema.safeParse(body);

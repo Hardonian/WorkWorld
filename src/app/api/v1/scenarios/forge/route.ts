@@ -1,9 +1,11 @@
+import { integrationUnavailable } from "../../../../../server/http.ts";
 import { NextResponse } from "next/server";
 import { ScenarioForge, type ScenarioForgePrompt } from "../../../../../scenarios/forge.ts";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  if (process.env.WORKWORLD_MODE === "hosted") return integrationUnavailable("This integration");
   try {
     const body: ScenarioForgePrompt = await req.json();
 

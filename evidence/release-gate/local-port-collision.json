@@ -1,0 +1,132 @@
+{
+  "generatedAt": "2026-10-22T01:59:43.678Z",
+  "totalDurationSec": 150.67,
+  "gateScore": "10/11",
+  "localReadiness": "local technical candidate: FAIL (10/11 gates green)",
+  "hostedReadiness": "hosted: blocked_external (no hosted configuration; B1)",
+  "researchReadiness": "harness validation complete — deterministic baseline & controls verified",
+  "commercialReadiness": "commercial evidence: externally unverified — protocols and security artifacts exist, but no pilots, customers, or revenue results are recorded",
+  "gates": [
+    {
+      "id": "doctor",
+      "description": "Environment & dependency health",
+      "cmd": "npm run doctor",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "durationSec": 1.02,
+      "started": "2026-10-22T01:57:13.217Z",
+      "tail": "PASS  Scenario catalog: 15 scenarios defined across routine and enterprise families | PASS  Assistant provider: optional local endpoint: http://127.0.0.1:11434"
+    },
+    {
+      "id": "lint",
+      "description": "ESLint code style & zero-warning audit",
+      "cmd": "npm run lint",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "durationSec": 12.82,
+      "started": "2026-10-22T01:57:14.244Z",
+      "tail": "> workworld@0.1.0 lint | > eslint ."
+    },
+    {
+      "id": "typecheck",
+      "description": "TypeScript 5.9 strict compilation",
+      "cmd": "npm run typecheck",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "durationSec": 5.4,
+      "started": "2026-10-22T01:57:27.066Z",
+      "tail": "> workworld@0.1.0 typecheck | > tsc --noEmit"
+    },
+    {
+      "id": "scenarios",
+      "description": "Scenario catalog linter & DAG invariants",
+      "cmd": "npm run lint:scenarios",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "durationSec": 1.56,
+      "started": "2026-10-22T01:57:32.465Z",
+      "tail": "Validated 15 scenarios across routine and enterprise families. | PASS: All scenario specifications are syntactically and logically consistent."
+    },
+    {
+      "id": "tests",
+      "description": "Vitest unit & integration test suites",
+      "cmd": "npm test",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "durationSec": 5.28,
+      "started": "2026-10-22T01:57:34.022Z",
+      "tail": "\u001b[2m            \u001b[22m \u001b[2mpersist transforms across runs with \u001b[22m\u001b[33mfsModuleCache: true\u001b[39m | \u001b[2m            \u001b[22m \u001b[2mlearn more: https://vitest.dev/guide/improving-performance#caching-between-reruns\u001b[22m"
+    },
+    {
+      "id": "baseline",
+      "description": "Competent actor benchmark (6/6 episodes pass)",
+      "cmd": "npm run baseline",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "durationSec": 1.13,
+      "started": "2026-10-22T01:57:39.303Z",
+      "tail": " | baseline: 6/6 episodes pass (fixture actor, not a model)"
+    },
+    {
+      "id": "negatives",
+      "description": "Adversarial negative controls caught",
+      "cmd": "npm run negatives",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "durationSec": 1.24,
+      "started": "2026-10-22T01:57:40.432Z",
+      "tail": " | negative controls: 6/6 detected for the right reasons"
+    },
+    {
+      "id": "stress",
+      "description": "Concurrency throughput & latency benchmark",
+      "cmd": "npm run benchmark:stress",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "durationSec": 1.26,
+      "started": "2026-10-22T01:57:41.672Z",
+      "tail": "Throughput: 9376 actions/sec | Latency: p50=0.08ms, p95=0.234ms, p99=0.4ms"
+    },
+    {
+      "id": "build",
+      "description": "Next.js 16 production application build",
+      "cmd": "npm run build",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "durationSec": 28.14,
+      "started": "2026-10-22T01:57:42.934Z",
+      "tail": "○  (Static)   prerendered as static content | ƒ  (Dynamic)  server-rendered on demand"
+    },
+    {
+      "id": "e2e",
+      "description": "Playwright public, workspace, API, and launch-readiness flows",
+      "cmd": "npm run test:e2e",
+      "required": true,
+      "exitCode": 1,
+      "ok": false,
+      "durationSec": 87.18,
+      "started": "2026-10-22T01:58:11.071Z",
+      "tail": "    tests\\e2e\\workspace.spec.ts:89:1 › rejected actions preserve work and show actionable errors ─── |   2 passed (1.4m)"
+    },
+    {
+      "id": "archive",
+      "description": "Schema validation & SHA-256 source archive",
+      "cmd": "npm run validate:task-state && node scripts/build-archive.mjs --quiet",
+      "required": true,
+      "exitCode": 0,
+      "ok": true,
+      "durationSec": 5.42,
+      "started": "2026-10-22T01:59:38.254Z",
+      "tail": " | TASK_STATE.json OK: 12 milestones, 4 external blockers; docs/TASK_STATE.schema.json refreshed"
+    }
+  ]
+}

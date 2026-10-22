@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "project": "workworld",
-  "updatedAt": "2026-10-20T00:00:00.000Z",
+  "updatedAt": "2026-10-22T01:44:55.464Z",
   "codeRevision": {
-    "branch": "main",
+    "branch": "codex/hosted-enterprise-readiness",
     "commit": null,
-    "note": "Historical local-gate record reconciled for the current working tree. It is not hosted production, commercial, or certification verification; use the latest release-gate evidence for a pinned candidate."
+    "note": "Hosted infrastructure provisioned and live synthetic SQL identity checks pass. Activation, real Auth browser acceptance, and enterprise integrations remain gated; see docs/ENTERPRISE_READINESS.md."
   },
   "milestones": [
     {
@@ -495,21 +495,80 @@
         "human_governance"
       ],
       "nextAction": "Provision the hosted test tenant, complete authenticated RLS end-to-end verification, then conduct approved external governance and pilot work."
+    },
+    {
+      "id": "M11",
+      "title": "Supabase and Vercel hosted enterprise foundations",
+      "status": "blocked_external",
+      "prerequisites": [
+        "M10"
+      ],
+      "attempts": [
+        {
+          "timestamp": "2026-10-22T01:44:55.466Z",
+          "commands": [
+            {
+              "cmd": "npm test",
+              "exitCode": 0,
+              "observed": "244 passing tests; optional edge and local RLS tests skipped in this environment"
+            },
+            {
+              "cmd": "npm run test:e2e",
+              "exitCode": 0,
+              "observed": "17 browser journeys passed"
+            },
+            {
+              "cmd": "live Postgres adapter validation",
+              "exitCode": 0,
+              "observed": "12 checks passed; synthetic SQL identities, not Auth browser verification"
+            }
+          ],
+          "evidencePaths": [
+            "evidence/hosted/runtime-validation.json",
+            "docs/ENTERPRISE_READINESS.md"
+          ],
+          "observation": "Existing Supabase project reused; Vercel project created and GitHub linked; secure runtime login, TLS CA, isolated environment variables, transactional persistence and exact replay verified. Activation remains false."
+        }
+      ],
+      "manualJudgment": "Technical hosted foundations verified; enterprise launch is not approved.",
+      "blockers": [
+        "B3",
+        "B4"
+      ],
+      "nextAction": "Complete confirmed Auth enrollment and hosted browser acceptance, then enable activation; close the documented enterprise integration and operations gates."
     }
   ],
   "externalBlockers": [
     {
       "id": "B1",
       "kind": "hosted_config",
+<<<<<<< HEAD
       "summary": "The Vercel production project is connected and deployed with hosted runtime configuration, but EventStore activation remains disabled pending a fresh non-production RLS suite and authenticated provisioned-member app-path verification. A 2026-10-02 tenant test is historical background, not current production approval; see docs/BLOCKERS.md B1.",
+=======
+      "summary": "Supabase/Vercel provisioned, production secrets configured, and 12 live Postgres/RLS adapter checks passed. This closes infrastructure prerequisites only.",
+>>>>>>> 09b4eacea222943b909332f791122bb92d906dca
       "openedAt": "2026-10-01T21:00:00.000Z",
-      "status": "open"
+      "status": "closed"
     },
     {
       "id": "B2",
       "kind": "paid_provider",
       "summary": "No OpenAI key and no authorized paid experiment budget; live paid runs blocked. Ollama local endpoint used for unpaid smoke runs.",
       "openedAt": "2026-10-01T21:00:00.000Z",
+      "status": "open"
+    },
+    {
+      "id": "B3",
+      "kind": "hosted_config",
+      "summary": "Confirmed Auth account enrollment, memberships, redirect policy, and real authenticated hosted browser acceptance remain required before activation.",
+      "openedAt": "2026-10-22T01:44:55.466Z",
+      "status": "open"
+    },
+    {
+      "id": "B4",
+      "kind": "other",
+      "summary": "Live billing and enterprise integrations, evidence storage/retention, recovery drill, incident ownership, and legal/commercial acceptance remain incomplete.",
+      "openedAt": "2026-10-22T01:44:55.466Z",
       "status": "open"
     }
   ],

@@ -1,3 +1,4 @@
+import { createHmac } from "node:crypto";
 import { describe, it, expect } from "vitest";
 import { CommercialBillingService, SUBSCRIPTION_PLANS } from "../src/server/billing.ts";
 
@@ -49,7 +50,9 @@ describe("Commercial Billing & Monetization Engine (Sellability & Profitability)
       },
     });
 
-    const res = billing.verifyAndProcessStripeWebhook(payload, "t=12345,v1=mock_signature");
+    const timestamp = Math.floor(Date.now() / 1000);
+    const signature = createHmac("sha256", "whsec_secret_456").update(`${timestamp}.${payload}`).digest("hex");
+    const res = billing.verifyAndProcessStripeWebhook(payload, `t=${timestamp},v1=${signature}`);
     expect(res.valid).toBe(true);
     expect(res.orgId).toBe("org-apex-logistics");
 
@@ -57,5 +60,16 @@ describe("Commercial Billing & Monetization Engine (Sellability & Profitability)
     expect(updatedSub.tier).toBe("enterprise");
     expect(updatedSub.maxSeats).toBe(50);
     expect(updatedSub.stripeCustomerId).toBe("cus_stripe_88192");
+  });
+});
+
+describe("Stripe signature boundary", () => {
+  it("rejects forged timestamps, old events, and unsigned payloads", () => {
+    const service = new CommercialBillingService("test", "whsec_test");
+    expect(service.verifyAndProcessStripeWebhook("{}", "t=123,v1=mock").valid).toBe(false);
+    const timestamp = Math.floor(Date.now()/1000)-1000;
+    const signature = createHmac("sha256", "whsec_test").update(`${timestamp}.{}`).digest("hex");
+    expect(service.verifyAndProcessStripeWebhook("{}", `t=${timestamp},v1=${signature}`).valid).toBe(false);
+    expect(new CommercialBillingService("", "").verifyAndProcessStripeWebhook("{}", "t=1,v1=mock").valid).toBe(false);
   });
 });

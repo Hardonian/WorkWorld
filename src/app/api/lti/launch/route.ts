@@ -1,7 +1,9 @@
+import { integrationUnavailable } from "../../../../server/http.ts";
 import { NextResponse } from "next/server";
 import { LtiAdvantageService } from "../../../../server/lti.ts";
 
 export async function POST(request: Request) {
+  if (process.env.WORKWORLD_MODE === "hosted") return integrationUnavailable("This integration");
   try {
     const formData = await request.formData();
     const idToken = formData.get("id_token")?.toString() ?? "";

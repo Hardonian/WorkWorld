@@ -38,7 +38,7 @@ describe("hosted mode availability (honest degradation)", () => {
     process.env.DATABASE_URL = "postgres://user:password@localhost:5432/workworld";
     const h = hostedModeAvailable();
     expect(h.available).toBe(false);
-    expect(h.reason).toMatch(/not wired/);
+    expect(h.reason).toMatch(/awaiting authenticated acceptance and activation/);
     expect(h.reason).toMatch(/no fallback/);
   });
 });

@@ -7,6 +7,7 @@
  */
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { RequestError } from "./http.ts";
 
 export function supabasePublicConfig(): { url: string; publishableKey: string } | null {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
@@ -14,17 +15,22 @@ export function supabasePublicConfig(): { url: string; publishableKey: string } 
   return url && publishableKey ? { url, publishableKey } : null;
 }
 
-export async function getHostedIdentity(): Promise<{ userId: string; email: string | null } | null> {
+export async function createHostedAuthClient(writable = false) {
   const config = supabasePublicConfig();
-  if (!config) return null;
+  if (!config) throw new RequestError("Authentication is temporarily unavailable.", 503, "AUTH_UNAVAILABLE");
   const jar = await cookies();
-  const client = createServerClient(config.url, config.publishableKey, {
+  return createServerClient(config.url, config.publishableKey, {
     cookies: {
       getAll: () => jar.getAll(),
       // Server Components cannot update cookies. src/proxy.ts refreshes them.
-      setAll: () => undefined,
+      setAll: (entries) => { if (writable) entries.forEach(({ name, value, options }) => jar.set(name, value, options)); },
     },
   });
+}
+
+export async function getHostedIdentity(): Promise<{ userId: string; email: string | null } | null> {
+  if (!supabasePublicConfig()) return null;
+  const client = await createHostedAuthClient();
   const { data, error } = await client.auth.getClaims();
   if (error || !data?.claims?.sub) return null;
   return { userId: data.claims.sub, email: typeof data.claims.email === "string" ? data.claims.email : null };

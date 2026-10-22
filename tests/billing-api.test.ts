@@ -88,17 +88,13 @@ describe("Commercial Billing & Stripe Checkout API Endpoints", () => {
     const resNoSig = await handleStripeWebhook(reqNoSig);
     expect(resNoSig.status).toBe(400);
 
-    // Valid signature passes
+    // A forged signature is always rejected, including in demo mode.
     const reqWithSig = new NextRequest("http://localhost:3100/api/webhooks/stripe", {
       method: "POST",
       headers: { "stripe-signature": "t=1700000000,v1=mock_signature" },
       body: webhookPayload,
     });
     const resWithSig = await handleStripeWebhook(reqWithSig);
-    expect(resWithSig.status).toBe(200);
-    const data = await resWithSig.json();
-    expect(data.received).toBe(true);
-    expect(data.orgId).toBe("org_test_carrier");
-    expect(data.eventType).toBe("checkout.session.completed");
+    expect(resWithSig.status).toBe(400);
   });
 });

@@ -36,5 +36,5 @@ evidence-exports/*.zip
 # OpenNext build output + wrangler local state
 .open-next/
 .wrangler/
-
-.vercel
+.vercel/
+supabase/.temp/

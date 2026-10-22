@@ -4,7 +4,7 @@
  * Pure TypeScript — no React imports.
  */
 
-import { createHmac } from "node:crypto";
+import { createHmac, timingSafeEqual } from "node:crypto";
 
 export type SubscriptionTier = "community" | "academic" | "enterprise";
 
@@ -57,8 +57,8 @@ export class CommercialBillingService {
   private readonly subscriptions = new Map<string, OrgSubscription>();
 
   constructor(
-    stripeSecretKey = process.env.STRIPE_SECRET_KEY ?? "sk_test_mock_stripe_key",
-    stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "whsec_mock_stripe_secret"
+    stripeSecretKey = process.env.STRIPE_SECRET_KEY ?? "",
+    stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? ""
   ) {
     this.stripeSecretKey = stripeSecretKey;
     this.stripeWebhookSecret = stripeWebhookSecret;
@@ -132,8 +132,13 @@ export class CommercialBillingService {
     }
 
     // Check HMAC-SHA256 signature
-    const expected = createHmac("sha256", this.stripeWebhookSecret).update(payload).digest("hex");
-    const valid = signatureHeader.includes(expected) || signatureHeader.startsWith("t=");
+    if (!this.stripeWebhookSecret) return { valid: false };
+    const parts = signatureHeader.split(",").map((part) => part.trim().split("="));
+    const timestamps = parts.filter(([key]) => key === "t");
+    const timestamp = Number(timestamps[0]?.[1]);
+    if (timestamps.length !== 1 || !Number.isSafeInteger(timestamp) || Math.abs(Date.now() / 1000 - timestamp) > 300) return { valid: false };
+    const expected = createHmac("sha256", this.stripeWebhookSecret).update(`${timestamp}.${payload}`).digest();
+    const valid = parts.some(([key, value]) => key === "v1" && /^[a-f0-9]{64}$/.test(value ?? "") && timingSafeEqual(Buffer.from(value!, "hex"), expected));
 
     if (!valid) {
       return { valid: false };
@@ -154,8 +159,9 @@ export class CommercialBillingService {
 
       const orgId = event.data?.object?.metadata?.orgId ?? event.data?.object?.client_reference_id;
       if (orgId && (event.type === "checkout.session.completed" || event.type === "customer.subscription.updated")) {
-        const tier = (event.data?.object?.metadata?.tier ?? "academic") as SubscriptionTier;
-        const seats = parseInt(event.data?.object?.metadata?.seats ?? "10", 10);
+        const tier = event.data?.object?.metadata?.tier;
+        const seats = Number(event.data?.object?.metadata?.seats);
+        if (!tier || !Object.hasOwn(SUBSCRIPTION_PLANS, tier) || !Number.isSafeInteger(seats) || seats < 1 || seats > SUBSCRIPTION_PLANS[tier].maxSeats) return { valid: false };
         this.subscriptions.set(orgId, {
           orgId,
           tier,

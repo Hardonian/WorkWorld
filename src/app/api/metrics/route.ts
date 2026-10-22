@@ -1,3 +1,4 @@
+import { integrationUnavailable } from "../../../server/http.ts";
 import { NextResponse } from "next/server";
 import { listScenarios } from "../../../scenarios/catalog.ts";
 import { rateLimiter } from "../../../server/rate-limiter.ts";
@@ -7,6 +8,7 @@ import { rateLimiter } from "../../../server/rate-limiter.ts";
  * Endpoint: /api/metrics
  */
 export async function GET() {
+  if (process.env.WORKWORLD_MODE === "hosted") return integrationUnavailable("This integration");
   const mem = process.memoryUsage();
   const uptime = process.uptime();
   const scenarios = listScenarios();

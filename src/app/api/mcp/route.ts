@@ -1,8 +1,10 @@
+import { integrationUnavailable } from "../../../server/http.ts";
 import { NextResponse } from "next/server";
 import { handleMcpRequest } from "../../../server/mcp.ts";
 import { readJsonObject, RequestError, requestErrorResponse } from "../../../server/http.ts";
 
 export async function POST(request: Request) {
+  if (process.env.WORKWORLD_MODE === "hosted") return integrationUnavailable("This integration");
   try {
     const body = await readJsonObject(request, 64 * 1024, { sameOrigin: false });
     const response = await handleMcpRequest(body as Parameters<typeof handleMcpRequest>[0]);
@@ -22,6 +24,7 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
+  if (process.env.WORKWORLD_MODE === "hosted") return integrationUnavailable("This integration");
   return NextResponse.json({
     status: "preview",
     service: "workworld-mcp",
