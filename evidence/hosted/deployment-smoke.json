@@ -1,7 +1,8 @@
 {
-  "time": "2026-10-22T01:54:39.260Z",
+  "time": "2026-10-22T02:00:41.154Z",
   "url": "https://workworld-mauve.vercel.app",
   "activation": false,
+  "passed": true,
   "checks": [
     {
       "route": "/health",
@@ -11,7 +12,7 @@
         "status": "ok",
         "service": "workworld",
         "mode": "hosted",
-        "time": "2026-10-22T01:54:38.287Z"
+        "time": "2026-10-22T02:00:40.021Z"
       }
     },
     {
@@ -22,13 +23,18 @@
         "status": "not_ready",
         "service": "workworld",
         "mode": "hosted",
-        "reason": "hosted database policies are provisioned, but application authentication and the Postgres EventStore adapter are not wired; hosted execution is disabled — no fallback to demo data"
+        "reason": "hosted execution is awaiting authenticated acceptance and activation; hosted execution is disabled — no fallback to demo data"
       }
     },
     {
       "route": "/workspace",
       "status": 307,
-      "location": "/login"
+      "location": "/sign-in"
+    },
+    {
+      "route": "/sign-in",
+      "status": 200,
+      "location": null
     },
     {
       "route": "/login",

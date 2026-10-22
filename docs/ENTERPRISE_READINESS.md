@@ -57,3 +57,7 @@ The two isolated QA organizations and three synthetic profiles created during li
 5. Complete the authenticated walkthrough before changing the activation flag.
 
 References: [Supabase SSR](https://supabase.com/docs/guides/auth/server-side), [Postgres TLS](https://supabase.com/docs/guides/platform/ssl-enforcement), [connection options](https://supabase.com/docs/guides/database/connecting-to-postgres), [Vercel environment management](https://vercel.com/docs/environment-variables/managing-environment-variables), [Stripe signature verification](https://docs.stripe.com/webhooks/signature).
+
+## Final verification reconciliation
+
+GitHub CI [39708739701](https://github.com/Hardonian/WorkWorld/actions/runs/39708739701) passed all 11 gates against a fresh PostgreSQL 17 service. Its artifact is retained as `evidence/release-gate/latest.json`. A local rerun initially attached to another development server; the failed record is preserved separately. Browser verification now starts its own server on localhost:3219 and all 17 journeys pass. Eight deployment probes pass, including both sign-in surfaces, anonymous access denial, and intentionally unavailable hosted integrations. `evidence/hosted/verification-provenance.json` records the scopes and source references.
