@@ -1,0 +1,19 @@
+{
+  "time": "2026-10-22T00:43:50.653Z",
+  "scope": "live Supabase Postgres adapter and RLS; synthetic identities, not Auth browser verification",
+  "passed": true,
+  "checks": [
+    "authenticated durable create and resume",
+    "cross-tenant run and listing denied",
+    "separate workers serialize mutations without lost updates",
+    "action and state rollback together on failure",
+    "participant role escalation denied",
+    "certification metadata is durable and tenant isolated",
+    "certification tenant reassignment denied",
+    "assigned assessor persists judgment under RLS",
+    "assessment cross-tenant read denied",
+    "pooled identity and claims cleared after operations",
+    "hosted action replay preserves actor attribution and state digest",
+    "rejected actions retain their forensic outcome"
+  ]
+}

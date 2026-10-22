@@ -1,3 +1,4 @@
+import { integrationUnavailable } from "../../../server/http.ts";
 import { NextResponse } from "next/server";
 import { currentState } from "../../../server/session.ts";
 import { getScenario } from "../../../scenarios/catalog.ts";
@@ -29,6 +30,7 @@ function pickAdapter(): { adapter: AgentAdapter; budget: BudgetLedger } {
 }
 
 export async function POST(req: NextRequest) {
+  if (process.env.WORKWORLD_MODE === "hosted") return integrationUnavailable("This integration");
   try {
     assertSameOrigin(req);
   } catch (error) {

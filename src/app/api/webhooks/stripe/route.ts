@@ -1,9 +1,11 @@
+import { integrationUnavailable } from "../../../../server/http.ts";
 import { NextRequest, NextResponse } from "next/server";
 import { billingService } from "../../../../server/billing.ts";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
+  if (process.env.WORKWORLD_MODE === "hosted") return integrationUnavailable("This integration");
   try {
     const rawBody = await req.text();
     const signature = req.headers.get("stripe-signature") ?? "";
@@ -36,3 +38,5 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export const runtime = "nodejs";

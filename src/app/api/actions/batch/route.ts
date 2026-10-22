@@ -1,9 +1,10 @@
+import { apiBoundary, readJsonObject, requestErrorResponse } from "../../../../server/http.ts";
 import { NextResponse, type NextRequest } from "next/server";
 import { getSessionId, applyBatchActionsForRun } from "../../../../server/session.ts";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(request: NextRequest | Request) {
+async function post(request: NextRequest | Request) {
   try {
     const sessionId = await getSessionId();
     if (!sessionId) {
@@ -15,7 +16,7 @@ export async function POST(request: NextRequest | Request) {
 
     let body: { actions?: Array<Record<string, unknown>>; actorKind?: "human" | "agent" | "assisted" };
     try {
-      body = (await request.json()) as { actions?: Array<Record<string, unknown>>; actorKind?: "human" | "agent" | "assisted" };
+      body = (await readJsonObject(request)) as { actions?: Array<Record<string, unknown>>; actorKind?: "human" | "agent" | "assisted" };
     } catch {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
@@ -51,7 +52,8 @@ export async function POST(request: NextRequest | Request) {
       observation: result.observation,
     });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Error executing batch actions";
-    return NextResponse.json({ error: msg }, { status: 500 });
+    return requestErrorResponse(err);
   }
 }
+
+export const POST = apiBoundary(post);

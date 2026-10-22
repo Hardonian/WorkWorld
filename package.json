@@ -6,7 +6,7 @@
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": ">=22.0.0"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "next dev -p 3100",
@@ -34,11 +34,13 @@
     "hosted:check": "node scripts/hosted-readiness.mjs",
     "hosted:check:strict": "node scripts/hosted-readiness.mjs --strict",
     "build:edge": "tsx scripts/build-edge.ts",
-    "deploy:edge": "tsx scripts/build-edge.ts && wrangler deploy"
+    "deploy:edge": "tsx scripts/build-edge.ts && wrangler deploy",
+    "test:edge": "node scripts/test-edge.mjs",
+    "member:provision": "node scripts/provision-member.mjs"
   },
   "dependencies": {
-    "@supabase/ssr": "^0.12.7",
-    "@supabase/supabase-js": "^2.118.0",
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.118.0",
     "next": "16.3.8",
     "pg": "8.23.1",
     "pg-cloudflare": "^1.4.1",

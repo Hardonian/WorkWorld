@@ -17,6 +17,10 @@
     {
       "file": "0004_index_certification.sql",
       "sha256": "8f61126e6a4723c3d82a37e2ff4edbdcd36cae826d4826e2f6f7a9d3e00fbc62"
+    },
+    {
+      "file": "20261022001751_hosted_runtime_boundaries.sql",
+      "sha256": "7613271da3f00effa8dc31bdb708b160ff8b5d56c8b01098569f3adc9cbe0bcb"
     }
   ]
 }

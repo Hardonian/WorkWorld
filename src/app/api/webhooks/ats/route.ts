@@ -1,7 +1,9 @@
+import { integrationUnavailable } from "../../../../server/http.ts";
 import { NextResponse } from "next/server";
 import { AtsIntegrationService, type AtsCandidateProfile } from "../../../../server/ats.ts";
 
 export async function POST(request: Request) {
+  if (process.env.WORKWORLD_MODE === "hosted") return integrationUnavailable("This integration");
   try {
     const signature = request.headers.get("x-workworld-signature") ?? "";
     const rawBody = await request.text();

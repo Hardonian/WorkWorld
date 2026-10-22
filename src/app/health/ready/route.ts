@@ -24,13 +24,13 @@ export async function GET() {
         { status: "ready", service: "workworld", mode, store: "postgres" },
         { headers: { "Cache-Control": "no-store" } },
       );
-    } catch (e) {
+    } catch {
       return NextResponse.json(
         {
           status: "not_ready",
           service: "workworld",
           mode,
-          reason: `hosted store unavailable: ${(e as Error).message}`,
+          reason: "hosted store unavailable",
         },
         { status: 503, headers: { "Cache-Control": "no-store" } },
       );

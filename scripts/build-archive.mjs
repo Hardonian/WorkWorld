@@ -6,7 +6,7 @@
  */
 import { execSync } from "node:child_process";
 import { mkdirSync, rmSync, writeFileSync, readFileSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve, sep } from "node:path";
 import { createHash } from "node:crypto";
 
 const quiet = process.argv.includes("--quiet");
@@ -37,7 +37,8 @@ const tarball = join(outDir, `${name}-${commit.slice(0, 8)}.tar.gz`);
 sh(`git archive --format=tar.gz --prefix=${name}/ -o ${tarball} HEAD`);
 
 // Verify extraction in a clean directory and check for forbidden content.
-const verifyDir = join(outDir, "verify");
+const verifyDir = resolve(outDir, "verify");
+if (!verifyDir.startsWith(resolve(outDir) + sep)) throw new Error("archive verification path escapes output directory");
 rmSync(verifyDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 mkdirSync(verifyDir, { recursive: true });
 sh(`tar -xzf ${tarball} -C ${verifyDir}`);

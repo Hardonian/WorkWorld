@@ -36,6 +36,7 @@ export interface RunMeta {
 export interface StoredAction {
   action: Action;
   actor: Actor;
+  outcome?: "applied" | "rejected" | "replayed";
 }
 
 export class CorruptStateError extends Error {
@@ -52,6 +53,8 @@ export class CorruptStateError extends Error {
 }
 
 export interface EventStore {
+  /** Hosted mutations hold a database row lock and commit actions + state together. */
+  withRunTransaction?<T>(runId: string | null, operation: (store: EventStore) => Promise<T>): Promise<T>;
   createRun(meta: RunMeta): Promise<void>;
   appendAction(runId: string, entry: StoredAction): Promise<void>;
   loadActions(runId: string): Promise<StoredAction[]>;

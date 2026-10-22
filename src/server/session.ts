@@ -11,10 +11,11 @@ import type { Action, EpisodeState, Transition } from "../domain/types.ts";
 import type { ActorKind } from "../domain/types.ts";
 import { getScenario } from "../scenarios/catalog.ts";
 import type { Observation } from "../domain/observation.ts";
-import { getStore, type EventStore, STORE_SCHEMA_VERSION } from "./store.ts";
+import { CorruptStateError, getStore, type EventStore, STORE_SCHEMA_VERSION } from "./store.ts";
 import { createAuthenticatedPostgresStore } from "./store-postgres.ts";
 import { getHostedIdentity, supabasePublicConfig } from "./supabase-auth.ts";
 import { sanitizeActionInput } from "./actions.ts";
+import { RequestError } from "./http.ts";
 
 const COOKIE = "ww_session";
 const RUN_TTL_MS = 1000 * 60 * 60 * 24 * 7;
@@ -83,15 +84,15 @@ export function hostedModeAvailable(): { available: boolean; reason: string } {
  * always scoped to a verified Supabase cookie session; no default tenant can
  * be reached through this path.
  */
-async function storeForRequest(): Promise<EventStore> {
+export async function storeForRequest(): Promise<EventStore> {
   if ((process.env.WORKWORLD_MODE ?? "demo") !== "hosted") return getStore();
 
   const hosted = hostedModeAvailable();
-  if (!hosted.available) throw new Error(hosted.reason);
+  if (!hosted.available) throw new RequestError("The hosted workspace is temporarily unavailable.", 503, "HOSTED_UNAVAILABLE");
 
   const identity = await getHostedIdentity();
   if (!identity) {
-    throw new Error("hosted execution requires an authenticated Supabase session; no fallback to demo data");
+    throw new RequestError("Sign in to start or resume your workspace.", 401, "AUTH_REQUIRED");
   }
   return createAuthenticatedPostgresStore(identity.userId);
 }
@@ -103,7 +104,7 @@ export async function startSession(
 ): Promise<{ observation: Observation; runId: string }> {
   if ((process.env.WORKWORLD_MODE ?? "demo") === "hosted") {
     const hosted = hostedModeAvailable();
-    if (!hosted.available) throw new Error(hosted.reason);
+    if (!hosted.available) throw new RequestError("The hosted workspace is temporarily unavailable.", 503, "HOSTED_UNAVAILABLE");
   }
   const scenario = getScenario(scenarioId);
   const runId = randomUUID();
@@ -120,9 +121,13 @@ export async function startSession(
     storeSchemaVersion: STORE_SCHEMA_VERSION,
   };
   const eventStore = await storeForRequest();
-  await eventStore.createRun(meta);
   const engine = EpisodeEngine.reset(scenario, { runId, seed: meta.seed, condition });
-  await eventStore.saveState(runId, engine.getState());
+  const initialize = async (store: EventStore) => {
+    await store.createRun(meta);
+    await store.saveState(runId, engine.getState());
+  };
+  if (eventStore.withRunTransaction) await eventStore.withRunTransaction(null, initialize);
+  else await initialize(eventStore);
   return { observation: engine.observe(), runId };
 }
 
@@ -141,9 +146,11 @@ async function loadEngineForRun(
     const state = await activeStore.loadState(runId);
     const scenario = getScenario(state.scenarioId);
     return { engine: EpisodeEngine.fromState(scenario, state), runId };
-  } catch {
+  } catch (error) {
     // Missing or corrupt state: caller presents the recovery path (restart episode).
-    return null;
+    if (error instanceof CorruptStateError) return null;
+    if (error instanceof Error && /^no saved state|^unknown run/.test(error.message)) return null;
+    throw error;
   }
 }
 
@@ -165,6 +172,13 @@ async function withRunLock<T>(runId: string, operation: () => Promise<T>): Promi
   }
 }
 
+async function withStoreRunLock<T>(runId: string, operation: (store: EventStore) => Promise<T>): Promise<T> {
+  return withRunLock(runId, async () => {
+    const store = await storeForRequest();
+    return store.withRunTransaction ? store.withRunTransaction(runId, operation) : operation(store);
+  });
+}
+
 export async function applyActionInput(
   input: Record<string, unknown>,
 ): Promise<{ transition: Transition; observation: Observation } | { error: string; code: string }> {
@@ -180,8 +194,7 @@ export async function applyActionForRun(
   requestedActorKind: Extract<ActorKind, "human" | "agent" | "assisted">,
 ): Promise<{ transition: Transition; observation: Observation } | { error: string; code: string }> {
 
-  return withRunLock(runId, async () => {
-    const eventStore = await storeForRequest();
+  return withStoreRunLock(runId, async (eventStore) => {
     const loaded = await loadEngineForRun(runId, eventStore);
     if (!loaded) return noSession();
     const { engine } = loaded;
@@ -224,7 +237,7 @@ export async function applyActionForRun(
       role: "participant" as const,
     };
     const transition = engine.step(action, actor);
-    await eventStore.appendAction(runId, { action, actor });
+    await eventStore.appendAction(runId, { action, actor, outcome: transition.ok ? "applied" : "rejected" });
     await eventStore.saveState(runId, engine.getState());
     return { transition, observation: engine.observe() };
   });
@@ -256,8 +269,7 @@ export async function applyBatchActionsForRun(
     }
   | { error: string; code: string }
 > {
-  return withRunLock(runId, async () => {
-    const eventStore = await storeForRequest();
+  return withStoreRunLock(runId, async (eventStore) => {
     const loaded = await loadEngineForRun(runId, eventStore);
     if (!loaded) return noSession();
     const { engine } = loaded;
@@ -305,7 +317,7 @@ export async function applyBatchActionsForRun(
       };
 
       const transition = engine.step(action, actor);
-      await eventStore.appendAction(runId, { action, actor });
+      await eventStore.appendAction(runId, { action, actor, outcome: transition.ok ? "applied" : "rejected" });
 
       results.push({
         actionId: action.actionId,

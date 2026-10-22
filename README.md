@@ -18,7 +18,7 @@ polish of the report.
 | Dimension | State |
 |-----------|-------|
 | Local technical candidate | verified automated suite (including real Postgres RLS), 8 original browser e2e journeys, lint/typecheck/build gate |
-| Hosted candidate | **not wired** — hosted Supabase RLS is verified, but app auth and the Postgres EventStore adapter are not integrated; hosted execution refuses to fall back to demo storage |
+| Hosted candidate | Supabase and Vercel provisioned; transactional RLS persistence and replay verified live. Authenticated enrollment and activation remain gated; see docs/ENTERPRISE_READINESS.md |
 | Research evidence | **harness validation only** — no live-model comparison, no human study |
 | Commercial evidence | **none** — protocols only; no customers, pilots, or revenue |
 
@@ -61,6 +61,8 @@ results**. Live adapters: OpenAI Chat Completions and an OpenAI-compatible local
 endpoint (Ollama). Paid trials require an explicit budget (docs/BLOCKERS.md B2).
 
 ## Documentation
+
+- [Hosted infrastructure, verification, and remaining enterprise gates](docs/ENTERPRISE_READINESS.md)
 
 - `docs/PROJECT_BRIEF.md` · `docs/ARCHITECTURE.md` · `docs/EPISODE_SPECS.md`
 - `docs/GRADER_CONTRACT.md` (checks, categories, claim limits)
